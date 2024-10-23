@@ -60,6 +60,8 @@ use Filament\Tables\Columns\TextColumn;
 TextColumn::make('price')->money('eur')
 ```
 
+Alternatively, you can set the default currency through the environment variable `DEFAULT_CURRENCY`.
+
 ## Limiting text length
 
 You may `limit()` the length of the cell's value:
@@ -146,7 +148,7 @@ TextColumn::make('index')->getStateUsing(
         return (string) (
             $rowLoop->iteration +
             ($livewire->tableRecordsPerPage * (
-                $livewire->page - 1
+                $livewire->getPage() - 1
             ))
         );
     }
@@ -269,3 +271,26 @@ TextColumn::make('email')
 ```
 
 > Filament uses tooltips to display the copy message in the admin panel. If you want to use the copyable feature outside of the admin panel, make sure you have [`@ryangjchandler/alpine-tooltip` installed](https://github.com/ryangjchandler/alpine-tooltip#installation) in your app.
+
+### Customizing the text that is copied to the clipboard
+
+You can customize the text that gets copied to the clipboard using the `copyableState() method:
+
+```php
+use Filament\Tables\Columns\TextColumn;
+
+TextColumn::make('url')
+    ->copyable()
+    ->copyableState(fn (string $state): string => "URL: {$state}")
+```
+
+In this function, you can access the whole table row with `$record`:
+
+```php
+use App\Models\Post;
+use Filament\Tables\Columns\TextColumn;
+
+TextColumn::make('url')
+    ->copyable()
+    ->copyableState(fn (Post $record): string => "URL: {$record->url}")
+```

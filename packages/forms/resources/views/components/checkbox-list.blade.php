@@ -33,7 +33,9 @@
             init: function () {
                 this.updateVisibleCheckboxListOptions()
 
-                this.checkIfAllCheckboxesAreChecked()
+                $nextTick(() => {
+                    this.checkIfAllCheckboxesAreChecked()
+                })
 
                 Livewire.hook('message.processed', () => {
                     this.updateVisibleCheckboxListOptions()
@@ -56,14 +58,23 @@
             },
 
             toggleAllCheckboxes: function () {
+                updatedState = []
+
                 state = ! this.areAllCheckboxesChecked
 
                 this.visibleCheckboxListOptions.forEach((checkboxLabel) => {
                     checkbox = checkboxLabel.querySelector('input[type=checkbox]')
 
                     checkbox.checked = state
-                    checkbox.dispatchEvent(new Event('change'))
+
+                    if (state) {
+                        updatedState.push(checkbox.value)
+                    }
                 })
+
+                this.checkIfAllCheckboxesAreChecked()
+
+                $wire.set(@js($getStatePath()), updatedState)
 
                 this.areAllCheckboxesChecked = state
             },
@@ -155,9 +166,6 @@
                         @endif
                     >
                         <input
-                            @if ($isBulkToggleable())
-                                x-on:change="checkIfAllCheckboxesAreChecked()"
-                            @endif
                             wire:loading.attr="disabled"
                             type="checkbox"
                             value="{{ $optionValue }}"
