@@ -420,6 +420,34 @@ FileUpload::make('attachment')
     ->uploadingMessage('Uploading attachment...')
 ```
 
+## Uploading large files
+
+If 422 Errors appear in your Browser-Console when uploading a file,
+you might have to adjust your livewire config and maybe even your php.ini.
+
+### php.ini
+
+```ini
+post_max_size = 120M
+upload_max_filesize = 120M
+```
+
+### livewire config
+
+If not already done so, you have to publish the config first with:
+```bash
+php artisan livewire:publish --config
+```
+
+Then you can adjust the Value. Beware that i.e. 120MiB = 122'880 KiB:
+```php
+'temporary_file_upload' => [
+    // ...
+    'rules' => 'file|mimes:png,jpg,pdf|max:122880', // (120MB max, and only accept PNGs, JPEGs, and PDFs)
+],
+```
+Please refer to the [Livewire Documentation](https://livewire.laravel.com/docs/uploads#global-validation) for more details.
+
 ## File upload validation
 
 As well as all rules listed on the [validation](../validation) page, there are additional rules that are specific to file uploads.
