@@ -147,6 +147,14 @@ Create a new `resources/views/components/layouts/app.blade.php` layout file for 
 </html>
 ```
 
+## Deploying to production
+
+### Using a production-ready storage disk
+
+Filament has a storage disk defined in the [configuration](#publishing-configuration), which by default is set to `public`. You can set the `FILAMENT_FILESYSTEM_DISK` environment variable to change this.
+
+The `public` disk, while great for easy local development, is not suitable for production. It does not support file visibility, so features of Filament such as [exports](prebuilt-actions/export) will create public files. In production, you need to use a production-ready disk such as `s3` with a private access policy, to prevent unauthorized access to the exported files.
+
 ## Publishing configuration
 
 You can publish the package configuration using the following command (optional):
