@@ -116,7 +116,7 @@ Learn more about [users](users).
 
 Filament has a storage disk defined in the [configuration](#publishing-configuration), which by default is set to `public`. You can set the `FILAMENT_FILESYSTEM_DISK` environment variable to change this.
 
-The `public` disk, while great for easy local development, is not suitable for production. It does not support file visibility, so features of Filament such as [exports](../actions/prebuilt-actions/export) will create public files. In production, you need to use a production-ready disk such as `s3` with a private access policy, to prevent unauthorized access to the exported files.
+The `public` disk, while great for easy local development, is not suitable for production. It does not support file visibility, so features of Filament such as [file uploads](../forms/fields/file-upload) will create public files. In production, you need to use a production-ready disk such as `s3` with a private access policy, to prevent unauthorized access to the uploaded files.
 
 ## Publishing configuration
 
