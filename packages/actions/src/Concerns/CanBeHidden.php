@@ -39,10 +39,10 @@ trait CanBeHidden
     }
 
     /**
-     * @param  string | array<string> | BackedEnum  $abilities
+     * @param  string | BackedEnum | array<string>  $abilities
      * @param  Model | array<mixed> | null  $arguments
      */
-    public function authorizeAny(string | array | BackedEnum $abilities, Model | array | null $arguments = null): static
+    public function authorizeAny(string | BackedEnum | array $abilities, Model | array | null $arguments = null): static
     {
         if ($abilities instanceof BackedEnum) {
             $abilities = $abilities->value;
