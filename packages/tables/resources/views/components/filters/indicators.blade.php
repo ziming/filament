@@ -1,19 +1,15 @@
 @props([
-    "indicators" => [],
+    'indicators' => [],
 ])
 
-@php
-    $showRemoveAll = collect($indicators)->contains(fn ($indicator) => $indicator->isRemovable());
-@endphp
-
 <div
-    {{ $attributes->class(["fi-ta-filter-indicators flex items-start justify-between gap-x-3 bg-gray-50 px-3 py-1.5 dark:bg-white/5 sm:px-6"]) }}
+    {{ $attributes->class(['fi-ta-filter-indicators flex items-start justify-between gap-x-3 bg-gray-50 px-3 py-1.5 dark:bg-white/5 sm:px-6']) }}
 >
     <div class="flex flex-col gap-x-3 gap-y-1 sm:flex-row">
         <span
             class="whitespace-nowrap text-sm font-medium leading-6 text-gray-700 dark:text-gray-200"
         >
-            {{ __("filament-tables::table.filters.indicator") }}
+            {{ __('filament-tables::table.filters.indicator') }}
         </span>
 
         <div class="flex flex-wrap gap-1.5">
@@ -35,7 +31,7 @@
         </div>
     </div>
 
-    @if ($showRemoveAll)
+    @if (collect($indicators)->contains(fn ($indicator) => $indicator->isRemovable()))
         <div class="mt-0.5">
             <x-filament::icon-button
                 color="gray"
