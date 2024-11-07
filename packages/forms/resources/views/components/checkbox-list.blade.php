@@ -202,7 +202,7 @@
                             <span
                                 class="fi-fo-checkbox-list-option-label overflow-hidden break-words font-medium text-gray-950 dark:text-white"
                             >
-                                @if ($isHtmlAllowed)
+                                @if ($isHtmlAllowed())
                                     {!! $label !!}
                                 @else
                                     {{ $label }}
