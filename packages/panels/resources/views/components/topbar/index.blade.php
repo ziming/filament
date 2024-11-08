@@ -158,7 +158,7 @@
             {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::GLOBAL_SEARCH_BEFORE) }}
 
             @if (filament()->isGlobalSearchEnabled())
-                @livewire(Filament\Livewire\GlobalSearch::class)
+                @livewire(Filament\Livewire\GlobalSearch::class, key('global-search' . (filament()->hasTenancy() ? '-' . filament()->getTenant()->getKey() : '')))
             @endif
 
             {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::GLOBAL_SEARCH_AFTER) }}
