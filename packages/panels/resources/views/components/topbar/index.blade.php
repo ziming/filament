@@ -152,13 +152,13 @@
         @endif
 
         <div
-            x-persist="topbar.end"
+            x-persist="topbar.end{{ filament()->hasTenancy() ? '-' . filament()->getTenant()->getKey() : '' }}"
             class="ms-auto flex items-center gap-x-4"
         >
             {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::GLOBAL_SEARCH_BEFORE) }}
 
             @if (filament()->isGlobalSearchEnabled())
-                @livewire(Filament\Livewire\GlobalSearch::class, key('global-search' . (filament()->hasTenancy() ? '-' . filament()->getTenant()->getKey() : '')))
+                @livewire(Filament\Livewire\GlobalSearch::class)
             @endif
 
             {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::GLOBAL_SEARCH_AFTER) }}
