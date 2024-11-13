@@ -59,12 +59,12 @@ class StatsOverviewWidget extends Widget
 
     protected function hasHeading(): bool
     {
-        return $this->heading !== null;
+        return filled($this->heading);
     }
 
     protected function hasDescription(): bool
     {
-        return $this->description !== null;
+        return filled($this->description);
     }
 
     protected function getDescription(): ?string

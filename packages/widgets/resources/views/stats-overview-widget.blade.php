@@ -4,9 +4,9 @@
     $hasDescription = $this->hasDescription();
 @endphp
 
-<x-filament-widgets::widget class="fi-wi-stats-overview">
+<x-filament-widgets::widget class="fi-wi-stats-overview grid gap-y-4">
     @if($hasHeading || $hasDescription)
-        <div class="fi-wi-stats-overview-header grid flex-1 gap-y-1 mb-4">
+        <div class="fi-wi-stats-overview-header grid gap-y-1">
             @if($hasHeading)
                 <h3 class="fi-wi-stats-overview-header-heading text-base font-semibold leading-6 text-gray-950 dark:text-white col-span-full">
                     {{ $this->getHeading() }}
