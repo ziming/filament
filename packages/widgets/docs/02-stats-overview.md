@@ -168,18 +168,18 @@ protected static bool $isLazy = false;
 
 ## Adding a header and description
 
-You may also add a header and description text above the widget by overriding the `$header` and `$description` properties:
+You may also add a header and description text above the widget by overriding the `$heading` and `$description` properties:
 
 ```php
-protected ?string $header = 'Analytics';
+protected ?string $heading = 'Analytics';
 
 protected ?string $description = 'An overview of some analytics.';
 ```
 
-If you need to dynamically generated the header or description text, you can instead override the `getHeader()` and `getDescription()` methods:
+If you need to dynamically generated the header or description text, you can instead override the `getHeading()` and `getDescription()` methods:
 
 ```php
-protected function getHeader(): ?string
+protected function getHeading(): ?string
 {
     return 'Analytics';
 }
