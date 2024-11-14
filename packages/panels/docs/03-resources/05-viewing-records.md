@@ -103,9 +103,8 @@ protected function mutateFormDataBeforeFill(array $data): array
 Alternatively, if you're viewing records in a modal action, check out the [Actions documentation](../../actions/prebuilt-actions/view#customizing-data-before-filling-the-form).
 
 ## Lifecycle hooks
-Hooks may be used to execute code at various points within a page's lifecycle, like before a form is filled. To set up a hook, create a protected method on the View page class with the name of the hook:
 
-There are several available hooks for the View pages:
+Hooks may be used to execute code at various points within a page's lifecycle, like before a form is filled. To set up a hook, create a protected method on the View page class with the name of the hook:
 
 ```php
 use Filament\Resources\Pages\ViewRecord;
@@ -116,12 +115,12 @@ class ViewUser extends ViewRecord
 
     protected function beforeFill(): void
     {
-        // Runs before the form fields are populated from the database.
+        // Runs before the disabled form fields are populated from the database. Not run on pages using an infolist.
     }
 
     protected function afterFill(): void
     {
-        // Runs after the form fields are populated from the database.
+        // Runs after the disabled form fields are populated from the database. Not run on pages using an infolist.
     }
 }
 ```
