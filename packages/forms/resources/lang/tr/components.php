@@ -412,7 +412,7 @@ return [
         'searching_message' => 'Aranıyor...',
 
         'search_prompt' => 'Aramak için yazmaya başlayın...',
-    
+
     ],
 
     'tags_input' => [
