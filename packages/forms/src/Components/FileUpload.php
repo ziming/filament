@@ -419,7 +419,7 @@ class FileUpload extends BaseFileUpload
 
     protected function getParentTargetSizes(int $withOrHeight): float
     {
-        return $withOrHeight > 1 ? 360 / (int) $this->getImageResizeTargetWidth() : 1;
+        return $withOrHeight > 1 ? 360 / (int) ($this->getImageResizeTargetWidth() ?? 1) : 1;
     }
 
     public function getImageEditorMode(): int
