@@ -421,7 +421,7 @@ class FileUpload extends BaseFileUpload
     {
         $targetWidth = (int) $this->getImageResizeTargetWidth();
 
-        if($targetWidth === 0) {
+        if ($targetWidth === 0) {
             return 1;
         }
 
