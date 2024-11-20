@@ -39,9 +39,9 @@
 
         scroll: function () {
             this.$nextTick(() => {
-                this.$root.scrollIntoView({ behavior: 'smooth', block: 'start' })
-
-                this.$refs.header.children[this.getStepIndex(this.step)].scrollIntoView({ behavior: 'smooth', block: 'start' })
+                this.$refs.header.children[
+                    this.getStepIndex(this.step)
+                ].scrollIntoView({ behavior: 'smooth', block: 'start' })
             })
         },
 
