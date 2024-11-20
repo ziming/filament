@@ -41,7 +41,7 @@
             this.$nextTick(() => {
                 this.$root.scrollIntoView({ behavior: 'smooth', block: 'start' })
 
-                this.$refs.headerSteps.children[this.getStepIndex(this.step)].scrollIntoView({ behavior: 'smooth', block: 'start' })
+                this.$refs.header.children[this.getStepIndex(this.step)].scrollIntoView({ behavior: 'smooth', block: 'start' })
             })
         },
 
@@ -137,7 +137,7 @@
             'border-b border-gray-200 dark:border-white/10' => $isContained,
             'rounded-xl bg-white shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10' => ! $isContained,
         ])
-        x-ref="headerSteps"
+        x-ref="header"
     >
         @foreach ($getChildComponentContainer()->getComponents() as $step)
             <li
