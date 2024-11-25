@@ -8,7 +8,7 @@ trait HasMaxContentWidth
 {
     protected MaxWidth | string | null $maxContentWidth = null;
 
-    protected MaxWidth | string | null $simplePageMaxWidth = null;
+    protected MaxWidth | string | null $maxSimplePageContentWidth = null;
 
     public function maxContentWidth(MaxWidth | string | null $maxContentWidth): static
     {
@@ -22,15 +22,15 @@ trait HasMaxContentWidth
         return $this->maxContentWidth;
     }
 
-    public function simplePageMaxWidth(MaxWidth | string | null $width): static
+    public function maxSimplePageContentWidth(MaxWidth | string | null $width): static
     {
-        $this->simplePageMaxWidth = $width;
+        $this->maxSimplePageContentWidth = $width;
 
         return $this;
     }
 
-    public function getSimplePageMaxWidth(): MaxWidth | string | null
+    public function getMaxSimplePageContentWidth(): MaxWidth | string | null
     {
-        return $this->simplePageMaxWidth;
+        return $this->maxSimplePageContentWidth;
     }
 }

@@ -30,7 +30,7 @@
             <main
                 @class([
                     'fi-simple-main my-16 w-full bg-white px-6 py-12 shadow-sm ring-1 ring-gray-950/5 dark:bg-gray-900 dark:ring-white/10 sm:rounded-xl sm:px-12',
-                    match ($maxWidth ??= (filament()->getSimplePageMaxWidth() ?? MaxWidth::Large)) {
+                    match ($maxWidth ??= (filament()->getMaxSimplePageContentWidth() ?? MaxWidth::Large)) {
                         MaxWidth::ExtraSmall, 'xs' => 'max-w-xs',
                         MaxWidth::Small, 'sm' => 'max-w-sm',
                         MaxWidth::Medium, 'md' => 'max-w-md',
