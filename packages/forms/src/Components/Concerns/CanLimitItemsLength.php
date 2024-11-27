@@ -15,7 +15,7 @@ trait CanLimitItemsLength
     {
         $this->maxItems = $count;
 
-        $this->rule('array');
+        $this->rule('array', static fn (Component $component): bool => $component->getMaxItems() !== null);
         $this->rule(static function (Component $component): string {
             /** @var static $component */
             $count = $component->getMaxItems();
@@ -30,7 +30,7 @@ trait CanLimitItemsLength
     {
         $this->minItems = $count;
 
-        $this->rule('array');
+        $this->rule('array', static fn (Component $component): bool => $component->getMinItems() !== null);
         $this->rule(static function (Component $component): string {
             /** @var static $component */
             $count = $component->getMinItems();
