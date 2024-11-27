@@ -21,7 +21,7 @@ trait CanLimitItemsLength
             $count = $component->getMaxItems();
 
             return "max:{$count}";
-        });
+        }, static fn (Component $component): bool => $component->getMaxItems() !== null);
 
         return $this;
     }
@@ -36,7 +36,7 @@ trait CanLimitItemsLength
             $count = $component->getMinItems();
 
             return "min:{$count}";
-        });
+        }, static fn (Component $component): bool => $component->getMinItems() !== null);
 
         return $this;
     }
