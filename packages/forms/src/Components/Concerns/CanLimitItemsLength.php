@@ -15,13 +15,23 @@ trait CanLimitItemsLength
     {
         $this->maxItems = $count;
 
-        $this->rule('array', static fn (Component $component): bool => $component->getMaxItems() !== null);
+        $this->rule('array', static function (Component $component): bool {
+            /** @var static $component */
+            $count = $component->getMaxItems();
+
+            return $count !== null;
+        });
         $this->rule(static function (Component $component): string {
             /** @var static $component */
             $count = $component->getMaxItems();
 
             return "max:{$count}";
-        }, static fn (Component $component): bool => $component->getMaxItems() !== null);
+        }, static function (Component $component): bool {
+            /** @var static $component */
+            $count = $component->getMaxItems();
+
+            return $count !== null;
+        });
 
         return $this;
     }
@@ -30,13 +40,23 @@ trait CanLimitItemsLength
     {
         $this->minItems = $count;
 
-        $this->rule('array', static fn (Component $component): bool => $component->getMinItems() !== null);
+        $this->rule('array', static function (Component $component): bool {
+            /** @var static $component */
+            $count = $component->getMinItems();
+
+            return $count !== null;
+        });
         $this->rule(static function (Component $component): string {
             /** @var static $component */
             $count = $component->getMinItems();
 
             return "min:{$count}";
-        }, static fn (Component $component): bool => $component->getMinItems() !== null);
+        }, static function (Component $component): bool {
+            /** @var static $component */
+            $count = $component->getMinItems();
+
+            return $count !== null;
+        });
 
         return $this;
     }
