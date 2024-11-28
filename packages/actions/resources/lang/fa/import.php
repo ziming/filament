@@ -11,8 +11,15 @@ return [
         'form' => [
 
             'file' => [
+
                 'label' => 'پرونده',
+
                 'placeholder' => 'آپلود یک فایل CSV',
+
+                'rules' => [
+                    'duplicate_columns' => '{0} فایل نباید بیش از یک ستون با هدر خالی داشته باشد.|{1,*} فایل نباید شامل ستون‌های با هدر تکراری باشد: :columns.',
+                ],
+
             ],
 
             'columns' => [
@@ -72,6 +79,7 @@ return [
         'file_name' => 'import-:import_id-:csv_name-failed-rows',
         'error_header' => 'خطا',
         'system_error' => 'خطای سیستمی، لطفا با پشتیبانی تماس بگیرید.',
+        'column_mapping_required_for_new_record' => 'ستون :attribute به هیچ ستونی در فایل نگاشت نشد، ولی وجود آن برای ایجاد رکوردهای جدید لازم است.',
     ],
 
 ];
