@@ -22,7 +22,7 @@ return [
             ],
 
             'more_list_items' => 'a ďalších :count',
-            
+
         ],
 
     ],
