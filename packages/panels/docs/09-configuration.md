@@ -115,7 +115,7 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-If you'd like to set the max content width for pages of the type `SimplePage`, like login and registration pages, you may do so using the `maxSimplePageContentWidth()` method. The default is `Large`:
+If you'd like to set the max content width for pages of the type `SimplePage`, like login and registration pages, you may do so using the `simplePageMaxContentWidth()` method. The default is `Large`:
 
 ```php
 use Filament\Panel;
@@ -125,7 +125,7 @@ public function panel(Panel $panel): Panel
 {
     return $panel
         // ...
-        ->maxSimplePageContentWidth(MaxWidth::Small);
+        ->simplePageMaxContentWidth(MaxWidth::Small);
 }
 ```
 
