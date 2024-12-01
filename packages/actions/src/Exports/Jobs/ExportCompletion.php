@@ -75,7 +75,7 @@ class ExportCompletion implements ShouldQueue
                 )),
             )
             ->when(
-                (filled($this->connection) && ($this->connection === 'sync')) ||
+                ($this->connection === 'sync') ||
                     (blank($this->connection) && (config('queue.default') === 'sync')),
                 fn (Notification $notification) => $notification
                     ->persistent()

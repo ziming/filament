@@ -308,7 +308,7 @@ trait CanImportRecords
                             ]),
                         )
                         ->when(
-                            (filled($jobConnection) && ($jobConnection === 'sync')) ||
+                            ($jobConnection === 'sync') ||
                                 (blank($jobConnection) && (config('queue.default') === 'sync')),
                             fn (Notification $notification) => $notification
                                 ->persistent()
