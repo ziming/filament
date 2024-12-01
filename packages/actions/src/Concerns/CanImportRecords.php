@@ -308,7 +308,8 @@ trait CanImportRecords
                             ]),
                         )
                         ->when(
-                            ($jobConnection === 'sync') || (blank($jobConnection) && (config('queue.default') === 'sync')),
+                            (filled($jobConnection) && ($jobConnection === 'sync')) ||
+                                (blank($jobConnection) && (config('queue.default') === 'sync')),
                             fn (Notification $notification) => $notification
                                 ->persistent()
                                 ->send(),
@@ -317,7 +318,10 @@ trait CanImportRecords
                 })
                 ->dispatch();
 
-            if (($jobConnection !== 'sync') || (blank($jobConnection) && (config('queue.default') !== 'sync'))) {
+            if (
+                (filled($jobConnection) && ($jobConnection !== 'sync')) ||
+                (blank($jobConnection) && (config('queue.default') !== 'sync'))
+            ) {
                 Notification::make()
                     ->title($action->getSuccessNotificationTitle())
                     ->body(trans_choice('filament-actions::import.notifications.started.body', $import->total_rows, [
