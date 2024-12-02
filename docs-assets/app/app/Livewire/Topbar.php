@@ -16,7 +16,7 @@ class Topbar extends Page
             ->userMenuItems([
                 MenuItem::make()
                     ->label('Settings')
-                    ->url(fn(): string => '#')
+                    ->url(fn(): string => '#topbar-link-example')
                     ->icon('heroicon-o-cog-6-tooth'),
             ]);
     }
