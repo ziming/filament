@@ -2956,11 +2956,14 @@ export default {
     },
     'panels/navigation/customizing-user-menu': {
         url: 'top-bar',
-        selector: '.fi-dropdown-panel',
+        selector: 'body',
         viewport: {
             width: 1080,
             height: 640,
-            deviceScaleFactor: 3,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 1080, height: 540, left: 1080, top: 0 })
         },
         before: async (page) => {
             await page.click('.fi-user-menu button')
