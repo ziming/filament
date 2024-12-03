@@ -158,6 +158,7 @@ Alternatively, you may pass an SVG element into the component's slot instead of 
 - `tables::filters.query-builder.constraints.text` - Default icon for a text constraint in the query builder
 - `tables::filters.remove-all-button` - Button to remove all filters
 - `tables::grouping.collapse-button` - Button to collapse a group of records
+- `tables::header-cell.sort-button'` - Sort button of a column sorted in no active sort order
 - `tables::header-cell.sort-asc-button` - Sort button of a column sorted in ascending order
 - `tables::header-cell.sort-desc-button` - Sort button of a column sorted in descending order
 - `tables::reorder.handle` - Handle to grab in order to reorder a record with drag and drop
