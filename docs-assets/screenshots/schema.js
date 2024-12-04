@@ -2955,7 +2955,7 @@ export default {
         },
     },
     'panels/navigation/customizing-user-menu': {
-        url: 'top-bar',
+        url: 'topbar',
         selector: 'body',
         viewport: {
             width: 1080,
