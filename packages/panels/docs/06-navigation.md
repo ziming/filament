@@ -460,7 +460,7 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-<AutoScreenshot name="panels/navigation/customizing-user-menu" alt="Customized User Menu" version="3.x" />
+<AutoScreenshot name="panels/navigation/user-menu" alt="User menu with custom menu item" version="3.x" />
 
 ### Customizing the profile link
 
