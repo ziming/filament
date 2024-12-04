@@ -43,8 +43,7 @@
             $arrayState = implode(
                 ', ',
                 array_map(
-                    function ($value): Stringable | string | null {
-
+                    function ($value) {
                         if ($value instanceof \Filament\Support\Contracts\HasLabel) {
                             return $value->getLabel();
                         }
