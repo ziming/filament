@@ -7,8 +7,8 @@ use App\Livewire\Forms\LayoutDemo as FormsLayoutDemo;
 use App\Livewire\Infolists\EntriesDemo;
 use App\Livewire\Infolists\LayoutDemo as InfolistsLayoutDemo;
 use App\Livewire\NotificationsDemo;
+use App\Livewire\Panels\Navigation\UserMenuCustomization;
 use App\Livewire\TablesDemo;
-use App\Livewire\Topbar;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -23,11 +23,22 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/actions', ActionsDemo::class);
-Route::get('/forms/fields', FieldsDemo::class);
-Route::get('/forms/getting-started', GettingStartedDemo::class);
-Route::get('/forms/layout', FormsLayoutDemo::class);
-Route::get('/infolists/entries', EntriesDemo::class);
-Route::get('/infolists/layout', InfolistsLayoutDemo::class);
 Route::get('/notifications', NotificationsDemo::class);
 Route::get('/tables', TablesDemo::class);
-Route::get('/topbar', Topbar::class);
+
+Route::group(['prefix' => 'forms'], function () {
+    Route::get('fields', FieldsDemo::class);
+    Route::get('getting-started', GettingStartedDemo::class);
+    Route::get('layout', FormsLayoutDemo::class);
+});
+
+Route::group(['prefix' => 'infolists'], function () {
+    Route::get('entries', EntriesDemo::class);
+    Route::get('layout', InfolistsLayoutDemo::class);
+});
+
+Route::group(['prefix' => 'panels'], function () {
+    Route::group(['prefix' => 'navigation'], function () {
+        Route::get('user-menu-customization', UserMenuCustomization::class);
+    });
+});
