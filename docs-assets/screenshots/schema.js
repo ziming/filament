@@ -1920,7 +1920,7 @@ export default {
         },
     },
     'panels/navigation/user-menu': {
-        url: 'topbar',
+        url: 'panels/navigation/user-menu-customization',
         selector: 'body',
         viewport: {
             width: 1080,
