@@ -420,6 +420,8 @@ public function panel(Panel $panel): Panel
 }
 ```
 
+<AutoScreenshot name="panels/navigation/disabled-navigation" alt="Disabled navigation sidebar" version="3.x" />
+
 ### Disabling the topbar
 
 You may disable topbar entirely by passing `false` to the `topbar()` method:

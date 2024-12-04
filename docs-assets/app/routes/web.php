@@ -7,6 +7,7 @@ use App\Livewire\Forms\LayoutDemo as FormsLayoutDemo;
 use App\Livewire\Infolists\EntriesDemo;
 use App\Livewire\Infolists\LayoutDemo as InfolistsLayoutDemo;
 use App\Livewire\NotificationsDemo;
+use App\Livewire\Panels\Navigation\DisabledNavigation;
 use App\Livewire\Panels\Navigation\UserMenuCustomization;
 use App\Livewire\TablesDemo;
 use Illuminate\Support\Facades\Route;
@@ -40,5 +41,6 @@ Route::group(['prefix' => 'infolists'], function () {
 Route::group(['prefix' => 'panels'], function () {
     Route::group(['prefix' => 'navigation'], function () {
         Route::get('user-menu-customization', UserMenuCustomization::class);
+        Route::get('disabled-navigation', DisabledNavigation::class);
     });
 });

@@ -1936,6 +1936,18 @@ export default {
             await new Promise((resolve) => setTimeout(resolve, 500))
         },
     },
+    'panels/navigation/disabled-navigation': {
+        url: 'panels/navigation/disabled-navigation',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 1080, height: 540, left: 0, top: 0 })
+        },
+    },
     'tables/example': {
         url: 'tables?table=example',
         selector: 'body',
