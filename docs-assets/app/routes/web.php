@@ -30,4 +30,4 @@ Route::get('/infolists/entries', EntriesDemo::class);
 Route::get('/infolists/layout', InfolistsLayoutDemo::class);
 Route::get('/notifications', NotificationsDemo::class);
 Route::get('/tables', TablesDemo::class);
-Route::get('/top-bar', Topbar::class);
+Route::get('/topbar', Topbar::class);
