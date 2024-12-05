@@ -349,9 +349,10 @@ trait HasBulkActions
 
         $table = $this->getTable();
 
-        $usePivotQuery = $table->getRelationship() instanceof BelongsToMany && $table->allowsDuplicates();
-
-        if (! $usePivotQuery) {
+        if (
+            (! $shouldFetchSelectedRecords) ||
+            (! ($table->getRelationship() instanceof BelongsToMany && $table->allowsDuplicates()))
+        ) {
             $query = $table->getQuery()->whereKey($this->selectedTableRecords);
             $this->applySortingToTableQuery($query);
 
