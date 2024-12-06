@@ -7,7 +7,14 @@ use App\Livewire\Forms\LayoutDemo as FormsLayoutDemo;
 use App\Livewire\Infolists\EntriesDemo;
 use App\Livewire\Infolists\LayoutDemo as InfolistsLayoutDemo;
 use App\Livewire\NotificationsDemo;
+use App\Livewire\Panels\Navigation\ActiveIcon;
+use App\Livewire\Panels\Navigation\ChangeIcon;
+use App\Livewire\Panels\Navigation\CustomItems;
 use App\Livewire\Panels\Navigation\DisabledNavigation;
+use App\Livewire\Panels\Navigation\SidebarCollapsibleOnDesktop;
+use App\Livewire\Panels\Navigation\SidebarFullyCollapsibleOnDesktop;
+use App\Livewire\Panels\Navigation\SortItems;
+use App\Livewire\Panels\Navigation\TopNavigation;
 use App\Livewire\Panels\Navigation\UserMenuCustomization;
 use App\Livewire\TablesDemo;
 use Illuminate\Support\Facades\Route;
@@ -42,5 +49,12 @@ Route::group(['prefix' => 'panels'], function () {
     Route::group(['prefix' => 'navigation'], function () {
         Route::get('user-menu-customization', UserMenuCustomization::class);
         Route::get('disabled-navigation', DisabledNavigation::class);
+        Route::get('active-icon', ActiveIcon::class);
+        Route::get('change-icon', ChangeIcon::class);
+        Route::get('sort-items', SortItems::class);
+        Route::get('custom-items', CustomItems::class);
+        Route::get('top-navigation', TopNavigation::class);
+        Route::get('sidebar-collapsible-on-desktop', SidebarCollapsibleOnDesktop::class);
+        Route::get('sidebar-fully-collapsible-on-desktop', SidebarFullyCollapsibleOnDesktop::class);
     });
 });

@@ -33,6 +33,8 @@ To customize a navigation item's [icon](https://blade-ui-kit.com/blade-icons?set
 protected static ?string $navigationIcon = 'heroicon-o-document-text';
 ```
 
+<AutoScreenshot name="panels/navigation/change-icon" alt="Change Navigation Items Icon" version="3.x" />
+
 If you set `$navigationIcon = null` on all items within the same navigation group, those items will be joined with a vertical bar below the group label.
 
 ### Switching navigation item icon when it is active
@@ -43,6 +45,8 @@ You may assign a navigation [icon](https://blade-ui-kit.com/blade-icons?set=1#se
 protected static ?string $activeNavigationIcon = 'heroicon-o-document-text';
 ```
 
+<AutoScreenshot name="panels/navigation/active-icon" alt="Different Navigation Item Icon when Active" version="3.x" />
+
 ## Sorting navigation items
 
 By default, navigation items are sorted alphabetically. You may customize this using the `$navigationSort` property:
@@ -52,6 +56,8 @@ protected static ?int $navigationSort = 3;
 ```
 
 Now, navigation items with a lower sort value will appear before those with a higher sort value - the order is ascending.
+
+<AutoScreenshot name="panels/navigation/sort-items" alt="Sort Navigation Items" version="3.x" />
 
 ## Adding a badge to a navigation item
 
@@ -216,6 +222,8 @@ public function panel(Panel $panel): Panel
 }
 ```
 
+<AutoScreenshot name="panels/navigation/sidebar-collapsible-on-desktop" alt="Collapsible Sidebar on Desktop" version="3.x" />
+
 By default, when you collapse the sidebar on desktop, the navigation icons still show. You can fully collapse the sidebar using the `sidebarFullyCollapsibleOnDesktop()` method:
 
 ```php
@@ -228,6 +236,8 @@ public function panel(Panel $panel): Panel
         ->sidebarFullyCollapsibleOnDesktop();
 }
 ```
+
+<AutoScreenshot name="panels/navigation/sidebar-fully-collapsible-on-desktop" alt="Fully Collapsible Sidebar on Desktop" version="3.x" />
 
 ### Navigation groups in a collapsible sidebar on desktop
 
@@ -314,6 +324,8 @@ public function panel(Panel $panel): Panel
 }
 ```
 
+<AutoScreenshot name="panels/navigation/top-navigation" alt="Top Navigation" version="3.x" />
+
 ## Customizing the width of the sidebar
 
 You can customize the width of the sidebar by passing it to the `sidebarWidth()` method in the [configuration](configuration):
@@ -375,6 +387,8 @@ public function panel(Panel $panel): Panel
         });
 }
 ```
+
+<AutoScreenshot name="panels/navigation/custom-items" alt="Register Custom Navigation Items" version="3.x" />
 
 ### Registering custom navigation groups
 

@@ -1948,6 +1948,105 @@ export default {
             return image.extract({ width: 1080, height: 540, left: 0, top: 0 })
         },
     },
+    'panels/navigation/active-icon': {
+        url: 'panels/navigation/active-icon',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 1080, height: 540, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/change-icon': {
+        url: 'panels/navigation/change-icon',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 600, height: 440, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/custom-items': {
+        url: 'panels/navigation/custom-items',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 540, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/sidebar-collapsible-on-desktop': {
+        url: 'panels/navigation/sidebar-collapsible-on-desktop',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 540, left: 0, top: 0 })
+        },
+        before: async (page) => {
+            await page.click('.fi-sidebar-header button[title="Collapse sidebar"]')
+
+            await new Promise((resolve) => setTimeout(resolve, 500))
+        },
+    },
+    'panels/navigation/sidebar-fully-collapsible-on-desktop': {
+        url: 'panels/navigation/sidebar-fully-collapsible-on-desktop',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 300, left: 0, top: 0 })
+        },
+        before: async (page) => {
+            await page.click('.fi-sidebar-header button[title="Collapse sidebar"]')
+
+            await new Promise((resolve) => setTimeout(resolve, 500))
+        },
+    },
+    'panels/navigation/sort-items': {
+        url: 'panels/navigation/sort-items',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 500, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/top-navigation': {
+        url: 'panels/navigation/top-navigation',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 1000, height: 300, left: 0, top: 0 })
+        },
+        before: async (page) => {
+            await page.click('.fi-dropdown-trigger')
+
+            await new Promise((resolve) => setTimeout(resolve, 500))
+        },
+    },
     'tables/example': {
         url: 'tables?table=example',
         selector: 'body',
