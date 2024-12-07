@@ -117,3 +117,20 @@ SelectFilter::make('status')
     ->default('draft')
     ->selectablePlaceholder(false)
 ```
+## Applying select filters by default
+
+You may set a select filter to be enabled by default, using the `default()` method. If using a single-select filter, the `default()` method accepts a single value (see above). If using a `multiple()` select filter, the `default()` method accepts and array:
+
+```php
+use Filament\Tables\Filters\SelectFilter;
+
+SelectFilter::make('status')
+    ->options([
+        'draft' => 'Draft',
+        'reviewing' => 'Reviewing',
+        'published' => 'Published',
+    ])
+    ->default(['draft','reviewing'])
+    ->selectablePlaceholder(false)
+```
+
