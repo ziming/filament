@@ -53,7 +53,7 @@ namespace Livewire\Features\SupportTesting {
 
         public function setTableBulkActionData(array $data): static {}
 
-        public function assertTableBulkActionDataSet(array $data): static {}
+        public function assertTableBulkActionDataSet(array | Closure $state): static {}
 
         public function callTableBulkAction(string $name, array | Collection $records, array $data = [], array $arguments = []): static {}
 
