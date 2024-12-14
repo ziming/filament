@@ -85,14 +85,14 @@ class TestsActions
     {
         return function (array | Closure $state): static {
             $mountedTableActionsData = $this->instance()->mountedTableActionsData;
-            $arrayKey = array_key_last($mountedTableActionsData);
+            $mountedTableActionIndex = array_key_last($mountedTableActionsData);
 
             if ($state instanceof Closure) {
-                $state = $state($mountedTableActionsData[$arrayKey]);
+                $state = $state($mountedTableActionsData[$mountedTableActionIndex] ?? []);
             }
 
             if (is_array($state)) {
-                foreach (Arr::dot($state, prepend: 'mountedTableActionsData.' . $arrayKey . '.') as $key => $value) {
+                foreach (Arr::dot($state, prepend: "mountedTableActionsData.{$mountedTableActionIndex}.") as $key => $value) {
                     $this->assertSet($key, $value);
                 }
             }
