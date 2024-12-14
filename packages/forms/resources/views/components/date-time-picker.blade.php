@@ -101,14 +101,12 @@
 
                 <button
                     x-ref="button"
-                    @if (! $isReadOnly())
-                        x-on:click="togglePanelVisibility()"
-                        x-on:keydown.enter.stop.prevent="
-                            if (! $el.disabled) {
-                                isOpen() ? selectDate() : togglePanelVisibility()
-                            }
-                        "
-                    @endif
+                    x-on:click="togglePanelVisibility()"
+                    x-on:keydown.enter.stop.prevent="
+                        if (! $el.disabled) {
+                            isOpen() ? selectDate() : togglePanelVisibility()
+                        }
+                    "
                     x-on:keydown.arrow-left.stop.prevent="if (! $el.disabled) focusPreviousDay()"
                     x-on:keydown.arrow-right.stop.prevent="if (! $el.disabled) focusNextDay()"
                     x-on:keydown.arrow-up.stop.prevent="if (! $el.disabled) focusPreviousWeek()"
@@ -119,7 +117,7 @@
                     aria-label="{{ $getPlaceholder() }}"
                     type="button"
                     tabindex="-1"
-                    @disabled($isDisabled)
+                    @disabled($isDisabled || $isReadOnly())
                     {{
                         $getExtraTriggerAttributeBag()->class([
                             'w-full',
