@@ -489,7 +489,7 @@ it('can load existing post data for editing', function () {
 });
 ```
 
-You may also find it useful to pass a function to the `assertTableActionDataSet()` and `assertTableBulkActionDataSet()` method, which allows you to access the form `$state` and perform additional assertions:
+You may also find it useful to pass a function to the `assertTableActionDataSet()` and `assertTableBulkActionDataSet()` methods, which allow you to access the form `$state` and perform additional assertions:
 
 ```php
 use Illuminate\Support\Str;
@@ -500,7 +500,7 @@ it('can automatically generate a slug from the title without any spaces', functi
 
     livewire(PostResource\Pages\ListPosts::class)
         ->mountTableAction(EditAction::class, $post)
-        ->assertTableActionDataSet(function (array $state) use($post): array {
+        ->assertTableActionDataSet(function (array $state) use ($post): array {
             expect($state['slug'])
                 ->not->toContain(' ');
                 
