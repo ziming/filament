@@ -8,6 +8,9 @@ use App\Livewire\Infolists\EntriesDemo;
 use App\Livewire\Infolists\LayoutDemo as InfolistsLayoutDemo;
 use App\Livewire\NotificationsDemo;
 use App\Livewire\Panels\Navigation\ActiveIcon;
+use App\Livewire\Panels\Navigation\Badge;
+use App\Livewire\Panels\Navigation\BadgeColor;
+use App\Livewire\Panels\Navigation\BadgeTooltip;
 use App\Livewire\Panels\Navigation\ChangeIcon;
 use App\Livewire\Panels\Navigation\CustomItems;
 use App\Livewire\Panels\Navigation\DisabledNavigation;
@@ -56,5 +59,8 @@ Route::group(['prefix' => 'panels'], function () {
         Route::get('top-navigation', TopNavigation::class);
         Route::get('sidebar-collapsible-on-desktop', SidebarCollapsibleOnDesktop::class);
         Route::get('sidebar-fully-collapsible-on-desktop', SidebarFullyCollapsibleOnDesktop::class);
+        Route::get('badge', Badge::class);
+        Route::get('badge-color', BadgeColor::class);
+        Route::get('badge-tooltip', BadgeTooltip::class);
     });
 });

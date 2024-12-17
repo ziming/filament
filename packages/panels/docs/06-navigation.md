@@ -70,6 +70,8 @@ public static function getNavigationBadge(): ?string
 }
 ```
 
+<AutoScreenshot name="panels/navigation/badge" alt="Navigation Item with Badge" version="3.x" />
+
 If a badge value is returned by `getNavigationBadge()`, it will display using the primary color by default. To style the badge contextually, return either `danger`, `gray`, `info`, `primary`, `success` or `warning` from the `getNavigationBadgeColor()` method:
 
 ```php
@@ -78,6 +80,8 @@ public static function getNavigationBadgeColor(): ?string
     return static::getModel()::count() > 10 ? 'warning' : 'primary';
 }
 ```
+
+<AutoScreenshot name="panels/navigation/badge-color" alt="Navigation Item with Badge Color" version="3.x" />
 
 A custom tooltip for the navigation badge can be set in `$navigationBadgeTooltip`:
 
@@ -93,6 +97,8 @@ public static function getNavigationBadgeTooltip(): ?string
     return 'The number of users';
 }
 ```
+
+<AutoScreenshot name="panels/navigation/badge-tooltip" alt="Navigation Item with Badge Tooltip" version="3.x" />
 
 ## Grouping navigation items
 

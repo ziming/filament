@@ -2047,6 +2047,47 @@ export default {
             await new Promise((resolve) => setTimeout(resolve, 500))
         },
     },
+    'panels/navigation/badge': {
+        url: 'panels/navigation/badge',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 500, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/badge-color': {
+        url: 'panels/navigation/badge-color',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 500, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/badge-tooltip': {
+        url: 'panels/navigation/badge-tooltip',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 750, height: 500, left: 0, top: 0 })
+        },
+        before: async (page) => {
+            await page.hover('.fi-badge')
+
+            await new Promise((resolve) => setTimeout(resolve, 500))
+        },
+    },
     'tables/example': {
         url: 'tables?table=example',
         selector: 'body',
