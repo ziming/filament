@@ -108,6 +108,8 @@ You may group navigation items by specifying a `$navigationGroup` property on a 
 protected static ?string $navigationGroup = 'Settings';
 ```
 
+<AutoScreenshot name="panels/navigation/group" alt="Group Navigation Items" version="3.x" />
+
 All items in the same navigation group will be displayed together under the same group label, "Settings" in this case. Ungrouped items will remain at the start of the navigation.
 
 ### Grouping navigation items under other items

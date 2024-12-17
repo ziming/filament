@@ -2088,6 +2088,18 @@ export default {
             await new Promise((resolve) => setTimeout(resolve, 500))
         },
     },
+    'panels/navigation/group': {
+        url: 'panels/navigation/group',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 550, left: 0, top: 0 })
+        },
+    },
     'tables/example': {
         url: 'tables?table=example',
         selector: 'body',

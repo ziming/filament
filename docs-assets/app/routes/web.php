@@ -14,6 +14,7 @@ use App\Livewire\Panels\Navigation\BadgeTooltip;
 use App\Livewire\Panels\Navigation\ChangeIcon;
 use App\Livewire\Panels\Navigation\CustomItems;
 use App\Livewire\Panels\Navigation\DisabledNavigation;
+use App\Livewire\Panels\Navigation\Group;
 use App\Livewire\Panels\Navigation\SidebarCollapsibleOnDesktop;
 use App\Livewire\Panels\Navigation\SidebarFullyCollapsibleOnDesktop;
 use App\Livewire\Panels\Navigation\SortItems;
@@ -62,5 +63,6 @@ Route::group(['prefix' => 'panels'], function () {
         Route::get('badge', Badge::class);
         Route::get('badge-color', BadgeColor::class);
         Route::get('badge-tooltip', BadgeTooltip::class);
+        Route::get('group', Group::class);
     });
 });
