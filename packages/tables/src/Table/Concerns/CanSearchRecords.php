@@ -71,6 +71,10 @@ trait CanSearchRecords
                 continue;
             }
 
+            if (! $column->isVisible()) {
+                continue;
+            }
+
             return true;
         }
 
