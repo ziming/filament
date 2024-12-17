@@ -179,7 +179,11 @@ $panel
 
 #### Making navigation groups not collapsible
 
-By default, navigation groups are collapsible. You may disable this behavior by calling `collapsible(false)` on the `NavigationGroup` object:
+By default, navigation groups are collapsible.
+
+<AutoScreenshot name="panels/navigation/group-collapsible" alt="Collapsible Navigation Groups" version="3.x" />
+
+You may disable this behavior by calling `collapsible(false)` on the `NavigationGroup` object:
 
 ```php
 use Filament\Navigation\NavigationGroup;
@@ -189,6 +193,8 @@ NavigationGroup::make()
     ->icon('heroicon-o-cog-6-tooth')
     ->collapsible(false);
 ```
+
+<AutoScreenshot name="panels/navigation/group-not-collapsible" alt="Not Collapsible Navigation Groups" version="3.x" />
 
 Or, you can do it globally for all groups in the [configuration](configuration):
 

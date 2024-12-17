@@ -2100,6 +2100,30 @@ export default {
             return image.extract({ width: 650, height: 550, left: 0, top: 0 })
         },
     },
+    'panels/navigation/group-collapsible': {
+        url: 'panels/navigation/group-collapsible',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 550, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/group-not-collapsible': {
+        url: 'panels/navigation/group-not-collapsible',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 550, left: 0, top: 0 })
+        },
+    },
     'tables/example': {
         url: 'tables?table=example',
         selector: 'body',
