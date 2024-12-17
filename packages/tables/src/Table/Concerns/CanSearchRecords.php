@@ -71,7 +71,7 @@ trait CanSearchRecords
                 continue;
             }
 
-            if (! $column->isVisible()) {
+            if ($column->isHidden()) {
                 continue;
             }
 
