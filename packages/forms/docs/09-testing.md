@@ -227,7 +227,7 @@ Section::make('Comments')
 ```php
 use function Pest\Livewire\livewire;
 
-test('comments section exists' function () {
+test('comments section exists', function () {
     livewire(EditPost::class)
         ->assertFormComponentExists('comments-section');
 });
