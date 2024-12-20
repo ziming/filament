@@ -251,7 +251,7 @@ use Filament\Forms\Components\Component;
 
 use function Pest\Livewire\livewire;
 
-test('comments section has heading' function () {
+test('comments section has heading', function () {
     livewire(EditPost::class)
         ->assertFormComponentExists(
             'comments-section',
@@ -270,7 +270,7 @@ use Illuminate\Testing\Assert;
 
 use function Pest\Livewire\livewire;
 
-test('comments section is enabled' function () {
+test('comments section is enabled', function () {
     livewire(EditPost::class)
         ->assertFormComponentExists(
             'comments-section',
