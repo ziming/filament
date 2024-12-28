@@ -17,6 +17,8 @@ use Illuminate\Support\Arr;
 
 class Group extends Component
 {
+    use Concerns\BelongsToTable;
+
     protected ?string $column;
 
     protected ?Closure $getDescriptionFromRecordUsing = null;
@@ -33,7 +35,7 @@ class Group extends Component
 
     protected ?Closure $scopeQueryByKeyUsing = null;
 
-    protected string | Closure | null $label;
+    protected string | Closure | null $label = null;
 
     protected string $id;
 
@@ -470,5 +472,17 @@ class Group extends Component
         }
 
         return $query->with([$relationshipName]);
+    }
+
+    /**
+     * @return array<mixed>
+     */
+    protected function resolveDefaultClosureDependencyForEvaluationByName(string $parameterName): array
+    {
+        return match ($parameterName) {
+            'livewire' => [$this->getLivewire()],
+            'table' => [$this->getTable()],
+            default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),
+        };
     }
 }
