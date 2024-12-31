@@ -9,7 +9,7 @@
     },
     "require-dev": {
         "anourvalar/eloquent-serialize": "^1.2",
-        "danharrin/livewire-rate-limiting": "^0.3|^1.0",
+        "danharrin/livewire-rate-limiting": "^0.3|^1.0|^2.0",
         "filament/support": "*",
         "larastan/larastan": "^2.2",
         "laravel/pint": "^1.0",
