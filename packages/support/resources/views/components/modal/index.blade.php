@@ -299,8 +299,8 @@
                                 >
                                     <x-filament::modal.heading
                                         @class([
-                                            'me-6' => $closeButton && (! $hasIcon || in_array($alignment, [Alignment::Left, Alignment::Start])),
-                                            'ms-6' => $closeButton && ! $hasIcon && $alignment === Alignment::Center,
+                                            'me-6' => $closeButton && ((! $hasIcon) || in_array($alignment, [Alignment::Start, Alignment::Left])),
+                                            'ms-6' => $closeButton && (! $hasIcon) && ($alignment === Alignment::Center),
                                         ])
                                     >
                                         {{ $heading }}
