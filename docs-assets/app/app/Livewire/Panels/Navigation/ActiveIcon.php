@@ -7,7 +7,7 @@ use Filament\Navigation\NavigationItem;
 
 class ActiveIcon extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.active-icon';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {
@@ -18,13 +18,13 @@ class ActiveIcon extends Page
                     ->label('Settings Inactive')
                     ->url(fn (): string => '#')
                     ->activeIcon('heroicon-o-document-text')
-                    ->icon('heroicon-o-cog-6-tooth'),
+                    ->icon('heroicon-o-cog'),
                 NavigationItem::make('')
                     ->label('Settings Active')
                     ->url(fn (): string => '#')
                     ->isActiveWhen(fn() => request()->path() === 'panels/navigation/active-icon')
-                    ->activeIcon('heroicon-o-document-text')
-                    ->icon('heroicon-o-cog-6-tooth'),
+                    ->activeIcon('heroicon-s-cog')
+                    ->icon('heroicon-s-cog'),
             ]);
     }
 }

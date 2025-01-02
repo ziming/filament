@@ -7,7 +7,7 @@ use Filament\Navigation\NavigationItem;
 
 class SidebarFullyCollapsibleOnDesktop extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.fully-collapsible-on-desktop';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {

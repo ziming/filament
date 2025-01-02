@@ -7,7 +7,7 @@ use Filament\Pages\Page;
 
 class Group extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.group';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {

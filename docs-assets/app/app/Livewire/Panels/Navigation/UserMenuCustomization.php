@@ -7,7 +7,7 @@ use Filament\Pages\Page;
 
 class UserMenuCustomization extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.users-menu-customization';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {

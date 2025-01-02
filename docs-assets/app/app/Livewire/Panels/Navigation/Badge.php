@@ -7,7 +7,7 @@ use Filament\Pages\Page;
 
 class Badge extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.badge';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {

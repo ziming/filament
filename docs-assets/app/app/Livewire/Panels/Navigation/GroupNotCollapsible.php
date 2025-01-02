@@ -8,7 +8,7 @@ use Filament\Pages\Page;
 
 class GroupNotCollapsible extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.group-not-collapsible';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {

@@ -8,7 +8,7 @@ use Filament\Navigation\NavigationItem;
 
 class TopNavigation extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.top-navigation';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {

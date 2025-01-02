@@ -8,7 +8,7 @@ use Filament\Support\Colors\Color;
 
 class BadgeColor extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.badge-color';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {

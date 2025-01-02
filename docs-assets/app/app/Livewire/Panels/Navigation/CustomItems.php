@@ -8,7 +8,7 @@ use Filament\Navigation\NavigationItem;
 
 class CustomItems extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.custom-items';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {

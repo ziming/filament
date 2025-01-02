@@ -46,13 +46,13 @@ Route::group(['prefix' => 'forms'], function () {
     Route::get('layout', FormsLayoutDemo::class);
 });
 
-Route::group(['prefix' => 'infolists'], function () {
+Route::prefix('infolists')->group(function () {
     Route::get('entries', EntriesDemo::class);
     Route::get('layout', InfolistsLayoutDemo::class);
 });
 
-Route::group(['prefix' => 'panels'], function () {
-    Route::group(['prefix' => 'navigation'], function () {
+Route::prefix('panels')->group(function () {
+    Route::prefix('navigation')->group(function () {
         Route::get('user-menu-customization', UserMenuCustomization::class);
         Route::get('disabled-navigation', DisabledNavigation::class);
         Route::get('active-icon', ActiveIcon::class);

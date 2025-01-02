@@ -7,7 +7,7 @@ use Filament\Navigation\NavigationItem;
 
 class SortItems extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.sort-item';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {
@@ -15,12 +15,14 @@ class SortItems extends Page
             ->getCurrentPanel()
             ->navigationItems([
                 NavigationItem::make()
-                    ->label('Products (Sort = 2)')
+                    ->label('Products')
+                    ->badge("2")
                     ->sort(2)
                     ->icon('heroicon-o-document-text')
                     ->url(fn (): string => '#'),
                 NavigationItem::make('')
-                    ->label('Orders (Sort = 1)')
+                    ->label('Orders')
+                    ->badge("1")
                     ->sort(1)
                     ->icon('heroicon-o-document-text')
                     ->url(fn (): string => '#'),

@@ -7,7 +7,7 @@ use Filament\Pages\Page;
 
 class BadgeTooltip extends Page
 {
-    protected static string $view = 'livewire.panels.navigation.badge-tooltip';
+    protected static string $view = 'livewire.panels.navigation.empty';
 
     public function mount()
     {
