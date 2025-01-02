@@ -69,7 +69,7 @@ class PrepareCsvExport implements ShouldQueue
 
         if ($databaseConnection->getDriverName() === 'pgsql') {
             $originalOrders = collect($query->getQuery()->orders)
-                ->reject(fn (array $order): bool => in_array($order['column'] ?? null, [$qualifiedKeyName]))
+                ->reject(fn (array $order): bool => ($order['column'] ?? null) === $qualifiedKeyName)
                 ->unique('column');
 
             /** @var array<string, mixed> $originalBindings */
