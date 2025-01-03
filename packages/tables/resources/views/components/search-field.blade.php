@@ -28,6 +28,7 @@
         :wire:target="$wireModel"
     >
         <x-filament::input
+            maxlength="1000"
             :attributes="
                 (new ComponentAttributeBag)->merge([
                     'autocomplete' => 'off',

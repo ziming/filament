@@ -21,6 +21,7 @@
         wire:target="search"
     >
         <x-filament::input
+            maxlength="1000"
             autocomplete="off"
             inline-prefix
             :placeholder="__('filament-panels::global-search.field.placeholder')"
