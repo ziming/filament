@@ -324,6 +324,9 @@ class MakeResourceCommand extends Command
         return static::SUCCESS;
     }
 
+    /**
+     * @return array<string, string>
+     */
     protected function generateModel(string $model, string $modelNamespace, string $modelClass): array
     {
         $possibilities = ['Form', 'Table', 'Resource'];
