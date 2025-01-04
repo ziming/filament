@@ -28,11 +28,11 @@
         :wire:target="$wireModel"
     >
         <x-filament::input
-            maxlength="1000"
             :attributes="
                 (new ComponentAttributeBag)->merge([
                     'autocomplete' => 'off',
                     'inlinePrefix' => true,
+                    'maxlength' => 1000,
                     'placeholder' => $placeholder,
                     'type' => 'search',
                     'wire:key' => $this->getId() . '.table.' . $wireModel . '.field.input',
