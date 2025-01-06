@@ -951,7 +951,7 @@
                                             :debounce="$searchDebounce"
                                             :on-blur="$isSearchOnBlur"
                                             wire-model="tableColumnSearches.{{ $column->getName() }}"
-                                            class="min-w-48 mx-3 my-2"
+                                            class="mx-3 my-2 min-w-48"
                                         />
                                     @endif
                                 </x-filament-tables::cell>
