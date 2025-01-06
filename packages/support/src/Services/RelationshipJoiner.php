@@ -101,13 +101,19 @@ class RelationshipJoiner
 
                 $columnValue = $order['column'] ?? new Expression($order['sql']);
 
-                if ($columnValue instanceof Expression && str($columnValue->getValue($relationship->getGrammar()))->contains('?')) {
+                if (
+                    $columnValue instanceof Expression
+                    && str($columnValue->getValue($relationship->getGrammar()))->contains('?')
+                ) {
                     // Heuristic to determine if the expression contains (a) binding(s), if so, as of
                     // yet we cannot reliably determine (which) bindings are used in the expression.
                     continue;
                 }
 
-                if (str($columnValue instanceof Expression ? $columnValue->getValue($relationship->getGrammar()) : $columnValue)->startsWith("{$relationshipQuery->getModel()->getTable()}.")) {
+                if (
+                    str($columnValue instanceof Expression ? $columnValue->getValue($relationship->getGrammar()) : $columnValue)
+                        ->startsWith("{$relationshipQuery->getModel()->getTable()}.")
+                ) {
                     continue;
                 }
 
