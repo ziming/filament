@@ -93,8 +93,8 @@ class RelationshipJoiner
             /** @phpstan-ignore-next-line */
             foreach (($relationshipQuery->getQuery()->orders ?? []) as $order) {
                 // Regular orders: { column: string, direction: 'asc' | 'desc' }
-                // Raw orders: { type: 'Raw', sql: string }
                 // Sub-query orders look like: { column: Illuminate\Database\Query\Expression, direction: 'asc' | 'desc' }
+                // Raw orders: { type: 'Raw', sql: string }
                 if (! array_key_exists('column', $order) && ! array_key_exists('sql', $order)) {
                     continue;
                 }
