@@ -95,7 +95,7 @@ class RelationshipJoiner
                     continue;
                 }
 
-                if (str($order['column'])->startsWith("{$relationshipQuery->getModel()->getTable()}.")) {
+                if (is_string($order['column']) && str($order['column'])->startsWith("{$relationshipQuery->getModel()->getTable()}.")) {
                     continue;
                 }
 
