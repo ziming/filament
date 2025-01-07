@@ -181,7 +181,7 @@ if (! function_exists('Filament\Support\generate_search_column_expression')) {
         };
 
         if ($isSearchForcedCaseInsensitive) {
-            if (in_array($driverName, ['mysql', 'mariadb'], true) && str_contains($column, '->')) {
+            if (in_array($driverName, ['mysql', 'mariadb'], true) && str($column)->contains('->')) {
                 [$field, $path] = invade($databaseConnection->getQueryGrammar())->wrapJsonFieldAndPath($column); /** @phpstan-ignore-line */
 
                 $column = "json_extract({$field}{$path})";
