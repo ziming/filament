@@ -45,8 +45,8 @@ trait CanDisableOptions
      */
     public function isOptionDisabled($value, string $label): bool
     {
-        return (bool) collect($this->isOptionDisabled)
-            ->first(fn ($isOptionDisabled) => $this->evaluate($isOptionDisabled, [
+        return collect($this->isOptionDisabled)
+            ->contains(fn ($isOptionDisabled) => $this->evaluate($isOptionDisabled, [
                 'label' => $label,
                 'value' => $value,
             ]));
@@ -54,7 +54,7 @@ trait CanDisableOptions
 
     public function hasDynamicDisabledOptions(): bool
     {
-        return (bool) collect($this->isOptionDisabled)
-            ->first(fn ($isOptionDisabled) => $isOptionDisabled instanceof Closure);
+        return collect($this->isOptionDisabled)
+            ->contains(fn ($isOptionDisabled) => $isOptionDisabled instanceof Closure);
     }
 }
