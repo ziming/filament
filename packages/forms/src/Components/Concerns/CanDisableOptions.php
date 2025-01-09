@@ -3,21 +3,22 @@
 namespace Filament\Forms\Components\Concerns;
 
 use Closure;
+use Illuminate\Support\Arr;
 use Illuminate\Support\Collection;
 
 trait CanDisableOptions
 {
     /**
-     * @var array<bool|Closure>
+     * @var array<bool | Closure>
      */
     protected array $isOptionDisabled = [];
 
-    public function disableOptionWhen(bool | Closure $callback, bool $merge = false): static
+    public function disableOptionWhen(bool | Closure | null $callback, bool $merge = false): static
     {
         if ($merge) {
             $this->isOptionDisabled[] = $callback;
         } else {
-            $this->isOptionDisabled = [$callback];
+            $this->isOptionDisabled = Arr::wrap($callback);
         }
 
         return $this;
@@ -46,7 +47,7 @@ trait CanDisableOptions
     public function isOptionDisabled($value, string $label): bool
     {
         return collect($this->isOptionDisabled)
-            ->contains(fn ($isOptionDisabled) => $this->evaluate($isOptionDisabled, [
+            ->contains(fn (bool | Closure $isOptionDisabled): bool => (bool) $this->evaluate($isOptionDisabled, [
                 'label' => $label,
                 'value' => $value,
             ]));
@@ -55,6 +56,6 @@ trait CanDisableOptions
     public function hasDynamicDisabledOptions(): bool
     {
         return collect($this->isOptionDisabled)
-            ->contains(fn ($isOptionDisabled) => $isOptionDisabled instanceof Closure);
+            ->contains(fn (bool | Closure $isOptionDisabled): bool => $isOptionDisabled instanceof Closure);
     }
 }
