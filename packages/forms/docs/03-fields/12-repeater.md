@@ -580,6 +580,23 @@ Repeater::make('members')
 
 This method will automatically enable the `distinct()` and `live()` methods on the field.
 
+In case you want to add another disable condition, you can chain `disableOptionWhen` method, and set the second argument to `true`:
+
+```php
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+
+Repeater::make('members')
+    ->schema([
+        Select::make('role')
+            ->options([
+                // ...
+            ])
+            ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+            ->disableOptionWhen(fn (string $value): bool => $value === 'published', true),
+    ])
+```
+
 ## Customizing the repeater item actions
 
 This field uses action objects for easy customization of buttons within it. You can customize these buttons by passing a function to an action registration method. The function has access to the `$action` object, which you can use to [customize it](../../actions/trigger-button). The following methods are available to customize the actions:
