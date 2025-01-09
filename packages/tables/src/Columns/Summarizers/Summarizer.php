@@ -111,7 +111,7 @@ class Summarizer extends ViewComponent
                 ->prepend('pivot_');
 
             $isPivotAttributeSelected = collect($query->getQuery()->getColumns())
-                ->contains(fn(string $column): bool => str($column)->endsWith(" as {$pivotAttribute}"));
+                ->contains(fn (string $column): bool => str($column)->endsWith(" as {$pivotAttribute}"));
 
             $attribute = $isPivotAttributeSelected ? $pivotAttribute : $attribute;
 
@@ -119,7 +119,7 @@ class Summarizer extends ViewComponent
             if ($isPivotAttributeSelected) {
                 $query->getQuery()->columns = array_filter(
                     $query->getQuery()->columns,
-                    fn(mixed $column): bool => $column !== "{$query->getQuery()->joins[0]->table}.*",
+                    fn (mixed $column): bool => $column !== "{$query->getQuery()->joins[0]->table}.*",
                 );
             }
         }
