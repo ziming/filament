@@ -7,7 +7,6 @@ use Filament\Support\Components\ViewComponent;
 use Filament\Support\Concerns\HasExtraAttributes;
 use Illuminate\Database\Eloquent\Builder as EloquentBuilder;
 use Illuminate\Database\Query\Builder;
-use Illuminate\Support\Facades\DB;
 
 class Summarizer extends ViewComponent
 {
@@ -112,7 +111,7 @@ class Summarizer extends ViewComponent
                 ->prepend('pivot_');
 
             $isPivotAttributeSelected = collect($query->getQuery()->getColumns())
-                ->contains(fn (string $column): bool => str($column)->endsWith(" as {$pivotAttribute}"));
+                ->contains(fn(string $column): bool => str($column)->endsWith(" as {$pivotAttribute}"));
 
             $attribute = $isPivotAttributeSelected ? $pivotAttribute : $attribute;
 
@@ -120,14 +119,14 @@ class Summarizer extends ViewComponent
             if ($isPivotAttributeSelected) {
                 $query->getQuery()->columns = array_filter(
                     $query->getQuery()->columns,
-                    fn (mixed $column): bool => $column !== "{$query->getQuery()->joins[0]->table}.*",
+                    fn(mixed $column): bool => $column !== "{$query->getQuery()->joins[0]->table}.*",
                 );
             }
         }
 
         $asName = (string) str($query->getModel()->getTable())->afterLast('.');
 
-        $query = DB::connection($query->getModel()->getConnectionName())
+        $query = $query->getModel()->resolveConnection()
             ->table($query->toBase(), $asName);
 
         if ($this->hasQueryModification()) {
