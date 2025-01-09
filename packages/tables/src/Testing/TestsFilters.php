@@ -83,18 +83,27 @@ class TestsFilters
 
     public function assertTableFilterExists(): Closure
     {
-        return function (string $name): static {
+        return function (string $name, ?Closure $checkFilterUsing = null): static {
             $name = $this->instance()->parseTableFilterName($name);
 
             $filter = $this->instance()->getTable()->getFilter($name);
 
             $livewireClass = $this->instance()::class;
 
+            $failMessage = "Failed asserting that a table filter with name [{$name}] exists on the [{$livewireClass}] component.";
+
             Assert::assertInstanceOf(
                 BaseFilter::class,
                 $filter,
-                message: "Failed asserting that a table filter with name [{$name}] exists on the [{$livewireClass}] component.",
+                message: $failMessage,
             );
+
+            if ($checkFilterUsing) {
+                Assert::assertTrue(
+                    $checkFilterUsing($filter),
+                    $failMessage
+                );
+            }
 
             return $this;
         };
