@@ -1,6 +1,6 @@
 <?php
 
-use Filament\Tables\Filters\SelectFilter;
+use Filament\Tables\Filters\Filter;
 use Filament\Tests\Models\Post;
 use Filament\Tests\Tables\Fixtures\PostsTable;
 use Filament\Tests\Tables\TestCase;
@@ -105,7 +105,7 @@ it('can use a custom attribute for the `SelectFilter`', function () {
 
 it('access the filter in `assertTableFilterExists`', function () {
     livewire(PostsTable::class)
-        ->assertTableFilterExists('select_filter_attribute', function (SelectFilter $filter): bool {
-            return $filter->isMultiple();
+        ->assertTableFilterExists('is_published', function (Filter $filter): bool {
+            return $filter->getLabel() === 'Is published';
         });
 });
