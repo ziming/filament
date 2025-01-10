@@ -103,7 +103,7 @@ it('can use a custom attribute for the `SelectFilter`', function () {
         ->assertCanNotSeeTableRecords($unpublishedPosts);
 });
 
-it('access the filter in `assertTableFilterExists`', function () {
+it('can assert a filter exists with a given configuration', function () {
     livewire(PostsTable::class)
         ->assertTableFilterExists('is_published', function (Filter $filter): bool {
             return $filter->getLabel() === 'Is published';
