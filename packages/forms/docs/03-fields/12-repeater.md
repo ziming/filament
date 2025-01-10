@@ -580,7 +580,7 @@ Repeater::make('members')
 
 This method will automatically enable the `distinct()` and `live()` methods on the field.
 
-In case you want to add another disable condition, you can chain `disableOptionWhen` method, and set the second argument to `true`:
+In case you want to add another condition to [disable options](../select#disabling-specific-options) with, you can chain `disableOptionWhen()` with the `merge: true` argument:
 
 ```php
 use Filament\Forms\Components\Repeater;
@@ -593,7 +593,7 @@ Repeater::make('members')
                 // ...
             ])
             ->disableOptionsWhenSelectedInSiblingRepeaterItems()
-            ->disableOptionWhen(fn (string $value): bool => $value === 'published', true),
+            ->disableOptionWhen(fn (string $value): bool => $value === 'super_admin', merge: true),
     ])
 ```
 
