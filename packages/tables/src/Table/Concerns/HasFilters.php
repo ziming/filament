@@ -158,6 +158,19 @@ trait HasFilters
         return $this->getFilters()[$name] ?? null;
     }
 
+    /**
+     * @return array<string, BaseFilter>
+     */
+    public function getAllFilters(): array
+    {
+        return $this->filters;
+    }
+
+    public function getAnyFilter(string $name): ?BaseFilter
+    {
+        return $this->getAllFilters()[$name] ?? null;
+    }
+
     public function getFiltersForm(): Form
     {
         return $this->getLivewire()->getTableFiltersForm();
