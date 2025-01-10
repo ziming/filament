@@ -105,7 +105,7 @@ class TestsFilters
         return function (string $name): static {
             $name = $this->instance()->parseTableFilterName($name);
 
-            $filter = $this->instance()->getTable()->getFilter($name);
+            $filter = $this->instance()->getTable()->getAnyFilter($name);
 
             $livewireClass = $this->instance()::class;
 
