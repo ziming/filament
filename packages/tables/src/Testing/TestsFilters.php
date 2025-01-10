@@ -105,7 +105,10 @@ class TestsFilters
         return function (string $name): static {
             $name = $this->instance()->parseTableFilterName($name);
 
-            $filter = $this->instance()->getTable()->getAnyFilter($name);
+            $filter = $this->instance()->getTable()->getFilter(
+                name: $name,
+                withHidden: true
+            );
 
             $livewireClass = $this->instance()::class;
 
@@ -123,7 +126,10 @@ class TestsFilters
         return function (string $name): static {
             $name = $this->instance()->parseTableFilterName($name);
 
-            $filter = $this->instance()->getTable()->getAnyFilter($name);
+            $filter = $this->instance()->getTable()->getFilter(
+                name: $name,
+                withHidden: true
+            );
 
             $livewireClass = $this->instance()::class;
 
