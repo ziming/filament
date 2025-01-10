@@ -371,7 +371,7 @@ use Filament\Tables\Filters\SelectFilter;
 it('has an author filter', function () {    
     livewire(PostResource\Pages\ListPosts::class)
         ->assertTableFilterExists('author', function (SelectFilter $column): bool {
-            return $column->getLabel() === 'Select Author';
+            return $column->getLabel() === 'Select author';
         });
 });
 ```
