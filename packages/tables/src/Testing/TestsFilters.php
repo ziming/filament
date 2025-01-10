@@ -90,18 +90,16 @@ class TestsFilters
 
             $livewireClass = $this->instance()::class;
 
-            $failMessage = "Failed asserting that a table filter with name [{$name}] exists on the [{$livewireClass}] component.";
-
             Assert::assertInstanceOf(
                 BaseFilter::class,
                 $filter,
-                message: $failMessage,
+                message: "Failed asserting that a table filter with name [{$name}] exists on the [{$livewireClass}] component.",
             );
 
             if ($checkFilterUsing) {
                 Assert::assertTrue(
                     $checkFilterUsing($filter),
-                    $failMessage
+                    "Failed asserting that a table filter with name [{$name}] and provided configuration exists on the [{$livewireClass}] component.",
                 );
             }
 
