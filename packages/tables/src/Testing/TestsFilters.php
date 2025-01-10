@@ -99,4 +99,22 @@ class TestsFilters
             return $this;
         };
     }
+
+    public function assertTableFilterVisible(): Closure
+    {
+        return function (string $name): static {
+            $name = $this->instance()->parseTableFilterName($name);
+
+            $filter = $this->instance()->getTable()->getFilter($name);
+
+            $livewireClass = $this->instance()::class;
+
+            Assert::assertTrue(
+                $filter->isVisible(),
+                message: "Failed asserting that the table filter with name [{$name}] is visible on the [{$livewireClass}] component"
+            );
+
+            return $this;
+        };
+    }
 }
