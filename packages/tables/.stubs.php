@@ -171,6 +171,8 @@ namespace Livewire\Features\SupportTesting {
 
         public function assertTableFilterHidden(string $name): static {}
 
+        public function assertTableFilterExists(string $name, ?Closure $checkFilterUsing = null): static {}
+
         public function assertCanSeeTableRecords(array | Collection $records, bool $inOrder = false): static {}
 
         public function assertCanNotSeeTableRecords(array | Collection $records): static {}
