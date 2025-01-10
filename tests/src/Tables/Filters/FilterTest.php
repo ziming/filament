@@ -102,12 +102,12 @@ it('can use a custom attribute for the `SelectFilter`', function () {
         ->assertCanNotSeeTableRecords($unpublishedPosts);
 });
 
-it('can check if a filter is visible with assertTableFilterVisible', function (): void {
+it('can check if a filter is visible', function (): void {
     livewire(PostsTable::class)
         ->assertTableFilterVisible('is_published');
 });
 
-it('can check if a filter is hidden with assertTableFilterHidden', function (): void {
+it('can check if a filter is hidden', function (): void {
     livewire(PostsTable::class)
         ->assertTableFilterHidden('hidden_filter');
 });

@@ -107,14 +107,14 @@ class TestsFilters
 
             $filter = $this->instance()->getTable()->getFilter(
                 name: $name,
-                withHidden: true
+                withHidden: true,
             );
 
             $livewireClass = $this->instance()::class;
 
             Assert::assertTrue(
                 $filter->isVisible(),
-                message: "Failed asserting that the table filter with name [{$name}] is visible on the [{$livewireClass}] component"
+                message: "Failed asserting that a table filter with name [{$name}] is visible on the [{$livewireClass}] component."
             );
 
             return $this;
@@ -128,14 +128,14 @@ class TestsFilters
 
             $filter = $this->instance()->getTable()->getFilter(
                 name: $name,
-                withHidden: true
+                withHidden: true,
             );
 
             $livewireClass = $this->instance()::class;
 
             Assert::assertTrue(
                 $filter->isHidden(),
-                message: "Failed asserting that the table filter with name [{$name}] is hidden on the [{$livewireClass}] component"
+                message: "Failed asserting that a table filter with name [{$name}] is hidden on the [{$livewireClass}] component."
             );
 
             return $this;

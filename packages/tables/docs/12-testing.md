@@ -349,7 +349,7 @@ it('can remove all table filters', function () {
 });
 ```
 
-### Authorization
+### Hidden filters
 
 To ensure that a particular user cannot see a filter, you can use the `assertTableFilterVisible()` and `assertTableFilterHidden()` methods:
 
@@ -357,7 +357,7 @@ To ensure that a particular user cannot see a filter, you can use the `assertTab
 use function Pest\Livewire\livewire;
 
 it('shows the correct filters', function () {
-    livewire(PostResource\Pages\ListPosts::class)
+    livewire(PostsTable::class)
         ->assertTableFilterVisible('created_at')
         ->assertTableFilterHidden('author');
 });

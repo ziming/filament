@@ -167,9 +167,9 @@ namespace Livewire\Features\SupportTesting {
 
         public function removeTableFilters(): static {}
 
-        public function assertTableFilterVisible(string $name): static{}
+        public function assertTableFilterVisible(string $name): static {}
 
-        public function assertTableFilterHidden(string $name): static{}
+        public function assertTableFilterHidden(string $name): static {}
 
         public function assertCanSeeTableRecords(array | Collection $records, bool $inOrder = false): static {}
 
