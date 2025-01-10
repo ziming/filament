@@ -70,7 +70,8 @@ class Message extends Model
 }
 ```
 
-### Control the maximum parallel uploads
+### Controlling the maximum parallel uploads
+
 You can control the maximum number of parallel uploads using the `maxParallelUploads()` method:
 
 ```php
