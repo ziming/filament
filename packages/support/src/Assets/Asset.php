@@ -9,19 +9,19 @@ abstract class Asset
 {
     protected string $id;
 
+    protected string $path;
+
     protected bool $isLoadedOnRequest = false;
 
     protected string $package;
 
-    protected ?string $path = null;
-
-    final public function __construct(string $id, ?string $path = null)
+    final public function __construct(string $id, string $path)
     {
         $this->id = $id;
         $this->path = $path;
     }
 
-    public static function make(string $id, ?string $path = null): static
+    public static function make(string $id, string $path): static
     {
         return app(static::class, ['id' => $id, 'path' => $path]);
     }
