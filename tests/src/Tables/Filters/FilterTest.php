@@ -107,3 +107,9 @@ it('can check if a filter is visible with assertTableFilterVisible', function ()
     livewire(PostsTable::class)
         ->assertTableFilterVisible('is_published');
 });
+
+it('can check if a filter is hidden with assertTableFilterHidden', function (): void {
+    livewire(PostsTable::class)
+        ->assertTableFilterHidden('hidden_filter');
+});
+
