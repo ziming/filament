@@ -103,6 +103,8 @@ class PostsTable extends Component implements HasForms, Tables\Contracts\HasTabl
                     ])
                     ->attribute('is_published'),
                 Tables\Filters\TrashedFilter::make(),
+                Tables\Filters\SelectFilter::make('hidden_filter')
+                    ->hidden(),
             ])
             ->persistFiltersInSession()
             ->headerActions([
