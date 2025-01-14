@@ -1,4 +1,4 @@
-export default function keyValueFormComponent({ state }) {
+export default function keyValueFormComponent({ state = {} }) {
     return {
         state,
 
@@ -35,6 +35,8 @@ export default function keyValueFormComponent({ state }) {
                 if (getLength(state) === 0 && getLength(oldState) === 0) {
                     return
                 }
+
+                this.shouldUpdateRows = true
 
                 this.updateRows()
             })
