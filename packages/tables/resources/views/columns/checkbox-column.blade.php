@@ -4,7 +4,7 @@
 @endphp
 
 <div
-        x-data="{
+    x-data="{
         error: undefined,
 
         isLoading: false,
@@ -15,8 +15,8 @@
 
         state: @js($state),
     }"
-        x-on:click.stop.prevent=""
-        x-init="
+    x-on:click.stop.prevent=""
+    x-init="
         () => {
             Livewire.hook('commit', ({ component, commit, succeed, fail, respond }) => {
                 succeed(({ snapshot, effect }) => {
@@ -41,23 +41,23 @@
             })
         }
     "
-        {{
-            $attributes
-                ->merge($getExtraAttributes(), escape: false)
-                ->class([
-                    'fi-ta-checkbox flex items-center',
-                    'px-3 py-4' => ! $isInline(),
-                ])
-        }}
+    {{
+        $attributes
+            ->merge($getExtraAttributes(), escape: false)
+            ->class([
+                'fi-ta-checkbox flex items-center',
+                'px-3 py-4' => ! $isInline(),
+            ])
+    }}
 >
-    <input type="hidden" value="{{ $state ? 1 : 0 }}" x-ref="newState"/>
+    <input type="hidden" value="{{ $state ? 1 : 0 }}" x-ref="newState" />
 
     <x-filament::input.checkbox
-            alpine-valid="! error"
-            :disabled="$isDisabled"
-            :x-bind:disabled="$isDisabled ? null : 'isLoading'"
-            x-model="state"
-            x-on:change="
+        alpine-valid="! error"
+        :disabled="$isDisabled"
+        :x-bind:disabled="$isDisabled ? null : 'isLoading'"
+        x-model="state"
+        x-on:change="
             isLoading = true
 
             const response = await $wire.updateTableColumnState(
@@ -70,7 +70,7 @@
 
             isLoading = false
         "
-            x-tooltip="
+        x-tooltip="
             error === undefined
                 ? false
                 : {
@@ -78,8 +78,8 @@
                     theme: $store.theme,
                 }
         "
-            x-on:click.stop=""
-            :attributes="
+        x-on:click.stop=""
+        :attributes="
             \Filament\Support\prepare_inherited_attributes($attributes)
                 ->merge($getExtraInputAttributes(), escape: false)
         "

@@ -4,23 +4,23 @@
 @endphp
 
 <div
-        wire:key="{{ $this->getId() }}.table.record.{{ $recordKey }}.column.{{ $getName() }}.toggle-column.{{ $state ? 'true' : 'false' }}"
+    wire:key="{{ $this->getId() }}.table.record.{{ $recordKey }}.column.{{ $getName() }}.toggle-column.{{ $state ? 'true' : 'false' }}"
 >
     <div
-            x-data="{
+        x-data="{
             error: undefined,
             state: @js((bool) $state),
             isLoading: false,
         }"
-            wire:ignore
-            {{
-                $attributes
-                    ->merge($getExtraAttributes(), escape: false)
-                    ->class([
-                        'fi-ta-toggle',
-                        'px-3 py-4' => ! $isInline(),
-                    ])
-            }}
+        wire:ignore
+        {{
+            $attributes
+                ->merge($getExtraAttributes(), escape: false)
+                ->class([
+                    'fi-ta-toggle',
+                    'px-3 py-4' => ! $isInline(),
+                ])
+        }}
     >
         @php
             $offColor = $getOffColor() ?? 'gray';
@@ -28,12 +28,12 @@
         @endphp
 
         <div
-                role="switch"
-                aria-checked="false"
-                x-bind:aria-checked="state.toString()"
-                wire:loading.attr="disabled"
-                @if (! $isDisabled)
-                    x-on:click.stop.prevent="
+            role="switch"
+            aria-checked="false"
+            x-bind:aria-checked="state.toString()"
+            wire:loading.attr="disabled"
+            @if (! $isDisabled)
+                x-on:click.stop.prevent="
                     if (isLoading || $el.hasAttribute('disabled')) {
                         return
                     }
@@ -73,8 +73,8 @@
                               theme: $store.theme,
                           }
                 "
-                @endif
-                x-bind:class="
+            @endif
+            x-bind:class="
                 (state
                     ? '{{
                         \Illuminate\Support\Arr::toCssClasses([
@@ -96,7 +96,7 @@
                     }}') +
                     (isLoading ? ' opacity-70 pointer-events-none' : '')
             "
-                x-bind:style="
+            x-bind:style="
                 state
                     ? '{{
                         \Filament\Support\get_color_css_variables(
@@ -113,29 +113,29 @@
                         )
                     }}'
             "
-                @class([
-                    'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent outline-none transition-colors duration-200 ease-in-out',
-                    'pointer-events-none opacity-70' => $isDisabled,
-                ])
+            @class([
+                'relative inline-flex h-6 w-11 shrink-0 cursor-pointer rounded-full border-2 border-transparent outline-none transition-colors duration-200 ease-in-out',
+                'pointer-events-none opacity-70' => $isDisabled,
+            ])
         >
             <span
-                    class="pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
-                    x-bind:class="{
+                class="pointer-events-none relative inline-block h-5 w-5 transform rounded-full bg-white shadow ring-0 transition duration-200 ease-in-out"
+                x-bind:class="{
                     'translate-x-5 rtl:-translate-x-5': state,
                     'translate-x-0': ! state,
                 }"
             >
                 <span
-                        class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
-                        aria-hidden="true"
-                        x-bind:class="{
+                    class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
+                    aria-hidden="true"
+                    x-bind:class="{
                         'opacity-0 ease-out duration-100': state,
                         'opacity-100 ease-in duration-200': ! state,
                     }"
                 >
                     @if ($hasOffIcon())
                         <x-filament::icon
-                                :icon="$getOffIcon()"
+                            :icon="$getOffIcon()"
                             @class([
                                 'fi-ta-toggle-off-icon h-3 w-3',
                                 match ($offColor) {
@@ -148,17 +148,17 @@
                 </span>
 
                 <span
-                        class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
-                        aria-hidden="true"
-                        x-bind:class="{
+                    class="absolute inset-0 flex h-full w-full items-center justify-center transition-opacity"
+                    aria-hidden="true"
+                    x-bind:class="{
                         'opacity-100 ease-in duration-200': state,
                         'opacity-0 ease-out duration-100': ! state,
                     }"
                 >
                     @if ($hasOnIcon())
                         <x-filament::icon
-                                :icon="$getOnIcon()"
-                                x-cloak="x-cloak"
+                            :icon="$getOnIcon()"
+                            x-cloak="x-cloak"
                             @class([
                                 'fi-ta-toggle-on-icon h-3 w-3',
                                 match ($onColor) {
