@@ -10,7 +10,7 @@
 @endphp
 
 <div
-    x-data="{
+        x-data="{
         error: undefined,
 
         isLoading: false,
@@ -21,7 +21,7 @@
 
         state: @js($state),
     }"
-    x-init="
+        x-init="
         () => {
             Livewire.hook('commit', ({ component, commit, succeed, fail, respond }) => {
                 succeed(({ snapshot, effect }) => {
@@ -46,25 +46,25 @@
             })
         }
     "
-    {{
-        $attributes
-            ->merge($getExtraAttributes(), escape: false)
-            ->class([
-                'fi-ta-select w-full min-w-48',
-                'px-3 py-4' => ! $isInline(),
-            ])
-    }}
+        {{
+            $attributes
+                ->merge($getExtraAttributes(), escape: false)
+                ->class([
+                    'fi-ta-select w-full min-w-48',
+                    'px-3 py-4' => ! $isInline(),
+                ])
+        }}
 >
     <input
-        type="hidden"
-        value="{{ str($state)->replace('"', '\\"') }}"
-        x-ref="newState"
+            type="hidden"
+            value="{{ str($state)->replace('"', '\\"') }}"
+            x-ref="newState"
     />
 
     <x-filament::input.wrapper
-        :alpine-disabled="'isLoading || ' . \Illuminate\Support\Js::from($isDisabled)"
-        alpine-valid="error === undefined"
-        x-tooltip="
+            :alpine-disabled="'isLoading || ' . \Illuminate\Support\Js::from($isDisabled)"
+            alpine-valid="error === undefined"
+            x-tooltip="
             error === undefined
                 ? false
                 : {
@@ -72,13 +72,13 @@
                     theme: $store.theme,
                 }
         "
-        x-on:click.stop=""
+            x-on:click.stop.prevent=""
     >
         <x-filament::input.select
-            :disabled="$isDisabled"
-            :x-bind:disabled="$isDisabled ? null : 'isLoading'"
-            x-model="state"
-            x-on:change="
+                :disabled="$isDisabled"
+                :x-bind:disabled="$isDisabled ? null : 'isLoading'"
+                x-model="state"
+                x-on:change="
                 isLoading = true
 
                 const response = await $wire.updateTableColumnState(
@@ -95,7 +95,7 @@
 
                 isLoading = false
             "
-            :attributes="\Filament\Support\prepare_inherited_attributes($getExtraInputAttributeBag())"
+                :attributes="\Filament\Support\prepare_inherited_attributes($getExtraInputAttributeBag())"
         >
             @if ($canSelectPlaceholder)
                 <option value="">{{ $getPlaceholder() }}</option>
@@ -103,8 +103,8 @@
 
             @foreach ($getOptions() as $value => $label)
                 <option
-                    @disabled($isOptionDisabled($value, $label))
-                    value="{{ $value }}"
+                        @disabled($isOptionDisabled($value, $label))
+                        value="{{ $value }}"
                 >
                     {{ $label }}
                 </option>

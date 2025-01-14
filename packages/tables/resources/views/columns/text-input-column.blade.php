@@ -19,7 +19,7 @@
 @endphp
 
 <div
-    x-data="{
+        x-data="{
         error: undefined,
 
         isEditing: false,
@@ -32,7 +32,7 @@
 
         state: @js($state),
     }"
-    x-init="
+        x-init="
         () => {
             Livewire.hook('commit', ({ component, commit, succeed, fail, respond }) => {
                 succeed(({ snapshot, effect }) => {
@@ -61,25 +61,25 @@
             })
         }
     "
-    {{
-        $attributes
-            ->merge($getExtraAttributes(), escape: false)
-            ->class([
-                'fi-ta-text-input w-full min-w-48',
-                'px-3 py-4' => ! $isInline(),
-            ])
-    }}
+        {{
+            $attributes
+                ->merge($getExtraAttributes(), escape: false)
+                ->class([
+                    'fi-ta-text-input w-full min-w-48',
+                    'px-3 py-4' => ! $isInline(),
+                ])
+        }}
 >
     <input
-        type="hidden"
-        value="{{ str($state)->replace('"', '\\"') }}"
-        x-ref="newState"
+            type="hidden"
+            value="{{ str($state)->replace('"', '\\"') }}"
+            x-ref="newState"
     />
 
     <x-filament::input.wrapper
-        :alpine-disabled="'isLoading || ' . \Illuminate\Support\Js::from($isDisabled)"
-        alpine-valid="error === undefined"
-        x-tooltip="
+            :alpine-disabled="'isLoading || ' . \Illuminate\Support\Js::from($isDisabled)"
+            alpine-valid="error === undefined"
+            x-tooltip="
             error === undefined
                 ? false
                 : {
@@ -87,20 +87,20 @@
                     theme: $store.theme,
                 }
         "
-        x-on:click.stop=""
+            x-on:click.stop.prevent=""
     >
         {{-- format-ignore-start --}}
         <x-filament::input
-            :disabled="$isDisabled"
-            :input-mode="$getInputMode()"
-            :placeholder="$getPlaceholder()"
-            :step="$getStep()"
-            :type="$type"
-            :x-bind:disabled="$isDisabled ? null : 'isLoading'"
-            x-model="state"
-            x-on:blur="isEditing = false"
-            x-on:focus="isEditing = true"
-            :attributes="
+                :disabled="$isDisabled"
+                :input-mode="$getInputMode()"
+                :placeholder="$getPlaceholder()"
+                :step="$getStep()"
+                :type="$type"
+                :x-bind:disabled="$isDisabled ? null : 'isLoading'"
+                x-model="state"
+                x-on:blur="isEditing = false"
+                x-on:focus="isEditing = true"
+                :attributes="
                 \Filament\Support\prepare_inherited_attributes(
                     $getExtraInputAttributeBag()
                         ->merge([
