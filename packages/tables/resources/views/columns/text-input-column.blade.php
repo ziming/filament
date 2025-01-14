@@ -80,12 +80,12 @@
             :alpine-disabled="'isLoading || ' . \Illuminate\Support\Js::from($isDisabled)"
             alpine-valid="error === undefined"
             x-tooltip="
-            error === undefined
-                ? false
-                : {
-                    content: error,
-                    theme: $store.theme,
-                }
+        error === undefined
+            ? false
+            : {
+                content: error,
+                theme: $store.theme,
+            }
         "
             x-on:click.stop.prevent=""
     >
