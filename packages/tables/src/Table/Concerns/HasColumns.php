@@ -154,7 +154,7 @@ trait HasColumns
             }
         }
 
-        // If all columns within in every column group are (toggled)
+        // If all columns within every column group are (toggled)
         // hidden, then not include the table column groups row.
         return false;
     }
