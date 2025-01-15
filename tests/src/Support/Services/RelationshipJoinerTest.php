@@ -16,14 +16,14 @@ it('can prepare query for no constraints for a BelongsToMany relationship', func
         ->getColumns()->toBe([])
         ->orders->toBeNull();
 
-    $query = app(RelationshipJoiner::class)->prepareQueryForNoConstraints($user->teams());
+    $preparedQuery = app(RelationshipJoiner::class)->prepareQueryForNoConstraints($user->teams());
 
-    expect($query->toBase())
+    expect($preparedQuery->toBase())
         ->distinct->toBeTrue()
         ->getColumns()->toBe(['teams.*'])
         ->orders->toBeNull();
 
-    $query = app(RelationshipJoiner::class)->prepareQueryForNoConstraints(
+    $preparedQuery = app(RelationshipJoiner::class)->prepareQueryForNoConstraints(
         $user
             ->teams()
             ->orderBy('id')
@@ -31,7 +31,7 @@ it('can prepare query for no constraints for a BelongsToMany relationship', func
             ->orderBy('team_user.role')
     );
 
-    expect($query->toBase())
+    expect($preparedQuery->toBase())
         ->distinct->toBeTrue()
         ->getColumns()->toBe([
             (new Team)->qualifyColumn('*'), // Default select...
@@ -54,11 +54,11 @@ it('can prepare query for no constraints for a BelongsToMany relationship', func
             ],
         ]);
 
-    $query = app(RelationshipJoiner::class)->prepareQueryForNoConstraints(
+    $preparedQuery = app(RelationshipJoiner::class)->prepareQueryForNoConstraints(
         $user->teams()->orderByRaw("CASE WHEN role = 'admin' THEN 1 ELSE 2 END")
     );
 
-    expect($query->toBase())
+    expect($preparedQuery->toBase())
         ->distinct->toBeTrue()
         ->getColumns()->toBe([
             (new Team)->qualifyColumn('*'),
@@ -71,18 +71,18 @@ it('can prepare query for no constraints for a BelongsToMany relationship', func
             ],
         ]);
 
-    $query = app(RelationshipJoiner::class)->prepareQueryForNoConstraints(
+    $preparedQuery = app(RelationshipJoiner::class)->prepareQueryForNoConstraints(
         $user->teams()->orderBy(new Expression("CASE WHEN role = 'some_other_role' THEN 1 ELSE 2 END"))
     );
 
-    expect($query->toBase())
+    expect($preparedQuery->toBase())
         ->distinct->toBeTrue()
         ->getColumns()->toBe([
             (new Team)->qualifyColumn('*'),
             "CASE WHEN role = 'user' THEN 1 ELSE 2 END", // Select added from `orderByRaw`...
         ])
         ->orders->toHaveCount(1)
-        ->and($query->toBase()->orders[0])
+        ->and($preparedQuery->toBase()->orders[0])
         ->column->getValue($user->teams()->getGrammar())->toBe("CASE WHEN role = 'some_other_role' THEN 1 ELSE 2 END")
         ->direction->toBe('asc');
 });
