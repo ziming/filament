@@ -8,7 +8,7 @@ use Illuminate\Database\Query\Expression;
 
 uses(TestCase::class);
 
-it('can prepare query for no constraints', function () {
+it('can prepare query for no constraints for a BelongsToMany relationship', function () {
     $user = User::factory()->create();
 
     expect($user->teams()->toBase())
@@ -72,7 +72,7 @@ it('can prepare query for no constraints', function () {
         ]);
 
     $query = app(RelationshipJoiner::class)->prepareQueryForNoConstraints(
-		$user->teams()->orderBy(new Expression("CASE WHEN role = 'some_other_role' THEN 1 ELSE 2 END"))
+        $user->teams()->orderBy(new Expression("CASE WHEN role = 'some_other_role' THEN 1 ELSE 2 END"))
     );
 
     expect($query->toBase())
@@ -81,8 +81,8 @@ it('can prepare query for no constraints', function () {
             (new Team)->qualifyColumn('*'),
             "CASE WHEN role = 'user' THEN 1 ELSE 2 END", // Select added from `orderByRaw`...
         ])
-	    ->orders->toHaveCount(1)
-	    ->and($query->toBase()->orders[0])
-	    ->column->getValue($user->teams()->getGrammar())->toBe("CASE WHEN role = 'some_other_role' THEN 1 ELSE 2 END")
-	    ->direction->toBe('asc');
+        ->orders->toHaveCount(1)
+        ->and($query->toBase()->orders[0])
+        ->column->getValue($user->teams()->getGrammar())->toBe("CASE WHEN role = 'some_other_role' THEN 1 ELSE 2 END")
+        ->direction->toBe('asc');
 });
