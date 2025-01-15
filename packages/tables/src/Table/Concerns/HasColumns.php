@@ -140,7 +140,23 @@ trait HasColumns
 
     public function hasColumnGroups(): bool
     {
-        return $this->hasColumnGroups;
+        if (! $this->hasColumnGroups) {
+            return false;
+        }
+
+        foreach ($this->getVisibleColumns() as $column) {
+            if (! ($columnGroup = $column->getGroup())) {
+                continue;
+            }
+
+            if (filled($columnGroup->getVisibleColumns())) {
+                return true;
+            }
+        }
+
+        // If all columns within in every column group are (toggled)
+        // hidden, then not include the table column groups row.
+        return false;
     }
 
     public function hasColumnsLayout(): bool
