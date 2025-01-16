@@ -79,7 +79,7 @@ it('can prepare query for no constraints for a BelongsToMany relationship', func
         ->distinct->toBeTrue()
         ->getColumns()->toBe([
             (new Team)->qualifyColumn('*'),
-            "CASE WHEN role = 'user' THEN 1 ELSE 2 END", // Select added from `orderByRaw`...
+            "CASE WHEN role = 'some_other_role' THEN 1 ELSE 2 END", // Select added from `orderByRaw`...
         ])
         ->orders->toHaveCount(1)
         ->and($preparedQuery->toBase()->orders[0])
