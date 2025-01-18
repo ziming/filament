@@ -39,6 +39,7 @@ it('can group a table', function () {
 
             expect($table)
                 ->getGrouping()->toBeInstanceOf(Tables\Grouping\Group::class)
-                ->and($table->getGrouping())->getLabel()->toBe('Dynamic label');
+                ->and($table->getGrouping())
+                ->getLabel()->toBe('Dynamic label');
         });
 });
