@@ -26,7 +26,7 @@ class PostsTable extends Component implements HasForms, Tables\Contracts\HasTabl
             ->query(Post::query())
             ->groups(fn () => [
                 Tables\Grouping\Group::make('author.name')
-                    ->label(fn (Tables\Table $table) => 'Dynamic label'),
+                    ->label(fn (Table $table, self $livewire) => 'Dynamic label'),
             ])
             ->columns([
                 Tables\Columns\TextColumn::make('title')
