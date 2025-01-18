@@ -72,10 +72,6 @@ trait CanGroupRecords
 
     public function defaultGroup(string | Group | null $group): static
     {
-        if ($group instanceof Group) {
-            $group->table($this);
-        }
-
         $this->defaultGroup = $group;
 
         return $this;
@@ -86,12 +82,6 @@ trait CanGroupRecords
      */
     public function groups(array | Closure $groups): static
     {
-        foreach ($groups as $group) {
-            if ($group instanceof Group) {
-                $group->table($this);
-            }
-        }
-
         $this->groups = $groups;
 
         return $this;
@@ -160,7 +150,7 @@ trait CanGroupRecords
         }
 
         if ($this->defaultGroup instanceof Group) {
-            return $this->defaultGroup;
+            return $this->defaultGroup->table($this);
         }
 
         $group = $this->getGroup($this->defaultGroup);
@@ -182,11 +172,10 @@ trait CanGroupRecords
             $this->evaluate($this->groups),
             function (array $carry, $group): array {
                 if (! $group instanceof Group) {
-                    $group = Group::make($group)
-                        ->table($this);
+                    $group = Group::make($group);
                 }
 
-                $carry[$group->getId()] = $group;
+                $carry[$group->getId()] = $group->table($this);
 
                 return $carry;
             },
