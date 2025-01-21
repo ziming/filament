@@ -32,6 +32,8 @@ class Wizard extends Component
 
     protected int $currentStepIndex = 0;
 
+    protected bool | Closure $forceHorizontalStepsHeader = false;
+
     /**
      * @var view-string
      */
@@ -269,6 +271,18 @@ class Wizard extends Component
     public function getCurrentStepIndex(): int
     {
         return $this->currentStepIndex;
+    }
+
+    public function forceHorizontalStepsHeader(bool | Closure $condition = true): static
+    {
+        $this->forceHorizontalStepsHeader = $condition;
+
+        return $this;
+    }
+
+    public function isForceHorizontalStepsHeader():
+    {
+        return (bool) $this->evaluate($this->forceHorizontalStepsHeader);
     }
 
     protected function setCurrentStepIndex(int $index): static
