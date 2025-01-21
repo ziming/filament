@@ -280,7 +280,7 @@ class Wizard extends Component
         return $this;
     }
 
-    public function isForceHorizontalStepsHeader():
+    public function isForceHorizontalStepsHeader(): bool
     {
         return (bool) $this->evaluate($this->forceHorizontalStepsHeader);
     }
