@@ -145,17 +145,19 @@ trait HasColumns
         }
 
         foreach ($this->getVisibleColumns() as $column) {
-            if (! ($columnGroup = $column->getGroup())) {
+            $columnGroup = $column->getGroup();
+            
+            if (! $columnGroup) {
                 continue;
             }
 
-            if (filled($columnGroup->getVisibleColumns())) {
-                return true;
+            if (empty($columnGroup->getVisibleColumns())) {
+                continue;
             }
+
+            return true;
         }
 
-        // If all columns within every column group are (toggled)
-        // hidden, then not include the table column groups row.
         return false;
     }
 
