@@ -18,8 +18,7 @@ it('can group a table', function () {
             /** @var PostsTable $livewire */
             $livewire = $testable->instance();
 
-            /** @var Tables\Table $table */
-            $table = invade($livewire)->table;
+            $table = $livewire->getTable();
 
             expect($table)
                 ->getGrouping()->toBeNull();
@@ -34,8 +33,7 @@ it('can group a table', function () {
             /** @var PostsTable $livewire */
             $livewire = $testable->instance();
 
-            /** @var Tables\Table $table */
-            $table = invade($livewire)->table;
+            $table =$livewire->getTable();
 
             expect($table)
                 ->getGrouping()->toBeInstanceOf(Tables\Grouping\Group::class)
