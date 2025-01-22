@@ -33,7 +33,7 @@ it('can group a table', function () {
             /** @var PostsTable $livewire */
             $livewire = $testable->instance();
 
-            $table =$livewire->getTable();
+            $table = $livewire->getTable();
 
             expect($table)
                 ->getGrouping()->toBeInstanceOf(Tables\Grouping\Group::class)
