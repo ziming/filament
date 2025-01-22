@@ -80,27 +80,27 @@
         :alpine-disabled="'isLoading || ' . \Illuminate\Support\Js::from($isDisabled)"
         alpine-valid="error === undefined"
         x-tooltip="
-        error === undefined
-            ? false
-            : {
-                content: error,
-                theme: $store.theme,
-            }
+            error === undefined
+                ? false
+                : {
+                    content: error,
+                    theme: $store.theme,
+                }
         "
         x-on:click.stop.prevent=""
     >
         {{-- format-ignore-start --}}
         <x-filament::input
-                :disabled="$isDisabled"
-                :input-mode="$getInputMode()"
-                :placeholder="$getPlaceholder()"
-                :step="$getStep()"
-                :type="$type"
-                :x-bind:disabled="$isDisabled ? null : 'isLoading'"
-                x-model="state"
-                x-on:blur="isEditing = false"
-                x-on:focus="isEditing = true"
-                :attributes="
+            :disabled="$isDisabled"
+            :input-mode="$getInputMode()"
+            :placeholder="$getPlaceholder()"
+            :step="$getStep()"
+            :type="$type"
+            :x-bind:disabled="$isDisabled ? null : 'isLoading'"
+            x-model="state"
+            x-on:blur="isEditing = false"
+            x-on:focus="isEditing = true"
+            :attributes="
                 \Filament\Support\prepare_inherited_attributes(
                     $getExtraInputAttributeBag()
                         ->merge([
