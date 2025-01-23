@@ -70,7 +70,7 @@ trait CanSummarizeRecords
         $queryToJoin = $query->clone();
         $joins = [];
 
-        $query = $query->getModel()->getConnection()
+        $query = $query->getModel()->resolveConnection($query->getModel()->getConnectionName())
             ->table($query->toBase(), $query->getModel()->getTable());
 
         if ($modifyQueryUsing) {
