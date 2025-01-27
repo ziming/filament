@@ -2,14 +2,14 @@
 
 namespace Filament\Actions\Exports\Enums;
 
-use Filament\Actions\Exports\Contracts\ExportEnum;
+use Filament\Actions\Exports\Enums\Contracts\ExportFormat as ExportFormatEnum;
 use Filament\Actions\Exports\Downloaders\Contracts\Downloader;
 use Filament\Actions\Exports\Downloaders\CsvDownloader;
 use Filament\Actions\Exports\Downloaders\XlsxDownloader;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Notifications\Actions\Action as NotificationAction;
 
-enum ExportFormat: string implements ExportEnum
+enum ExportFormat: string implements ExportFormatEnum
 {
     case Csv = 'csv';
 

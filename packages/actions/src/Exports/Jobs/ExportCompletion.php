@@ -2,7 +2,7 @@
 
 namespace Filament\Actions\Exports\Jobs;
 
-use Filament\Actions\Exports\Contracts\ExportEnum;
+use Filament\Actions\Exports\Enums\Contracts\ExportFormat;
 use Filament\Actions\Exports\Exporter;
 use Filament\Actions\Exports\Models\Export;
 use Filament\Notifications\Actions\Action as NotificationAction;
@@ -27,7 +27,7 @@ class ExportCompletion implements ShouldQueue
 
     /**
      * @param  array<string, string>  $columnMap
-     * @param  array<ExportEnum>  $formats
+     * @param  array<ExportFormat>  $formats
      * @param  array<string, mixed>  $options
      */
     public function __construct(
@@ -70,7 +70,7 @@ class ExportCompletion implements ShouldQueue
             ->when(
                 $failedRowsCount < $this->export->total_rows,
                 fn (Notification $notification) => $notification->actions(array_map(
-                    fn (ExportEnum $format): NotificationAction => $format->getDownloadNotificationAction($this->export),
+                    fn (ExportFormat $format): NotificationAction => $format->getDownloadNotificationAction($this->export),
                     $this->formats,
                 )),
             )
