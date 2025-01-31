@@ -60,6 +60,9 @@ trait InteractsWithPageTable
         throw new Exception('You must define a `getTablePage()` method on your widget that returns the name of a Livewire component.');
     }
 
+    /**
+     * @return array<string, mixed>
+     */
     protected function getTablePageMountParameters(): array
     {
         return [];
