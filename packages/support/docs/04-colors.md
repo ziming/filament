@@ -10,7 +10,7 @@ Filament uses CSS variables to define its color palette. These CSS variables are
 
 From a service provider's `boot()` method, or middleware, you can call the `FilamentColor::register()` method, which you can use to customize which colors Filament uses for UI elements.
 
-There are 7 default colors that are used throughout Filament that you are able to customize:
+There are 6 default colors that are used throughout Filament that you are able to customize:
 
 ```php
 use Filament\Support\Colors\Color;
@@ -28,9 +28,11 @@ FilamentColor::register([
 
 The `Color` class contains every [Tailwind CSS color](https://tailwindcss.com/docs/customizing-colors#color-palette-reference) to choose from.
 
+You can also pass in a function to `register()` which will only get called when the app is getting rendered. This is useful if you are calling `register()` from a service provider, and want to access objects like the currently authenticated user, which are initialized later in middleware.
+
 ## Using a non-Tailwind color
 
-You can use custom colors that are not included in the [Tailwind CSS color](https://tailwindcss.com/docs/customizing-colors#color-palette-reference) palette by passing an array of color shades from `50` to `900` in RGB format:
+You can use custom colors that are not included in the [Tailwind CSS color](https://tailwindcss.com/docs/customizing-colors#color-palette-reference) palette by passing an array of color shades from `50` to `950` in RGB format:
 
 ```php
 use Filament\Support\Facades\FilamentColor;

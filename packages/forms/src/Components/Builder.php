@@ -6,19 +6,25 @@ use Closure;
 use Filament\Forms\ComponentContainer;
 use Filament\Forms\Components\Actions\Action;
 use Filament\Forms\Components\Builder\Block;
+use Filament\Support\Concerns\HasReorderAnimationDuration;
 use Filament\Support\Enums\ActionSize;
+use Filament\Support\Enums\Alignment;
+use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Facades\FilamentIcon;
 use Illuminate\Support\Arr;
 use Illuminate\Support\Str;
 
 use function Filament\Forms\array_move_after;
 use function Filament\Forms\array_move_before;
 
-class Builder extends Field implements Contracts\CanConcealComponents
+class Builder extends Field implements Contracts\CanConcealComponents, Contracts\HasExtraItemActions
 {
     use Concerns\CanBeCloned;
     use Concerns\CanBeCollapsed;
     use Concerns\CanGenerateUuids;
     use Concerns\CanLimitItemsLength;
+    use Concerns\HasExtraItemActions;
+    use HasReorderAnimationDuration;
 
     /**
      * @var view-string
@@ -43,6 +49,14 @@ class Builder extends Field implements Contracts\CanConcealComponents
 
     protected bool | Closure $hasBlockNumbers = true;
 
+    protected bool | Closure $hasBlockIcons = false;
+
+    protected bool | Closure $hasBlockPreviews = false;
+
+    protected bool | Closure $hasInteractiveBlockPreviews = false;
+
+    protected Alignment | string | Closure | null $addActionAlignment = null;
+
     protected ?Closure $modifyAddActionUsing = null;
 
     protected ?Closure $modifyAddBetweenActionUsing = null;
@@ -65,6 +79,8 @@ class Builder extends Field implements Contracts\CanConcealComponents
 
     protected ?Closure $modifyExpandAllActionUsing = null;
 
+    protected ?Closure $modifyEditActionUsing = null;
+
     protected string | Closure | null $labelBetweenItems = null;
 
     protected bool | Closure $isBlockLabelTruncated = true;
@@ -74,7 +90,7 @@ class Builder extends Field implements Contracts\CanConcealComponents
      */
     protected ?array $blockPickerColumns = [];
 
-    protected string | Closure | null $blockPickerWidth = null;
+    protected MaxWidth | string | Closure | null $blockPickerWidth = null;
 
     protected function setUp(): void
     {
@@ -86,7 +102,11 @@ class Builder extends Field implements Contracts\CanConcealComponents
             $items = [];
 
             foreach ($state ?? [] as $itemData) {
-                $items[$component->generateUuid()] = $itemData;
+                if ($uuid = $component->generateUuid()) {
+                    $items[$uuid] = $itemData;
+                } else {
+                    $items[] = $itemData;
+                }
             }
 
             $component->state($items);
@@ -99,6 +119,7 @@ class Builder extends Field implements Contracts\CanConcealComponents
             fn (Builder $component): Action => $component->getCollapseAction(),
             fn (Builder $component): Action => $component->getCollapseAllAction(),
             fn (Builder $component): Action => $component->getDeleteAction(),
+            fn (Builder $component): Action => $component->getEditAction(),
             fn (Builder $component): Action => $component->getExpandAction(),
             fn (Builder $component): Action => $component->getExpandAllAction(),
             fn (Builder $component): Action => $component->getMoveDownAction(),
@@ -126,18 +147,26 @@ class Builder extends Field implements Contracts\CanConcealComponents
         $action = Action::make($this->getAddActionName())
             ->label(fn (Builder $component) => $component->getAddActionLabel())
             ->color('gray')
-            ->action(function (array $arguments, Builder $component): void {
+            ->action(function (array $arguments, Builder $component, array $data = []): void {
                 $newUuid = $component->generateUuid();
 
                 $items = $component->getState();
-                $items[$newUuid] = [
-                    'type' => $arguments['block'],
-                    'data' => [],
-                ];
+
+                if ($newUuid) {
+                    $items[$newUuid] = [
+                        'type' => $arguments['block'],
+                        'data' => $data,
+                    ];
+                } else {
+                    $items[] = [
+                        'type' => $arguments['block'],
+                        'data' => $data,
+                    ];
+                }
 
                 $component->state($items);
 
-                $component->getChildComponentContainers()[$newUuid]->fill();
+                $component->getChildComponentContainer($newUuid ?? array_key_last($items))->fill(filled($data) ? $data : null);
 
                 $component->collapsed(false, shouldMakeComponentCollapsible: false);
 
@@ -148,6 +177,17 @@ class Builder extends Field implements Contracts\CanConcealComponents
             ->size(ActionSize::Small)
             ->visible(fn (Builder $component): bool => $component->isAddable());
 
+        if ($this->hasBlockPreviews()) {
+            $action
+                ->modalHeading(fn (Builder $component) => __('filament-forms::components.builder.actions.add.modal.heading', [
+                    'label' => $component->getLabel(),
+                ]))
+                ->modalSubmitActionLabel(__('filament-forms::components.builder.actions.add.modal.actions.add.label'))
+                ->form(function (array $arguments, Builder $component): array {
+                    return $component->getBlock($arguments['block'])->getChildComponents();
+                });
+        }
+
         if ($this->modifyAddActionUsing) {
             $action = $this->evaluate($this->modifyAddActionUsing, [
                 'action' => $action,
@@ -155,6 +195,24 @@ class Builder extends Field implements Contracts\CanConcealComponents
         }
 
         return $action;
+    }
+
+    public function addActionAlignment(Alignment | string | Closure | null $addActionAlignment): static
+    {
+        $this->addActionAlignment = $addActionAlignment;
+
+        return $this;
+    }
+
+    public function getAddActionAlignment(): Alignment | string | null
+    {
+        $alignment = $this->evaluate($this->addActionAlignment);
+
+        if (is_string($alignment)) {
+            $alignment = Alignment::tryFrom($alignment) ?? $alignment;
+        }
+
+        return $alignment;
     }
 
     public function addAction(?Closure $callback): static
@@ -174,25 +232,34 @@ class Builder extends Field implements Contracts\CanConcealComponents
         $action = Action::make($this->getAddBetweenActionName())
             ->label(fn (Builder $component) => $component->getAddBetweenActionLabel())
             ->color('gray')
-            ->action(function (array $arguments, Builder $component): void {
-                $newUuid = $component->generateUuid();
+            ->action(function (array $arguments, Builder $component, array $data = []): void {
+                $newKey = $component->generateUuid();
 
                 $items = [];
 
-                foreach ($component->getState() ?? [] as $uuid => $item) {
-                    $items[$uuid] = $item;
+                foreach ($component->getState() ?? [] as $key => $item) {
+                    $items[$key] = $item;
 
-                    if ($uuid === $arguments['afterItem']) {
-                        $items[$newUuid] = [
-                            'type' => $arguments['block'],
-                            'data' => [],
-                        ];
+                    if ($key === $arguments['afterItem']) {
+                        if ($newKey) {
+                            $items[$newKey] = [
+                                'type' => $arguments['block'],
+                                'data' => $data,
+                            ];
+                        } else {
+                            $items[] = [
+                                'type' => $arguments['block'],
+                                'data' => $data,
+                            ];
+
+                            $newKey = array_key_last($items);
+                        }
                     }
                 }
 
                 $component->state($items);
 
-                $component->getChildComponentContainers()[$newUuid]->fill();
+                $component->getChildComponentContainer($newKey)->fill(filled($data) ? $data : null);
 
                 $component->collapsed(false, shouldMakeComponentCollapsible: false);
 
@@ -202,6 +269,17 @@ class Builder extends Field implements Contracts\CanConcealComponents
             ->button()
             ->size(ActionSize::Small)
             ->visible(fn (Builder $component): bool => $component->isAddable());
+
+        if ($this->hasBlockPreviews()) {
+            $action
+                ->modalHeading(fn (Builder $component) => __('filament-forms::components.builder.actions.add_between.modal.heading', [
+                    'label' => $component->getLabel(),
+                ]))
+                ->modalSubmitActionLabel(__('filament-forms::components.builder.actions.add_between.modal.actions.add.label'))
+                ->form(function (array $arguments, Builder $component): array {
+                    return $component->getBlock($arguments['block'])->getChildComponents();
+                });
+        }
 
         if ($this->modifyAddBetweenActionUsing) {
             $action = $this->evaluate($this->modifyAddBetweenActionUsing, [
@@ -228,13 +306,18 @@ class Builder extends Field implements Contracts\CanConcealComponents
     {
         $action = Action::make($this->getCloneActionName())
             ->label(__('filament-forms::components.builder.actions.clone.label'))
-            ->icon('heroicon-m-square-2-stack')
+            ->icon(FilamentIcon::resolve('forms::components.builder.actions.clone') ?? 'heroicon-m-square-2-stack')
             ->color('gray')
             ->action(function (array $arguments, Builder $component): void {
                 $newUuid = $component->generateUuid();
 
                 $items = $component->getState();
-                $items[$newUuid] = $items[$arguments['item']];
+
+                if ($newUuid) {
+                    $items[$newUuid] = $items[$arguments['item']];
+                } else {
+                    $items[] = $items[$arguments['item']];
+                }
 
                 $component->state($items);
 
@@ -271,7 +354,7 @@ class Builder extends Field implements Contracts\CanConcealComponents
     {
         $action = Action::make($this->getDeleteActionName())
             ->label(__('filament-forms::components.builder.actions.delete.label'))
-            ->icon('heroicon-m-trash')
+            ->icon(FilamentIcon::resolve('forms::components.builder.actions.delete') ?? 'heroicon-m-trash')
             ->color('danger')
             ->action(function (array $arguments, Builder $component): void {
                 $items = $component->getState();
@@ -310,7 +393,7 @@ class Builder extends Field implements Contracts\CanConcealComponents
     {
         $action = Action::make($this->getMoveDownActionName())
             ->label(__('filament-forms::components.builder.actions.move_down.label'))
-            ->icon('heroicon-m-arrow-down')
+            ->icon(FilamentIcon::resolve('forms::components.builder.actions.move-down') ?? 'heroicon-m-arrow-down')
             ->color('gray')
             ->action(function (array $arguments, Builder $component): void {
                 $items = array_move_after($component->getState(), $arguments['item']);
@@ -348,7 +431,7 @@ class Builder extends Field implements Contracts\CanConcealComponents
     {
         $action = Action::make($this->getMoveUpActionName())
             ->label(__('filament-forms::components.builder.actions.move_up.label'))
-            ->icon('heroicon-m-arrow-up')
+            ->icon(FilamentIcon::resolve('forms::components.builder.actions.move-up') ?? 'heroicon-m-arrow-up')
             ->color('gray')
             ->action(function (array $arguments, Builder $component): void {
                 $items = array_move_before($component->getState(), $arguments['item']);
@@ -393,7 +476,7 @@ class Builder extends Field implements Contracts\CanConcealComponents
     {
         $action = Action::make($this->getReorderActionName())
             ->label(__('filament-forms::components.builder.actions.reorder.label'))
-            ->icon('heroicon-m-arrows-up-down')
+            ->icon(FilamentIcon::resolve('forms::components.builder.actions.reorder') ?? 'heroicon-m-arrows-up-down')
             ->color('gray')
             ->action(function (array $arguments, Builder $component): void {
                 $items = [
@@ -435,7 +518,7 @@ class Builder extends Field implements Contracts\CanConcealComponents
     {
         $action = Action::make($this->getCollapseActionName())
             ->label(__('filament-forms::components.builder.actions.collapse.label'))
-            ->icon('heroicon-m-chevron-up')
+            ->icon(FilamentIcon::resolve('forms::components.builder.actions.collapse') ?? 'heroicon-m-chevron-up')
             ->color('gray')
             ->livewireClickHandlerEnabled(false)
             ->iconButton()
@@ -466,7 +549,7 @@ class Builder extends Field implements Contracts\CanConcealComponents
     {
         $action = Action::make($this->getExpandActionName())
             ->label(__('filament-forms::components.builder.actions.expand.label'))
-            ->icon('heroicon-m-chevron-down')
+            ->icon(FilamentIcon::resolve('forms::components.builder.actions.expand') ?? 'heroicon-m-chevron-down')
             ->color('gray')
             ->livewireClickHandlerEnabled(false)
             ->iconButton()
@@ -551,6 +634,59 @@ class Builder extends Field implements Contracts\CanConcealComponents
     public function getExpandAllActionName(): string
     {
         return 'expandAll';
+    }
+
+    public function getEditAction(): Action
+    {
+        $action = Action::make($this->getEditActionName())
+            ->label(__('filament-forms::components.builder.actions.edit.label'))
+            ->modalHeading(__('filament-forms::components.builder.actions.edit.modal.heading'))
+            ->modalSubmitActionLabel(__('filament-forms::components.builder.actions.edit.modal.actions.save.label'))
+            ->color('gray')
+            ->fillForm(function (array $arguments, Builder $component) {
+                $state = $component->getState();
+
+                return $state[$arguments['item']]['data'];
+            })
+            ->form(function (array $arguments, Builder $component) {
+                return $component->getChildComponentContainer($arguments['item'])
+                    ->getComponents();
+            })
+            ->action(function (array $arguments, Builder $component, $data): void {
+                $state = $component->getState();
+
+                $state[$arguments['item']]['data'] = $data;
+
+                $component->state($state);
+
+                $component->getChildComponentContainer($arguments['item'])->fill($data);
+
+                $component->callAfterStateUpdated();
+            })
+            ->iconButton()
+            ->icon('heroicon-s-cog-6-tooth')
+            ->size(ActionSize::Small)
+            ->visible(fn (Builder $component): bool => (! $component->isDisabled()) && $component->hasBlockPreviews());
+
+        if ($this->modifyEditActionUsing) {
+            $action = $this->evaluate($this->modifyEditActionUsing, [
+                'action' => $action,
+            ]) ?? $action;
+        }
+
+        return $action;
+    }
+
+    public function editAction(?Closure $callback): static
+    {
+        $this->modifyEditActionUsing = $callback;
+
+        return $this;
+    }
+
+    public function getEditActionName(): string
+    {
+        return 'edit';
     }
 
     public function truncateBlockLabel(bool | Closure $condition = true): static
@@ -711,6 +847,21 @@ class Builder extends Field implements Contracts\CanConcealComponents
         return $this;
     }
 
+    public function blockIcons(bool | Closure $condition = true): static
+    {
+        $this->hasBlockIcons = $condition;
+
+        return $this;
+    }
+
+    public function blockPreviews(bool | Closure $condition = true, bool | Closure $areInteractive = false): static
+    {
+        $this->hasBlockPreviews = $condition;
+        $this->hasInteractiveBlockPreviews = $areInteractive;
+
+        return $this;
+    }
+
     public function getBlock(string $name): ?Block
     {
         return Arr::first(
@@ -720,11 +871,14 @@ class Builder extends Field implements Contracts\CanConcealComponents
     }
 
     /**
-     * @return array<Component>
+     * @return array<Block>
      */
     public function getBlocks(): array
     {
-        return $this->getChildComponentContainer()->getComponents();
+        /** @var array<Block> $blocks */
+        $blocks = $this->getChildComponentContainer()->getComponents();
+
+        return $blocks;
     }
 
     public function getChildComponentContainers(bool $withHidden = false): array
@@ -734,7 +888,7 @@ class Builder extends Field implements Contracts\CanConcealComponents
         }
 
         return collect($this->getState())
-            ->filter(fn (array $itemData): bool => $this->hasBlock($itemData['type']))
+            ->filter(fn (array $itemData): bool => filled($itemData['type'] ?? null) && $this->hasBlock($itemData['type']))
             ->map(
                 fn (array $itemData, $itemIndex): ComponentContainer => $this
                     ->getBlock($itemData['type'])
@@ -814,6 +968,21 @@ class Builder extends Field implements Contracts\CanConcealComponents
         return (bool) $this->evaluate($this->hasBlockNumbers);
     }
 
+    public function hasBlockIcons(): bool
+    {
+        return (bool) $this->evaluate($this->hasBlockIcons);
+    }
+
+    public function hasBlockPreviews(): bool
+    {
+        return (bool) $this->evaluate($this->hasBlockPreviews);
+    }
+
+    public function hasInteractiveBlockPreviews(): bool
+    {
+        return (bool) $this->evaluate($this->hasInteractiveBlockPreviews);
+    }
+
     public function canConcealComponents(): bool
     {
         return $this->isCollapsible();
@@ -827,6 +996,32 @@ class Builder extends Field implements Contracts\CanConcealComponents
     public function isBlockLabelTruncated(): bool
     {
         return (bool) $this->evaluate($this->isBlockLabelTruncated);
+    }
+
+    /**
+     * @return array<Block>
+     */
+    public function getBlockPickerBlocks(): array
+    {
+        $state = $this->getState();
+
+        /** @var array<Block> $blocks */
+        $blocks = array_filter($this->getBlocks(), function (Block $block) use ($state): bool {
+            /** @var Block $block */
+            $maxItems = $block->getMaxItems();
+
+            if ($maxItems === null) {
+                return true;
+            }
+
+            $count = count(array_filter($state, function (array $item) use ($block): bool {
+                return $item['type'] === $block->getName();
+            }));
+
+            return $count < $maxItems;
+        });
+
+        return $blocks;
     }
 
     /**
@@ -869,15 +1064,50 @@ class Builder extends Field implements Contracts\CanConcealComponents
         return $columns;
     }
 
-    public function blockPickerWidth(string | Closure | null $width): static
+    public function blockPickerWidth(MaxWidth | string | Closure | null $width): static
     {
         $this->blockPickerWidth = $width;
 
         return $this;
     }
 
-    public function getBlockPickerWidth(): ?string
+    public function getBlockPickerWidth(): MaxWidth | string | null
     {
-        return $this->evaluate($this->blockPickerWidth);
+        $width = $this->evaluate($this->blockPickerWidth);
+
+        if (filled($width)) {
+            return $width;
+        }
+
+        $columns = $this->getBlockPickerColumns();
+
+        if (empty($columns)) {
+            return null;
+        }
+
+        return match (max($columns)) {
+            2 => 'md',
+            3 => '2xl',
+            4 => '4xl',
+            5 => '6xl',
+            6 => '7xl',
+            default => null,
+        };
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getItemState(string $uuid): array
+    {
+        return $this->getChildComponentContainer($uuid)->getState(shouldCallHooksBefore: false);
+    }
+
+    /**
+     * @return array<string, mixed>
+     */
+    public function getRawItemState(string $uuid): array
+    {
+        return $this->getChildComponentContainer($uuid)->getRawState();
     }
 }

@@ -10,8 +10,19 @@ return [
 
     'columns' => [
 
+        'actions' => [
+            'label' => 'Acción|Acciones',
+        ],
+
         'text' => [
+
+            'actions' => [
+                'collapse_list' => 'Mostrar :count menos',
+                'expand_list' => 'Mostrar :count más',
+            ],
+
             'more_list_items' => 'y :count más',
+
         ],
 
     ],
@@ -24,6 +35,10 @@ return [
 
         'bulk_select_record' => [
             'label' => 'Seleccionar/deseleccionar el elemento :key para las acciones masivas.',
+        ],
+
+        'bulk_select_group' => [
+            'label' => 'Seleccionar/deseleccionar grupo :title para acciones masivas.',
         ],
 
         'search' => [
@@ -101,6 +116,10 @@ return [
     'filters' => [
 
         'actions' => [
+
+            'apply' => [
+                'label' => 'Aplicar filtros',
+            ],
 
             'remove' => [
                 'label' => 'Quitar filtro',

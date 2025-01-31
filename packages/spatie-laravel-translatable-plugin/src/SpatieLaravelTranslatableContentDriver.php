@@ -6,14 +6,13 @@ use Filament\Support\Contracts\TranslatableContentDriver;
 use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 
 use function Filament\Support\generate_search_column_expression;
 
 class SpatieLaravelTranslatableContentDriver implements TranslatableContentDriver
 {
-    public function __construct(protected string $activeLocale)
-    {
-    }
+    public function __construct(protected string $activeLocale) {}
 
     public function isAttributeTranslatable(string $model, string $attribute): bool
     {
@@ -31,13 +30,23 @@ class SpatieLaravelTranslatableContentDriver implements TranslatableContentDrive
      */
     public function makeRecord(string $model, array $data): Model
     {
-        $record = new $model();
+        $record = new $model;
 
         if (method_exists($record, 'setLocale')) {
             $record->setLocale($this->activeLocale);
         }
 
-        $record->fill($data);
+        $translatableAttributes = method_exists($record, 'getTranslatableAttributes') ?
+            $record->getTranslatableAttributes() :
+            [];
+
+        $record->fill(Arr::except($data, $translatableAttributes));
+
+        if (method_exists($record, 'setTranslation')) {
+            foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
+                $record->setTranslation($key, $this->activeLocale, $value);
+            }
+        }
 
         return $record;
     }
@@ -60,7 +69,19 @@ class SpatieLaravelTranslatableContentDriver implements TranslatableContentDrive
             $record->setLocale($this->activeLocale);
         }
 
-        $record->fill($data)->save();
+        $translatableAttributes = method_exists($record, 'getTranslatableAttributes') ?
+            $record->getTranslatableAttributes() :
+            [];
+
+        $record->fill(Arr::except($data, $translatableAttributes));
+
+        if (method_exists($record, 'setTranslation')) {
+            foreach (Arr::only($data, $translatableAttributes) as $key => $value) {
+                $record->setTranslation($key, $this->activeLocale, $value);
+            }
+        }
+
+        $record->save();
 
         return $record;
     }
@@ -81,7 +102,7 @@ class SpatieLaravelTranslatableContentDriver implements TranslatableContentDrive
         }
 
         foreach ($record->getTranslatableAttributes() as $attribute) {
-            $attributes[$attribute] = $record->getTranslation($attribute, $this->activeLocale);
+            $attributes[$attribute] = $record->getTranslation($attribute, $this->activeLocale, useFallbackLocale: false);
         }
 
         return $attributes;
@@ -100,7 +121,7 @@ class SpatieLaravelTranslatableContentDriver implements TranslatableContentDrive
         return $query->{$whereClause}(
             generate_search_column_expression($column, $isCaseInsensitivityForced, $databaseConnection),
             'like',
-            "%{$search}%",
+            (string) str($search)->wrap('%'),
         );
     }
 }

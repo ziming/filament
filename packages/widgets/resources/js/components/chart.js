@@ -1,4 +1,5 @@
 import Chart from 'chart.js/auto'
+import 'chartjs-adapter-luxon'
 
 export default function chart({ cachedData, options, type }) {
     return {
@@ -15,6 +16,10 @@ export default function chart({ cachedData, options, type }) {
                 Alpine.store('theme')
 
                 this.$nextTick(() => {
+                    if (!this.getChart()) {
+                        return
+                    }
+
                     this.getChart().destroy()
                     this.initChart()
                 })
@@ -68,18 +73,19 @@ export default function chart({ cachedData, options, type }) {
             options.scales ??= {}
             options.scales.x ??= {}
             options.scales.x.grid ??= {}
-            options.scales.x.grid.color = gridColor
+            options.scales.x.grid.color ??= gridColor
             options.scales.x.grid.display ??= false
             options.scales.x.grid.drawBorder ??= false
             options.scales.y ??= {}
             options.scales.y.grid ??= {}
-            options.scales.y.grid.color = gridColor
+            options.scales.y.grid.color ??= gridColor
             options.scales.y.grid.drawBorder ??= false
 
             return new Chart(this.$refs.canvas, {
                 type: type,
                 data: data ?? cachedData,
                 options: options,
+                plugins: window.filamentChartJsPlugins ?? [],
             })
         },
 
