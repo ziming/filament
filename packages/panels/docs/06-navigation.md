@@ -34,7 +34,7 @@ To customize a navigation item's [icon](https://blade-ui-kit.com/blade-icons?set
 protected static ?string $navigationIcon = 'heroicon-o-document-text';
 ```
 
-<AutoScreenshot name="panels/navigation/change-icon" alt=Change navigation items icon version="3.x" />
+<AutoScreenshot name="panels/navigation/change-icon" alt="Changed navigation item icon" version="3.x" />
 
 If you set `$navigationIcon = null` on all items within the same navigation group, those items will be joined with a vertical bar below the group label.
 
@@ -109,7 +109,7 @@ You may group navigation items by specifying a `$navigationGroup` property on a 
 protected static ?string $navigationGroup = 'Settings';
 ```
 
-<AutoScreenshot name="panels/navigation/group" alt="Group navigation items" version="3.x" />
+<AutoScreenshot name="panels/navigation/group" alt="Grouped navigation items" version="3.x" />
 
 All items in the same navigation group will be displayed together under the same group label, "Settings" in this case. Ungrouped items will remain at the start of the navigation.
 
@@ -403,7 +403,7 @@ public function panel(Panel $panel): Panel
 }
 ```
 
-<AutoScreenshot name="panels/navigation/custom-items" alt="Register custom navigation items" version="3.x" />
+<AutoScreenshot name="panels/navigation/custom-items" alt="Custom navigation items" version="3.x" />
 
 ### Registering custom navigation groups
 
