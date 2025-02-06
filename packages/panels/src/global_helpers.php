@@ -4,6 +4,10 @@ use Filament\Contracts\Plugin;
 use Filament\FilamentManager;
 
 if (! function_exists('filament')) {
+    /**
+     * @param string|null $plugin
+     * @return ($plugin is null ? FilamentManager : Plugin)
+     */
     function filament(?string $plugin = null): FilamentManager | Plugin
     {
         /** @var FilamentManager $filament */
