@@ -4,8 +4,7 @@
     $isDisabled = $isDisabled();
     $isMultiple = $isMultiple();
     $statePath = $getStatePath();
-    $hasOnlyIcons = $hasOnlyIcons();
-    $isOptionLabelAsIcon = $hasOnlyIcons ? $isOptionLabelAsIcon() : false;
+    $areButtonLabelsHidden = $areButtonLabelsHidden();
 @endphp
 
 <x-dynamic-component
@@ -53,11 +52,11 @@
                 :disabled="$shouldOptionBeDisabled"
                 :for="$inputId"
                 grouped
-                :icon="$isOptionLabelAsIcon ? $label : $getIcon($value)"
-                :label-sr-only="$hasOnlyIcons"
+                :icon="$getIcon($value)"
+                :label-sr-only="$areButtonLabelsHidden"
                 tag="label"
             >
-                {{ $isOptionLabelAsIcon ? '' : $label }}
+                {{ $label }}
             </x-filament::button>
         @endforeach
     </x-filament::button.group>

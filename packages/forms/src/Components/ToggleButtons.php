@@ -28,9 +28,7 @@ class ToggleButtons extends Field implements Contracts\CanDisableOptions
 
     protected bool | Closure $isInline = false;
 
-    protected bool | Closure $hasOnlyIcons = false;
-
-    protected bool $isOptionLabelAsIcon = false;
+    protected bool | Closure $areButtonLabelsHidden = false;
 
     protected function setUp(): void
     {
@@ -88,23 +86,16 @@ class ToggleButtons extends Field implements Contracts\CanDisableOptions
         return (bool) $this->evaluate($this->isInline);
     }
 
-    public function onlyIcons(bool | Closure $condition = true, bool $optionLabelAsIcon = false): static
+    public function hiddenButtonLabels(bool | Closure $condition = true): static
     {
-        $this->hasOnlyIcons = $condition;
-
-        $this->isOptionLabelAsIcon = $optionLabelAsIcon;
+        $this->areButtonLabelsHidden = $condition;
 
         return $this;
     }
 
-    public function hasOnlyIcons(): bool
+    public function areButtonLabelsHidden(): bool
     {
-        return (bool) $this->evaluate($this->hasOnlyIcons);
-    }
-
-    public function isOptionLabelAsIcon(): bool
-    {
-        return $this->isOptionLabelAsIcon;
+        return (bool) $this->evaluate($this->areButtonLabelsHidden);
     }
 
     public function multiple(bool | Closure $condition = true): static

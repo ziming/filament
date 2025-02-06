@@ -68,17 +68,7 @@ If you are using an enum for the options, you can use the [`HasIcon` interface](
 
 <AutoScreenshot name="forms/fields/toggle-buttons/icons" alt="Toggle buttons with icons" version="3.x" />
 
-You can use `onlyIcons()` to hide the option labels and display only icons, You can also choose to consider the option label as an icon if you prefer not to use `icons()`.
-
-```php
-ToggleButtons::make('status')
-    ->options([
-        'draft' => 'heroicon-o-pencil',
-        'scheduled' => 'heroicon-o-clock',
-        'published' => 'heroicon-o-check-circle',
-    ])
-    ->onlyIcons(optionLabelAsIcon: true)
-```
+If you want to display only icons, you can use `hiddenButtonLabels()` to hide the option labels.
 
 ## Boolean options
 
