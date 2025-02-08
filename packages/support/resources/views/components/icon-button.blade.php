@@ -148,7 +148,7 @@
                     'wire:target' => ($hasLoadingIndicator && $loadingIndicatorTarget) ? $loadingIndicatorTarget : null,
                 ], escape: false)
                 ->when(! $hasTooltip, function ($attributes) use ($label) {
-                    $attributes->merge(['title' => $label], escape: true);
+                    return $attributes->merge(['title' => $label], escape: true);
                 })
                 ->class([$buttonClasses])
                 ->style([$buttonStyles])
@@ -213,7 +213,7 @@
         {{
             $attributes
                 ->when(! $hasTooltip, function ($attributes) use ($label) {
-                    $attributes->merge(['title' => $label], escape: true);
+                    return $attributes->merge(['title' => $label], escape: true);
                 })
                 ->class([$buttonClasses])
                 ->style([$buttonStyles])
