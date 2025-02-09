@@ -105,7 +105,7 @@ class MakeThemeCommand extends Command
         if ($isTailwindV4Installed) {
             $this->components->warn('Action is required to complete the theme setup:');
             $this->components->bulletList([
-                "It looks like you have Tailwind v4 installed. Filament uses Tailwind v3. You should downgrade your project and re-run this command with `--force`, or use the following command to compile the theme with the Tailwind v3 CLI:",
+                'It looks like you have Tailwind v4 installed. Filament uses Tailwind v3. You should downgrade your project and re-run this command with `--force`, or use the following command to compile the theme with the Tailwind v3 CLI:',
                 "npx tailwindcss@3 --input ./resources/css/filament/{$panelId}/theme.css --output ./public/css/filament/{$panelId}/theme.css --config ./resources/css/filament/{$panelId}/tailwind.config.js --minify",
                 "Make sure to register the theme in the {$panelId} panel provider using `->theme(asset('css/filament/{$panelId}/theme.css'))`",
             ]);
