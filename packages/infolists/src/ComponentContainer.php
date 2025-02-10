@@ -46,11 +46,11 @@ class ComponentContainer extends ViewComponent
     {
         return match ($parameterName) {
             'livewire' => [$this->getLivewire()],
-	        'record' => [$this->getRecord()],
+            'record' => [$this->getRecord()],
             default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),
         };
     }
-	
+
     /**
      * @return array<mixed>
      */

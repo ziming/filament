@@ -15,8 +15,8 @@ it('can inject the correct `$livewire` for infolists outside a panel', function 
         ->assertSee('First Entry State')
         ->assertSee('Second Entry Label')
         ->assertSee('Second Entry State')
-	    		->assertSee('Third Entry Label')
-	    		->assertSee('Third Entry State (dynamic)');
+        ->assertSee('Third Entry Label')
+        ->assertSee('Third Entry State (dynamic)');
 });
 
 class TestComponentWithInfolist extends Livewire
@@ -55,11 +55,11 @@ class TestComponentWithInfolist extends Livewire
                         ->label('Second Entry Label'),
                     Infolists\Components\TextEntry::make('third_entry')
                         ->label('Third Entry Label')
-                    ->getStateUsing(function (TestComponentWithInfolist $livewire) {
-						expect($livewire)->toBe($this);
-						
-						return 'Third Entry State (dynamic)';
-                    }),
+                        ->getStateUsing(function (TestComponentWithInfolist $livewire) {
+                            expect($livewire)->toBe($this);
+
+                            return 'Third Entry State (dynamic)';
+                        }),
                 ];
             });
     }
