@@ -32,7 +32,7 @@ return [
 
             'add_between' => [
 
-                'label' => 'Inserir',
+                'label' => 'Inserir entre blocos',
 
                 'modal' => [
 
