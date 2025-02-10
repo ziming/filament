@@ -45,11 +45,12 @@ class ComponentContainer extends ViewComponent
     protected function resolveDefaultClosureDependencyForEvaluationByName(string $parameterName): array
     {
         return match ($parameterName) {
-            'record' => [$this->getRecord()],
+            'livewire' => [$this->getLivewire()],
+	        'record' => [$this->getRecord()],
             default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),
         };
     }
-
+	
     /**
      * @return array<mixed>
      */
