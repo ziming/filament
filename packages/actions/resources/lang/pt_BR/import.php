@@ -79,7 +79,7 @@ return [
         'file_name' => 'import-:import_id-:csv_name-failed-rows',
         'error_header' => 'erro',
         'system_error' => 'Erro de sistema, por favor, entre em contato com o suporte.',
-        'column_mapping_required_for_new_record' => 'A coluna :attribute não foi mapeada com uma coluna no arquivo, mas isto é obrigatório para a criação de novos registros.',
+        'column_mapping_required_for_new_record' => 'A coluna :attribute não foi mapeada para uma coluna no arquivo, mas é necessária para criar novos registros.',
     ],
 
 ];
