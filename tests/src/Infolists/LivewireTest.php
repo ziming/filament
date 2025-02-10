@@ -33,7 +33,7 @@ class TestComponentWithInfolist extends Livewire
     {
         return $infolist
             ->state($this->data)
-            ->schema(function (TestComponentWithInfolist $livewire) {
+            ->schema(function (self $livewire) {
                 expect($livewire)->toBe($this);
 
                 return [
@@ -47,7 +47,7 @@ class TestComponentWithInfolist extends Livewire
     {
         return $infolist
             ->state($this->data)
-            ->schema(function (TestComponentWithInfolist $livewire) {
+            ->schema(function (self $livewire) {
                 expect($livewire)->toBe($this);
 
                 return [
@@ -55,7 +55,7 @@ class TestComponentWithInfolist extends Livewire
                         ->label('Second Entry Label'),
                     Infolists\Components\TextEntry::make('third_entry')
                         ->label('Third Entry Label')
-                        ->getStateUsing(function (TestComponentWithInfolist $livewire) {
+                        ->getStateUsing(function (self $livewire) {
                             expect($livewire)->toBe($this);
 
                             return 'Third Entry State (dynamic)';
