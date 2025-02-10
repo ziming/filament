@@ -8,7 +8,7 @@ use function Filament\Tests\livewire;
 
 uses(TestCase::class);
 
-it('can inject the correct `$livewire` for infolists', function () {
+it('can evaluate livewire closure dependency by name', function () {
     livewire(TestComponentWithInfolist::class)
         ->assertOk()
         ->assertSee('First Entry Label')
