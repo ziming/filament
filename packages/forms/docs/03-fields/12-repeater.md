@@ -742,3 +742,22 @@ livewire(EditPost::class, ['record' => $post])
 
 $undoRepeaterFake();
 ```
+
+### Testing Repeater Actions
+
+In order to validate repeater actions are working as expected, you can utilize the `mountFormComponentAction` method to call your repeater actions and then perform additional validations (e.g. [modal content assertions](../../actions/testing#modal-content)).
+
+To determine which repater item's action to test, you must pass in the ID of the repeater-item using the `arguments` arguemnt.  The required data structure is `['item' => 'record-' . $id] where the `$id` is the repeater-item's id:  
+
+```php
+use App\Models\Quote;
+use Filament\Forms\Components\Repeater;
+use function Pest\Livewire\livewire;
+
+$quote = Quote::find(1);
+
+livewire(EditPost::class, ['record' => $post])
+    ->mountFormComponentAction("quotes", "copyQuote", arguments: [
+        'item' => 'record-' . $quote->id,
+    ])->assertSee('Quote copied!');
+```
