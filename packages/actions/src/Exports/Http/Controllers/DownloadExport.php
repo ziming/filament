@@ -2,6 +2,7 @@
 
 namespace Filament\Actions\Exports\Http\Controllers;
 
+use Filament\Actions\Exports\Enums\Contracts\ExportFormat as ExportFormatInterface;
 use Filament\Actions\Exports\Enums\ExportFormat;
 use Filament\Actions\Exports\Models\Export;
 use Illuminate\Http\Request;
@@ -20,10 +21,15 @@ class DownloadExport
             abort_unless($export->user()->is(auth()->user()), 403);
         }
 
-        $format = ExportFormat::tryFrom($request->query('format'));
+        $format = $this->getFormatFromRequest($request);
 
         abort_unless($format !== null, 404);
 
         return $format->getDownloader()($export);
     }
+
+     protected function getFormatFromRequest(Request $request): ?ExportFormatInterface
+     {
+        return ExportFormat::tryFrom($request->query('format'));
+     }
 }
