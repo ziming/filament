@@ -229,13 +229,13 @@ By default, modals will autofocus on the first focusable element when opened. If
 </x-filament::modal>
 ```
 
-## Preventing the modal from being triggered
+## Disabling the modal trigger button
 
-By default, modals will be triggered even if button is disabled. If you want to disable the modal trigger itself, you can use the `disabled` attribute on the trigger:
+By default, the trigger button will open the modal even if it disabled, since the click event listener is registered on a wrapping element of the button itself. If you want to prevent the modal from opening, you should also use the `disabled` attribute on the trigger slot:
 
 ```blade
 <x-filament::modal>
-    <x-slot name="trigger" :disabled="true">
+    <x-slot name="trigger" disabled>
         <x-filament::button :disabled="true">
             Open modal
         </x-filament::button>
