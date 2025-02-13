@@ -743,21 +743,22 @@ livewire(EditPost::class, ['record' => $post])
 $undoRepeaterFake();
 ```
 
-### Testing Repeater Actions
+### Testing repeater actions
 
-In order to validate repeater actions are working as expected, you can utilize the `mountFormComponentAction` method to call your repeater actions and then perform additional validations (e.g. [modal content assertions](../../actions/testing#modal-content)).
+In order to test that repeater actions are working as expected, you can utilize the `callFormComponentAction()` method to call your repeater actions and then [perform additional assertions](../testing#actions).
 
-To reflect the argument data that is passed in to the action when interacting with the repeater item, you can pass in the ID of the repeater-item using the `arguments` arguemnt.  The data structure is `['item' => 'record-' . $id] where the `$id` is the repeater-item's id:  
+To interact with an action on a particular repeater item, you need to pass in the `item` argument with the key of that repeater item. If your repeater is reading from a relationship, you should prefix the ID (key) of the related record with `record-` to form the key of the repeater item:  
 
 ```php
 use App\Models\Quote;
 use Filament\Forms\Components\Repeater;
 use function Pest\Livewire\livewire;
 
-$quote = Quote::find(1);
+$quote = Quote::first();
 
 livewire(EditPost::class, ['record' => $post])
-    ->mountFormComponentAction("quotes", "copyQuote", arguments: [
-        'item' => 'record-' . $quote->id,
-    ])->assertSee('Quote copied!');
+    ->callFormComponentAction('quotes', 'sendQuote', arguments: [
+        'item' => "record-{$quote->getKey()}",
+    ])
+    ->assertNotified('Quote sent!');
 ```
