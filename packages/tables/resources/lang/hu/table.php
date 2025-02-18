@@ -10,8 +10,19 @@ return [
 
     'columns' => [
 
+        'actions' => [
+            'label' => 'Művelet|Műveletek',
+        ],
+
         'text' => [
-            'more_list_items' => 'és további :count',
+
+            'actions' => [
+                'collapse_list' => ':count elemmel kevesebb mutatása',
+                'expand_list' => ':count elemmel több mutatása',
+            ],
+
+            'more_list_items' => 'és :count több',
+
         ],
 
     ],
@@ -26,10 +37,14 @@ return [
             'label' => ':key elem kijelölése vagy a kijelölés megszüntetése csoportos műveletekhez.',
         ],
 
+        'bulk_select_group' => [
+            'label' => ':title csoport kijelölése vagy a kijelölés megszüntetése csoportos műveletekhez.',
+        ],
+
         'search' => [
             'label' => 'Keresés',
             'placeholder' => 'Keresés',
-            'indicator' => 'Keress',
+            'indicator' => 'Keresés',
         ],
 
     ],
@@ -102,17 +117,21 @@ return [
 
         'actions' => [
 
+            'apply' => [
+                'label' => 'Szűrők alkalmazása',
+            ],
+
             'remove' => [
-                'label' => 'Szűrő megszűntetése',
+                'label' => 'Szűrő megszüntetése',
             ],
 
             'remove_all' => [
-                'label' => 'Az összes szűrő megszűntetése',
-                'tooltip' => 'Az összes szűrő megszűntetése',
+                'label' => 'Az összes szűrő megszüntetése',
+                'tooltip' => 'Az összes szűrő megszüntetése',
             ],
 
             'reset' => [
-                'label' => 'Visszaállítása',
+                'label' => 'Visszaállítás',
             ],
 
         ],

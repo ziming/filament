@@ -11,15 +11,67 @@ return [
             ],
 
             'add' => [
+
                 'label' => 'Añadir a :label',
+
+                'modal' => [
+
+                    'heading' => 'Añadir a :label',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => 'Añadir',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'add_between' => [
-                'label' => 'Insertar',
+
+                'label' => 'Insertar entre bloques',
+
+                'modal' => [
+
+                    'heading' => 'Añadir a :label',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => 'Añadir',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'delete' => [
                 'label' => 'Borrar',
+            ],
+
+            'edit' => [
+
+                'label' => 'Editar',
+
+                'modal' => [
+
+                    'heading' => 'Editar bloque',
+
+                    'actions' => [
+
+                        'save' => [
+                            'label' => 'Guardar cambios',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'reorder' => [
@@ -70,6 +122,134 @@ return [
 
     ],
 
+    'file_upload' => [
+
+        'editor' => [
+
+            'actions' => [
+
+                'cancel' => [
+                    'label' => 'Cancelar',
+                ],
+
+                'drag_crop' => [
+                    'label' => 'Modo de arrastre "recortar"',
+                ],
+
+                'drag_move' => [
+                    'label' => 'Modo de arrastre "mover"',
+                ],
+
+                'flip_horizontal' => [
+                    'label' => 'Voltear imagen horizontalmente',
+                ],
+
+                'flip_vertical' => [
+                    'label' => 'Voltear imagen verticalmente',
+                ],
+
+                'move_down' => [
+                    'label' => 'Mover imagen hacia abajo',
+                ],
+
+                'move_left' => [
+                    'label' => 'Mover imagen a la izquierda',
+                ],
+
+                'move_right' => [
+                    'label' => 'Mover imagen a la derecha',
+                ],
+
+                'move_up' => [
+                    'label' => 'Mover imagen hacia arriba',
+                ],
+
+                'reset' => [
+                    'label' => 'Reiniciar',
+                ],
+
+                'rotate_left' => [
+                    'label' => 'Girar imagen a la izquierda',
+                ],
+
+                'rotate_right' => [
+                    'label' => 'Girar imagen a la derecha',
+                ],
+
+                'set_aspect_ratio' => [
+                    'label' => 'Establecer relación de aspecto a :ratio',
+                ],
+
+                'save' => [
+                    'label' => 'Guardar',
+                ],
+
+                'zoom_100' => [
+                    'label' => 'Ampliar imagen al 100%',
+                ],
+
+                'zoom_in' => [
+                    'label' => 'Acercarse',
+                ],
+
+                'zoom_out' => [
+                    'label' => 'Alejarse',
+                ],
+
+            ],
+
+            'fields' => [
+
+                'height' => [
+                    'label' => 'Altura',
+                    'unit' => 'px',
+                ],
+
+                'rotation' => [
+                    'label' => 'Rotación',
+                    'unit' => 'grados',
+                ],
+
+                'width' => [
+                    'label' => 'Ancho',
+                    'unit' => 'px',
+                ],
+
+                'x_position' => [
+                    'label' => 'X',
+                    'unit' => 'px',
+                ],
+
+                'y_position' => [
+                    'label' => 'Y',
+                    'unit' => 'px',
+                ],
+
+            ],
+
+            'aspect_ratios' => [
+
+                'label' => 'Relaciones de aspecto',
+
+                'no_fixed' => [
+                    'label' => 'Libre',
+                ],
+
+            ],
+
+            'svg' => [
+
+                'messages' => [
+                    'confirmation' => 'No se recomienda editar archivos SVG ya que puede provocar una pérdida de calidad al escalar.\n ¿Está seguro de que desea continuar?',
+                    'disabled' => 'La edición de archivos SVG está deshabilitada ya que puede provocar una pérdida de calidad al escalar.',
+                ],
+
+            ],
+
+        ],
+
+    ],
+
     'key_value' => [
 
         'actions' => [
@@ -111,15 +291,22 @@ return [
             'bullet_list' => 'Viñetas',
             'code_block' => 'Bloque de código',
             'heading' => 'Encabezado',
-            'edit' => 'Escribir',
             'italic' => 'Cursiva',
             'link' => 'Enlace',
             'ordered_list' => 'Lista numerada',
-            'preview' => 'Vista previa',
             'strike' => 'Tachado',
             'redo' => 'Rehacer',
             'table' => 'Tabla',
             'undo' => 'Deshacer',
+        ],
+
+    ],
+
+    'radio' => [
+
+        'boolean' => [
+            'true' => 'Sí',
+            'false' => 'No',
         ],
 
     ],
@@ -130,6 +317,10 @@ return [
 
             'add' => [
                 'label' => 'Añadir a :label',
+            ],
+
+            'add_between' => [
+                'label' => 'Insertar entre',
             ],
 
             'delete' => [
@@ -217,6 +408,8 @@ return [
 
             'create_option' => [
 
+                'label' => 'Crear',
+
                 'modal' => [
 
                     'heading' => 'Nuevo',
@@ -226,6 +419,7 @@ return [
                         'create' => [
                             'label' => 'Crear',
                         ],
+
                         'create_another' => [
                             'label' => 'Crear y crear otro',
                         ],
@@ -237,6 +431,8 @@ return [
             ],
 
             'edit_option' => [
+
+                'label' => 'Editar',
 
                 'modal' => [
 
@@ -277,6 +473,31 @@ return [
 
     'tags_input' => [
         'placeholder' => 'Nueva etiqueta',
+    ],
+
+    'text_input' => [
+
+        'actions' => [
+
+            'hide_password' => [
+                'label' => 'Ocultar contraseña',
+            ],
+
+            'show_password' => [
+                'label' => 'Mostrar contraseña',
+            ],
+
+        ],
+
+    ],
+
+    'toggle_buttons' => [
+
+        'boolean' => [
+            'true' => 'Sí',
+            'false' => 'No',
+        ],
+
     ],
 
     'wizard' => [

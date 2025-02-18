@@ -2,16 +2,19 @@
 
 namespace Filament\Actions;
 
+use Exception;
 use Filament\Actions\Contracts\HasLivewire;
 use Filament\Support\Components\ViewComponent;
 use Filament\Support\Concerns\HasBadge;
 use Filament\Support\Concerns\HasColor;
 use Filament\Support\Concerns\HasExtraAttributes;
 use Filament\Support\Concerns\HasIcon;
+use Filament\Support\Facades\FilamentIcon;
 use Livewire\Component;
 
 class ActionGroup extends ViewComponent implements HasLivewire
 {
+    use Concerns\BelongsToGroup;
     use Concerns\CanBeHidden {
         isHidden as baseIsHidden;
     }
@@ -48,6 +51,8 @@ class ActionGroup extends ViewComponent implements HasLivewire
      * @var array<string, StaticAction>
      */
     protected array $flatActions;
+
+    protected Component $livewire;
 
     protected string $evaluationIdentifier = 'group';
 
@@ -88,6 +93,8 @@ class ActionGroup extends ViewComponent implements HasLivewire
         $this->flatActions = [];
 
         foreach ($actions as $action) {
+            $action->group($this);
+
             if ($action instanceof ActionGroup) {
                 $action->dropdownPlacement('right-top');
 
@@ -112,9 +119,7 @@ class ActionGroup extends ViewComponent implements HasLivewire
 
     public function button(): static
     {
-        $this->view(static::BUTTON_VIEW);
-
-        return $this;
+        return $this->view(static::BUTTON_VIEW);
     }
 
     public function isButton(): bool
@@ -124,16 +129,12 @@ class ActionGroup extends ViewComponent implements HasLivewire
 
     public function grouped(): static
     {
-        $this->view(static::GROUPED_VIEW);
-
-        return $this;
+        return $this->view(static::GROUPED_VIEW);
     }
 
     public function iconButton(): static
     {
-        $this->view(static::ICON_BUTTON_VIEW);
-
-        return $this;
+        return $this->view(static::ICON_BUTTON_VIEW);
     }
 
     public function isIconButton(): bool
@@ -143,9 +144,7 @@ class ActionGroup extends ViewComponent implements HasLivewire
 
     public function link(): static
     {
-        $this->view(static::LINK_VIEW);
-
-        return $this;
+        return $this->view(static::LINK_VIEW);
     }
 
     public function isLink(): bool
@@ -155,15 +154,24 @@ class ActionGroup extends ViewComponent implements HasLivewire
 
     public function livewire(Component $livewire): static
     {
-        foreach ($this->actions as $action) {
-            if (! $action instanceof HasLivewire) {
-                continue;
-            }
-
-            $action->livewire($livewire);
-        }
+        $this->livewire = $livewire;
 
         return $this;
+    }
+
+    public function getLivewire(): object
+    {
+        if (isset($this->livewire)) {
+            return $this->livewire;
+        }
+
+        $group = $this->getGroup();
+
+        if (! ($group instanceof HasLivewire)) {
+            throw new Exception('This action group does not belong to a Livewire component.');
+        }
+
+        return $group->getLivewire();
     }
 
     public function getLabel(): string
@@ -194,19 +202,17 @@ class ActionGroup extends ViewComponent implements HasLivewire
 
     public function getIcon(): string
     {
-        return $this->getBaseIcon() ?? 'heroicon-m-ellipsis-vertical';
+        return $this->getBaseIcon() ?? FilamentIcon::resolve('actions::action-group') ?? 'heroicon-m-ellipsis-vertical';
     }
 
     public function isHidden(): bool
     {
-        $condition = $this->baseIsHidden();
-
-        if ($condition) {
+        if ($this->baseIsHidden()) {
             return true;
         }
 
         foreach ($this->getActions() as $action) {
-            if ($action->isHidden()) {
+            if ($action->isHiddenInGroup()) {
                 continue;
             }
 

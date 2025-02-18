@@ -2,6 +2,7 @@
 
 namespace Filament\Commands;
 
+use Filament\Clusters\Cluster;
 use Filament\Facades\Filament;
 use Filament\Forms\Commands\Concerns\CanGenerateForms;
 use Filament\Panel;
@@ -11,10 +12,12 @@ use Filament\Support\Commands\Concerns\CanReadModelSchemas;
 use Filament\Tables\Commands\Concerns\CanGenerateTables;
 use Illuminate\Console\Command;
 use Illuminate\Support\Arr;
+use Symfony\Component\Console\Attribute\AsCommand;
 
 use function Laravel\Prompts\select;
 use function Laravel\Prompts\text;
 
+#[AsCommand(name: 'make:filament-resource')]
 class MakeResourceCommand extends Command
 {
     use CanGenerateForms;
@@ -25,7 +28,7 @@ class MakeResourceCommand extends Command
 
     protected $description = 'Create a new Filament resource class and default page classes';
 
-    protected $signature = 'make:filament-resource {name?} {--soft-deletes} {--view} {--G|generate} {--S|simple} {--panel=} {--F|force}';
+    protected $signature = 'make:filament-resource {name?} {--model-namespace=} {--soft-deletes} {--view} {--G|generate} {--S|simple} {--panel=} {--model} {--migration} {--factory} {--F|force}';
 
     public function handle(): int
     {
@@ -46,8 +49,34 @@ class MakeResourceCommand extends Command
             $model = 'Resource';
         }
 
+        $modelNamespace = $this->option('model-namespace') ?? 'App\\Models';
+
+        if ($this->option('model')) {
+            $this->callSilently('make:model', [
+                'name' => "{$modelNamespace}\\{$model}",
+            ]);
+        }
+
+        if ($this->option('migration')) {
+            $table = (string) str($model)
+                ->classBasename()
+                ->pluralStudly()
+                ->snake();
+
+            $this->call('make:migration', [
+                'name' => "create_{$table}_table",
+                '--create' => $table,
+            ]);
+        }
+
+        if ($this->option('factory')) {
+            $this->callSilently('make:factory', [
+                'name' => $model,
+            ]);
+        }
+
         $modelClass = (string) str($model)->afterLast('\\');
-        $modelNamespace = str($model)->contains('\\') ?
+        $modelSubNamespace = str($model)->contains('\\') ?
             (string) str($model)->beforeLast('\\') :
             '';
         $pluralModelClass = (string) str($modelClass)->pluralStudly();
@@ -56,7 +85,7 @@ class MakeResourceCommand extends Command
         $panel = $this->option('panel');
 
         if ($panel) {
-            $panel = Filament::getPanel($panel);
+            $panel = Filament::getPanel($panel, isStrict: false);
         }
 
         if (! $panel) {
@@ -76,6 +105,13 @@ class MakeResourceCommand extends Command
         $resourceDirectories = $panel->getResourceDirectories();
         $resourceNamespaces = $panel->getResourceNamespaces();
 
+        foreach ($resourceDirectories as $resourceIndex => $resourceDirectory) {
+            if (str($resourceDirectory)->startsWith(base_path('vendor'))) {
+                unset($resourceDirectories[$resourceIndex]);
+                unset($resourceNamespaces[$resourceIndex]);
+            }
+        }
+
         $namespace = (count($resourceNamespaces) > 1) ?
             select(
                 label: 'Which namespace would you like to create this in?',
@@ -88,7 +124,7 @@ class MakeResourceCommand extends Command
 
         $resource = "{$model}Resource";
         $resourceClass = "{$modelClass}Resource";
-        $resourceNamespace = $modelNamespace;
+        $resourceNamespace = $modelSubNamespace;
         $namespace .= $resourceNamespace !== '' ? "\\{$resourceNamespace}" : '';
         $listResourcePageClass = "List{$pluralModelClass}";
         $manageResourcePageClass = "Manage{$pluralModelClass}";
@@ -184,13 +220,26 @@ class MakeResourceCommand extends Command
 
         $tableBulkActions = implode(PHP_EOL, $tableBulkActions);
 
+        $potentialCluster = (string) str($namespace)->beforeLast('\Resources');
+        $clusterAssignment = null;
+        $clusterImport = null;
+
+        if (
+            class_exists($potentialCluster) &&
+            is_subclass_of($potentialCluster, Cluster::class)
+        ) {
+            $clusterAssignment = $this->indentString(PHP_EOL . PHP_EOL . 'protected static ?string $cluster = ' . class_basename($potentialCluster) . '::class;');
+            $clusterImport = "use {$potentialCluster};" . PHP_EOL;
+        }
+
         $this->copyStubToApp('Resource', $resourcePath, [
+            'clusterAssignment' => $clusterAssignment,
+            'clusterImport' => $clusterImport,
             'eloquentQuery' => $this->indentString($eloquentQuery, 1),
             'formSchema' => $this->indentString($this->option('generate') ? $this->getResourceFormSchema(
-                'App\\Models' . ($modelNamespace !== '' ? "\\{$modelNamespace}" : '') . '\\' . $modelClass,
+                $modelNamespace . ($modelSubNamespace !== '' ? "\\{$modelSubNamespace}" : '') . '\\' . $modelClass,
             ) : '//', 4),
-            'model' => $model === 'Resource' ? 'Resource as ResourceModel' : $model,
-            'modelClass' => $model === 'Resource' ? 'ResourceModel' : $modelClass,
+            ...$this->generateModel($model, $modelNamespace, $modelClass),
             'namespace' => $namespace,
             'pages' => $this->indentString($pages, 3),
             'relations' => $this->indentString($relations, 1),
@@ -199,7 +248,7 @@ class MakeResourceCommand extends Command
             'tableActions' => $this->indentString($tableActions, 4),
             'tableBulkActions' => $this->indentString($tableBulkActions, 5),
             'tableColumns' => $this->indentString($this->option('generate') ? $this->getResourceTableColumns(
-                'App\Models' . ($modelNamespace !== '' ? "\\{$modelNamespace}" : '') . '\\' . $modelClass,
+                $modelNamespace . ($modelSubNamespace !== '' ? "\\{$modelSubNamespace}" : '') . '\\' . $modelClass,
             ) : '//', 4),
             'tableFilters' => $this->indentString(
                 $this->option('soft-deletes') ? 'Tables\Filters\TrashedFilter::make(),' : '//',
@@ -273,5 +322,24 @@ class MakeResourceCommand extends Command
         $this->components->info("Filament resource [{$resourcePath}] created successfully.");
 
         return static::SUCCESS;
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    protected function generateModel(string $model, string $modelNamespace, string $modelClass): array
+    {
+        $possibilities = ['Form', 'Table', 'Resource'];
+        $params = [];
+
+        if (in_array($model, $possibilities)) {
+            $params['model'] = "{$modelNamespace}\\{$model} as {$model}Model";
+            $params['modelClass'] = $model . 'Model';
+        } else {
+            $params['model'] = "{$modelNamespace}\\{$model}";
+            $params['modelClass'] = $modelClass;
+        }
+
+        return $params;
     }
 }

@@ -10,6 +10,7 @@ use Filament\Infolists\Infolist;
 use Filament\Support\Concerns\ResolvesDynamicLivewireProperties;
 use Filament\Support\Contracts\TranslatableContentDriver;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Support\Arr;
 use Illuminate\Validation\ValidationException;
 use Livewire\Attributes\Renderless;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
@@ -46,6 +47,51 @@ trait InteractsWithForms
     {
         foreach ($this->getCachedForms() as $form) {
             $form->dispatchEvent(...$args);
+        }
+    }
+
+    /**
+     * @param  array<mixed>  $state
+     */
+    public function fillFormDataForTesting(array $state = []): void
+    {
+        if (! app()->runningUnitTests()) {
+            return;
+        }
+
+        foreach (Arr::dot($state) as $statePath => $value) {
+            $this->updatingInteractsWithForms($statePath);
+
+            data_set($this, $statePath, $value);
+
+            $this->updatedInteractsWithForms($statePath);
+        }
+
+        foreach ($state as $statePath => $value) {
+            if (! is_array($value)) {
+                continue;
+            }
+
+            $this->unsetMissingNumericArrayKeys($this->{$statePath}, $value);
+        }
+    }
+
+    /**
+     * @param  array<mixed>  $target
+     * @param  array<mixed>  $state
+     */
+    protected function unsetMissingNumericArrayKeys(array &$target, array $state): void
+    {
+        foreach ($target as $key => $value) {
+            if (is_numeric($key) && (! array_key_exists($key, $state))) {
+                unset($target[$key]);
+
+                continue;
+            }
+
+            if (is_array($value) && is_array($state[$key] ?? null)) {
+                $this->unsetMissingNumericArrayKeys($target[$key], $state[$key]);
+            }
         }
     }
 
@@ -172,14 +218,10 @@ trait InteractsWithForms
         } catch (ValidationException $exception) {
             $this->onValidationError($exception);
 
-            $this->dispatch('expand-concealing-component');
+            $this->dispatch('form-validation-error', livewireId: $this->getId());
 
             throw $exception;
         }
-    }
-
-    protected function onValidationError(ValidationException $exception): void
-    {
     }
 
     /**
@@ -197,10 +239,25 @@ trait InteractsWithForms
         } catch (ValidationException $exception) {
             $this->onValidationError($exception);
 
-            $this->dispatch('expand-concealing-component');
+            $this->dispatch('form-validation-error', livewireId: $this->getId());
 
             throw $exception;
         }
+    }
+
+    protected function onValidationError(ValidationException $exception): void {}
+
+    /**
+     * @param  array<string, mixed>  $attributes
+     * @return array<string, mixed>
+     */
+    protected function prepareForValidation($attributes): array
+    {
+        foreach ($this->getCachedForms() as $form) {
+            $attributes = $form->mutateStateForValidation($attributes);
+        }
+
+        return $attributes;
     }
 
     /**
@@ -229,12 +286,15 @@ trait InteractsWithForms
 
     public function updatingInteractsWithForms(string $statePath): void
     {
-        $this->oldFormState[$statePath] = data_get($this, $statePath);
+        $statePath = (string) str($statePath)->before('.');
+
+        // https://github.com/filamentphp/filament/pull/13973
+        $this->oldFormState[$statePath] ??= data_get($this, $statePath);
     }
 
     public function getOldFormState(string $statePath): mixed
     {
-        return $this->oldFormState[$statePath] ?? null;
+        return data_get($this->oldFormState, $statePath);
     }
 
     public function updatedInteractsWithForms(string $statePath): void
@@ -282,7 +342,7 @@ trait InteractsWithForms
                 if (! method_exists($this, $form)) {
                     $livewireClass = $this::class;
 
-                    throw new Exception("Form configuration method [{$formName}()] is missing from Livewire component [{$livewireClass}].");
+                    throw new Exception("Form configuration method [{$form}()] is missing from Livewire component [{$livewireClass}].");
                 }
 
                 return [$form => $this->{$form}($this->makeForm())];

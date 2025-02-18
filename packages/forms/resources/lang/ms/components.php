@@ -11,15 +11,67 @@ return [
             ],
 
             'add' => [
+
                 'label' => 'Tambah ke :label',
+
+                'modal' => [
+
+                    'heading' => 'Tambah ke :label',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => 'Tambah',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'add_between' => [
+
                 'label' => 'Masukkan',
+
+                'modal' => [
+
+                    'heading' => 'Add to :label',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => 'Tambah',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'delete' => [
                 'label' => 'Padam',
+            ],
+
+            'edit' => [
+
+                'label' => 'Sunting',
+
+                'modal' => [
+
+                    'heading' => 'Sunting blok',
+
+                    'actions' => [
+
+                        'save' => [
+                            'label' => 'Simpan perubahan',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'reorder' => [
@@ -250,6 +302,15 @@ return [
 
     ],
 
+    'radio' => [
+
+        'boolean' => [
+            'true' => 'Ya',
+            'false' => 'Tidak',
+        ],
+
+    ],
+
     'repeater' => [
 
         'actions' => [
@@ -346,6 +407,7 @@ return [
         'actions' => [
 
             'create_option' => [
+                'label' => 'Cipta',
 
                 'modal' => [
 
@@ -368,6 +430,7 @@ return [
             ],
 
             'edit_option' => [
+                'label' => 'Sunting',
 
                 'modal' => [
 
@@ -408,6 +471,31 @@ return [
 
     'tags_input' => [
         'placeholder' => 'Tag baru',
+    ],
+
+    'text_input' => [
+
+        'actions' => [
+
+            'hide_password' => [
+                'label' => 'Sembunyikan kata laluan',
+            ],
+
+            'show_password' => [
+                'label' => 'Tunjukkan kata laluan',
+            ],
+
+        ],
+
+    ],
+
+    'toggle_buttons' => [
+
+        'boolean' => [
+            'true' => 'Ya',
+            'false' => 'Tidak',
+        ],
+
     ],
 
     'wizard' => [
