@@ -4,7 +4,7 @@ return [
 
     'label' => 'Lapozás',
 
-    'overview' => ':first / :last megjelenítve a(z) :total találatból',
+    'overview' => '{1} 1 találat|[2,*] :first - :last megjelenítve a(z) :total találatból',
 
     'fields' => [
 
@@ -15,14 +15,23 @@ return [
             'options' => [
                 'all' => 'Összes',
             ],
+
         ],
 
     ],
 
     'actions' => [
 
+        'first' => [
+            'label' => 'Első',
+        ],
+
         'go_to_page' => [
             'label' => 'Ugrás az oldalra: :page',
+        ],
+
+        'last' => [
+            'label' => 'Utolsó',
         ],
 
         'next' => [

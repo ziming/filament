@@ -1,4 +1,6 @@
 @php
+    use Filament\Support\Facades\FilamentView;
+
     $canSelectPlaceholder = $canSelectPlaceholder();
     $isDisabled = $isDisabled();
     $isPrefixInline = $isPrefixInline();
@@ -12,7 +14,11 @@
     $statePath = $getStatePath();
 @endphp
 
-<x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
+<x-dynamic-component
+    :component="$getFieldWrapperView()"
+    :field="$field"
+    :inline-label-vertical-alignment="\Filament\Support\Enums\VerticalAlignment::Center"
+>
     <x-filament::input.wrapper
         :disabled="$isDisabled"
         :inline-prefix="$isPrefixInline"
@@ -26,8 +32,10 @@
         :suffix-icon="$suffixIcon"
         :suffix-icon-color="$getSuffixIconColor()"
         :valid="! $errors->has($statePath)"
-        class="fi-fo-select"
-        :attributes="\Filament\Support\prepare_inherited_attributes($getExtraAttributeBag())"
+        :attributes="
+            \Filament\Support\prepare_inherited_attributes($getExtraAttributeBag())
+                ->class(['fi-fo-select'])
+        "
     >
         @if ((! ($isSearchable() || $isMultiple()) && $isNative()))
             <x-filament::input.select
@@ -36,7 +44,7 @@
                 :id="$getId()"
                 :inline-prefix="$isPrefixInline && (count($prefixActions) || $prefixIcon || filled($prefixLabel))"
                 :inline-suffix="$isSuffixInline && (count($suffixActions) || $suffixIcon || filled($suffixLabel))"
-                :required="$isRequired() && ((bool) $isConcealed())"
+                :required="$isRequired() && (! $isConcealed())"
                 :attributes="
                     $getExtraInputAttributeBag()
                         ->merge([
@@ -88,9 +96,26 @@
             </x-filament::input.select>
         @else
             <div
-                x-ignore
-                ax-load
-                ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('select', 'filament/forms') }}"
+                class="hidden"
+                x-data="{
+                    isDisabled: @js($isDisabled),
+                    init: function () {
+                        const container = $el.nextElementSibling
+                        container.dispatchEvent(
+                            new CustomEvent('set-select-property', {
+                                detail: { isDisabled: this.isDisabled },
+                            }),
+                        )
+                    },
+                }"
+            ></div>
+            <div
+                @if (FilamentView::hasSpaMode())
+                    {{-- format-ignore-start --}}x-load="visible || event (ax-modal-opened)"{{-- format-ignore-end --}}
+                @else
+                    x-load
+                @endif
+                x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('select', 'filament/forms') }}"
                 x-data="selectFormComponent({
                             canSelectPlaceholder: @js($canSelectPlaceholder),
                             isHtmlAllowed: @js($isHtmlAllowed()),
@@ -129,9 +154,9 @@
                         })"
                 wire:ignore
                 x-on:keydown.esc="select.dropdown.isActive && $event.stopPropagation()"
+                x-on:set-select-property="$event.detail.isDisabled ? select.disable() : select.enable()"
                 {{
                     $attributes
-                        ->merge($getExtraAttributes(), escape: false)
                         ->merge($getExtraAlpineAttributes(), escape: false)
                         ->class([
                             '[&_.choices\_\_inner]:ps-0' => $isPrefixInline && (count($prefixActions) || $prefixIcon || filled($prefixLabel)),
@@ -147,6 +172,9 @@
                                 'id' => $getId(),
                                 'multiple' => $isMultiple(),
                             ], escape: false)
+                            ->class([
+                                'h-9 w-full rounded-lg border-none bg-transparent !bg-none',
+                            ])
                     }}
                 ></select>
             </div>

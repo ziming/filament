@@ -11,15 +11,67 @@ return [
             ],
 
             'add' => [
+
                 'label' => 'Lisää :label',
+
+                'modal' => [
+
+                    'heading' => 'Lisää :label',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => 'Lisää',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'add_between' => [
-                'label' => 'Sijoita',
+
+                'label' => 'Lisää lohkon väliin',
+
+                'modal' => [
+
+                    'heading' => 'Lisää :label',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => 'Lisää',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'delete' => [
                 'label' => 'Poista',
+            ],
+
+            'edit' => [
+
+                'label' => 'Muokkaa',
+
+                'modal' => [
+
+                    'heading' => 'Muokkaa lohkoa',
+
+                    'actions' => [
+
+                        'save' => [
+                            'label' => 'Tallenna muutokset',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'reorder' => [
@@ -185,6 +237,15 @@ return [
 
             ],
 
+            'svg' => [
+
+                'messages' => [
+                    'confirmation' => 'SVG-tiedostojen muokkausta ei suositella, koska laatu voi heikentyä kokoa muuttaessa.\n Oletko varma että haluat jatkaa?',
+                    'disabled' => 'SVG-tiedostojen muokkaus on poissa käytöstä koska se voi johtaa laadun heikkenemiseen.',
+                ],
+
+            ],
+
         ],
 
     ],
@@ -241,12 +302,25 @@ return [
 
     ],
 
+    'radio' => [
+
+        'boolean' => [
+            'true' => 'Kyllä',
+            'false' => 'Ei',
+        ],
+
+    ],
+
     'repeater' => [
 
         'actions' => [
 
             'add' => [
                 'label' => 'Lisää :label',
+            ],
+
+            'add_between' => [
+                'label' => 'Lisää väliin',
             ],
 
             'delete' => [
@@ -395,6 +469,31 @@ return [
 
     'tags_input' => [
         'placeholder' => 'Uusi tunniste',
+    ],
+
+    'text_input' => [
+
+        'actions' => [
+
+            'hide_password' => [
+                'label' => 'Piilota salasana',
+            ],
+
+            'show_password' => [
+                'label' => 'Näytä salasana',
+            ],
+
+        ],
+
+    ],
+
+    'toggle_buttons' => [
+
+        'boolean' => [
+            'true' => 'Kyllä',
+            'false' => 'Ei',
+        ],
+
     ],
 
     'wizard' => [

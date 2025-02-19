@@ -10,8 +10,19 @@ return [
 
     'columns' => [
 
+        'actions' => [
+            'label' => 'Ação|Ações',
+        ],
+
         'text' => [
-            'more_list_items' => 'e :count mais',
+
+            'actions' => [
+                'collapse_list' => 'Mostrar menos :count',
+                'expand_list' => 'Mostrar mais :count',
+            ],
+
+            'more_list_items' => 'e mais :count',
+
         ],
 
     ],
@@ -104,6 +115,10 @@ return [
     'filters' => [
 
         'actions' => [
+
+            'apply' => [
+                'label' => 'Aplicar filtros',
+            ],
 
             'remove' => [
                 'label' => 'Remover filtro',

@@ -1,13 +1,6 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+@import 'tailwindcss/base';
+@import 'tailwindcss/components';
+@import 'tailwindcss/utilities';
+@import 'tailwindcss/variants';
 
-@layer base {
-    html {
-        -webkit-tap-highlight-color: transparent;
-    }
-
-    :root.dark {
-        color-scheme: dark;
-    }
-}
+@import 'base.css';

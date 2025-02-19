@@ -2,6 +2,10 @@
 //   node script.js
 //   node script.js "absolute/schema/key"
 //   node script.js "wildcard/schema/key/*"
+//
+// For Apple Silicon, you might need to export the following variables if Chromium cannot be found:
+// export PUPPETEER_SKIP_CHROMIUM_DOWNLOAD=true
+// export PUPPETEER_EXECUTABLE_PATH=`which chromium`
 
 import fs from 'fs'
 import puppeteer from 'puppeteer'
@@ -44,6 +48,15 @@ const processScreenshot = async (file, options, theme) => {
                 name: 'prefers-color-scheme',
                 value: 'dark',
             },
+        ])
+
+        await new Promise((resolve) => setTimeout(resolve, 500))
+    } else {
+        await page.emulateMediaFeatures([
+            {
+                name: 'prefers-color-scheme',
+                value: 'light'
+            }
         ])
 
         await new Promise((resolve) => setTimeout(resolve, 500))
