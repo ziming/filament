@@ -21,14 +21,14 @@ class DownloadExport
             abort_unless($export->user()->is(auth()->user()), 403);
         }
 
-        $format = $this->getFormatFromRequest($request);
+        $format = $this->resolveFormatFromRequest($request);
 
         abort_unless($format !== null, 404);
 
         return $format->getDownloader()($export);
     }
 
-     protected function getFormatFromRequest(Request $request): ?ExportFormatInterface
+     protected function resolveFormatFromRequest(Request $request): ?ExportFormatInterface
      {
         return ExportFormat::tryFrom($request->query('format'));
      }
