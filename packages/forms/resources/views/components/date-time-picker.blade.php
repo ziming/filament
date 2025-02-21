@@ -1,10 +1,15 @@
 @php
+    use Filament\Support\Facades\FilamentView;
+
     $datalistOptions = $getDatalistOptions();
     $extraAlpineAttributes = $getExtraAlpineAttributes();
+    $hasTime = $hasTime();
     $id = $getId();
     $isDisabled = $isDisabled();
     $isPrefixInline = $isPrefixInline();
     $isSuffixInline = $isSuffixInline();
+    $maxDate = $getMaxDate();
+    $minDate = $getMinDate();
     $prefixActions = $getPrefixActions();
     $prefixIcon = $getPrefixIcon();
     $prefixLabel = $getPrefixLabel();
@@ -14,7 +19,11 @@
     $statePath = $getStatePath();
 @endphp
 
-<x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
+<x-dynamic-component
+    :component="$getFieldWrapperView()"
+    :field="$field"
+    :inline-label-vertical-alignment="\Filament\Support\Enums\VerticalAlignment::Center"
+>
     <x-filament::input.wrapper
         :disabled="$isDisabled"
         :inline-prefix="$isPrefixInline"
@@ -42,11 +51,11 @@
                             'inlinePrefix' => $isPrefixInline && (count($prefixActions) || $prefixIcon || filled($prefixLabel)),
                             'inlineSuffix' => $isSuffixInline && (count($suffixActions) || $suffixIcon || filled($suffixLabel)),
                             'list' => $datalistOptions ? $id . '-list' : null,
-                            'max' => (! $isConcealed) ? $getMaxDate() : null,
-                            'min' => (! $isConcealed) ? $getMinDate() : null,
+                            'max' => $hasTime ? $maxDate : ($maxDate ? \Carbon\Carbon::parse($maxDate)->toDateString() : null),
+                            'min' => $hasTime ? $minDate : ($minDate ? \Carbon\Carbon::parse($minDate)->toDateString() : null),
                             'placeholder' => $getPlaceholder(),
                             'readonly' => $isReadOnly(),
-                            'required' => $isRequired() && (! $isConcealed),
+                            'required' => $isRequired() && (! $isConcealed()),
                             'step' => $getStep(),
                             'type' => $getType(),
                             $applyStateBindingModifiers('wire:model') => $statePath,
@@ -56,15 +65,18 @@
             />
         @else
             <div
-                x-ignore
-                ax-load
-                ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('date-time-picker', 'filament/forms') }}"
+                @if (FilamentView::hasSpaMode())
+                    {{-- format-ignore-start --}}x-load="visible || event (ax-modal-opened)"{{-- format-ignore-end --}}
+                @else
+                    x-load
+                @endif
+                x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('date-time-picker', 'filament/forms') }}"
                 x-data="dateTimePickerFormComponent({
                             displayFormat:
                                 '{{ convert_date_format($getDisplayFormat())->to('day.js') }}',
                             firstDayOfWeek: {{ $getFirstDayOfWeek() }},
                             isAutofocused: @js($isAutofocused()),
-                            locale: @js(app()->getLocale()),
+                            locale: @js($getLocale()),
                             shouldCloseOnDateSelection: @js($shouldCloseOnDateSelection()),
                             state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')") }},
                         })"
@@ -76,17 +88,9 @@
                         ->class(['fi-fo-date-time-picker'])
                 }}
             >
-                <input
-                    x-ref="maxDate"
-                    type="hidden"
-                    value="{{ $getMaxDate() }}"
-                />
+                <input x-ref="maxDate" type="hidden" value="{{ $maxDate }}" />
 
-                <input
-                    x-ref="minDate"
-                    type="hidden"
-                    value="{{ $getMinDate() }}"
-                />
+                <input x-ref="minDate" type="hidden" value="{{ $minDate }}" />
 
                 <input
                     x-ref="disabledDates"
@@ -112,7 +116,7 @@
                     aria-label="{{ $getPlaceholder() }}"
                     type="button"
                     tabindex="-1"
-                    @disabled($isDisabled)
+                    @disabled($isDisabled || $isReadOnly())
                     {{
                         $getExtraTriggerAttributeBag()->class([
                             'w-full',
@@ -127,7 +131,7 @@
                         x-model="displayText"
                         @if ($id = $getId()) id="{{ $id }}" @endif
                         @class([
-                            'w-full border-none bg-transparent px-3 py-1.5 text-base text-gray-950 outline-none transition duration-75 placeholder:text-gray-400 focus:ring-0 disabled:text-gray-500 disabled:[-webkit-text-fill-color:theme(colors.gray.500)] dark:text-white dark:placeholder:text-gray-500 dark:disabled:text-gray-400 dark:disabled:[-webkit-text-fill-color:theme(colors.gray.400)] sm:text-sm sm:leading-6',
+                            'fi-fo-date-time-picker-display-text-input w-full border-none bg-transparent px-3 py-1.5 text-base text-gray-950 outline-none transition duration-75 placeholder:text-gray-400 focus:ring-0 disabled:text-gray-500 disabled:[-webkit-text-fill-color:theme(colors.gray.500)] dark:text-white dark:placeholder:text-gray-500 dark:disabled:text-gray-400 dark:disabled:[-webkit-text-fill-color:theme(colors.gray.400)] sm:text-sm sm:leading-6',
                         ])
                     />
                 </button>
@@ -181,7 +185,7 @@
 
                             <div
                                 role="grid"
-                                class="grid grid-cols-[repeat(7,_theme(spacing.7))] gap-1"
+                                class="grid grid-cols-[repeat(7,minmax(theme(spacing.7),1fr))] gap-1"
                             >
                                 <template
                                     x-for="day in emptyDaysInFocusedMonth"
@@ -209,11 +213,13 @@
                                                 focusedDate.date() !== day &&
                                                 ! dayIsDisabled(day),
                                             'bg-gray-50 dark:bg-white/5':
-                                                focusedDate.date() === day && ! dayIsSelected(day),
+                                                focusedDate.date() === day &&
+                                                ! dayIsSelected(day) &&
+                                                ! dayIsDisabled(day),
                                             'text-primary-600 bg-gray-50 dark:bg-white/5 dark:text-primary-400':
                                                 dayIsSelected(day),
                                             'pointer-events-none': dayIsDisabled(day),
-                                            'opacity-50': focusedDate.date() !== day && dayIsDisabled(day),
+                                            'opacity-50': dayIsDisabled(day),
                                         }"
                                         class="rounded-full text-center text-sm leading-loose transition duration-75"
                                     ></div>
@@ -221,7 +227,7 @@
                             </div>
                         @endif
 
-                        @if ($hasTime())
+                        @if ($hasTime)
                             <div
                                 class="flex items-center justify-center rtl:flex-row-reverse"
                             >

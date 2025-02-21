@@ -8,18 +8,18 @@
         <div class="flex flex-col gap-y-6">
             <x-filament-panels::resources.tabs />
 
-            {{ \Filament\Support\Facades\FilamentView::renderHook('panels::resource.pages.manage-related-records.table.before', scopes: $this->getRenderHookScopes()) }}
+            {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::RESOURCE_PAGES_MANAGE_RELATED_RECORDS_TABLE_BEFORE, scopes: $this->getRenderHookScopes()) }}
 
             {{ $this->table }}
 
-            {{ \Filament\Support\Facades\FilamentView::renderHook('panels::resource.pages.manage-related-records.table.after', scopes: $this->getRenderHookScopes()) }}
+            {{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::RESOURCE_PAGES_MANAGE_RELATED_RECORDS_TABLE_AFTER, scopes: $this->getRenderHookScopes()) }}
         </div>
     @endif
 
     @if (count($relationManagers = $this->getRelationManagers()))
         <x-filament-panels::resources.relation-managers
             :active-locale="isset($activeLocale) ? $activeLocale : null"
-            :active-manager="$activeRelationManager ?? array_key_first($relationManagers)"
+            :active-manager="$this->activeRelationManager ?? array_key_first($relationManagers)"
             :managers="$relationManagers"
             :owner-record="$record"
             :page-class="static::class"

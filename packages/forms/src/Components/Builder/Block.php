@@ -12,8 +12,11 @@ class Block extends Component
     use Concerns\HasName {
         getLabel as getDefaultLabel;
     }
+    use Concerns\HasPreview;
 
     protected string | Closure | null $icon = null;
+
+    protected int | Closure | null $maxItems = null;
 
     final public function __construct(string $name)
     {
@@ -38,6 +41,18 @@ class Block extends Component
     public function getIcon(): ?string
     {
         return $this->evaluate($this->icon);
+    }
+
+    public function maxItems(int | Closure | null $maxItems): static
+    {
+        $this->maxItems = $maxItems;
+
+        return $this;
+    }
+
+    public function getMaxItems(): ?int
+    {
+        return $this->evaluate($this->maxItems);
     }
 
     /**

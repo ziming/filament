@@ -27,6 +27,13 @@ class Actions extends Page
                 ->action(function (array $data) {
                     $this->dispatch('data-called', data: $data);
                 }),
+            Action::make('before-hook-data')
+                ->form([
+                    TextInput::make('payload')->required(),
+                ])
+                ->before(function (Action $action) {
+                    $this->dispatch('before-hook-called', data: $action->getFormData());
+                }),
             Action::make('arguments')
                 ->requiresConfirmation()
                 ->action(function (array $arguments) {
@@ -52,18 +59,18 @@ class Actions extends Page
             Action::make('enabled'),
             Action::make('disabled')
                 ->disabled(),
-            Action::make('has-icon')
+            Action::make('hasIcon')
                 ->icon('heroicon-m-pencil-square'),
-            Action::make('has-label')
+            Action::make('hasLabel')
                 ->label('My Action'),
-            Action::make('has-color')
+            Action::make('hasColor')
                 ->color('primary'),
             Action::make('exists'),
             Action::make('url')
                 ->url('https://filamentphp.com'),
-            Action::make('url-in-new-tab')
+            Action::make('urlInNewTab')
                 ->url('https://filamentphp.com', true),
-            Action::make('url-not-in-new-tab')
+            Action::make('urlNotInNewTab')
                 ->url('https://filamentphp.com', false),
             Action::make('shows-notification')
                 ->action(function () {

@@ -10,8 +10,19 @@ return [
 
     'columns' => [
 
+        'actions' => [
+            'label' => 'Toiminta|Toiminnat',
+        ],
+
         'text' => [
+
+            'actions' => [
+                'collapse_list' => 'Näytä :count vähemmän',
+                'expand_list' => 'Näytä :count lisää',
+            ],
+
             'more_list_items' => 'ja :count lisää',
+
         ],
 
     ],
@@ -105,6 +116,10 @@ return [
     'filters' => [
 
         'actions' => [
+
+            'apply' => [
+                'label' => 'Käytä suodattimet',
+            ],
 
             'remove' => [
                 'label' => 'Poista suodatin',

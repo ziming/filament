@@ -4,20 +4,25 @@ namespace Filament\Pages\Auth;
 
 use DanHarrin\LivewireRateLimiting\Exceptions\TooManyRequestsException;
 use DanHarrin\LivewireRateLimiting\WithRateLimiting;
+use Exception;
 use Filament\Actions\Action;
 use Filament\Actions\ActionGroup;
+use Filament\Events\Auth\Registered;
 use Filament\Facades\Filament;
 use Filament\Forms\Components\Component;
 use Filament\Forms\Components\TextInput;
 use Filament\Forms\Form;
 use Filament\Http\Responses\Auth\Contracts\RegistrationResponse;
+use Filament\Notifications\Auth\VerifyEmail;
 use Filament\Notifications\Notification;
+use Filament\Pages\Concerns\CanUseDatabaseTransactions;
 use Filament\Pages\Concerns\InteractsWithFormActions;
 use Filament\Pages\SimplePage;
 use Illuminate\Auth\EloquentUserProvider;
-use Illuminate\Auth\Events\Registered;
 use Illuminate\Auth\SessionGuard;
+use Illuminate\Contracts\Auth\MustVerifyEmail;
 use Illuminate\Contracts\Support\Htmlable;
+use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\Hash;
 use Illuminate\Validation\Rules\Password;
 
@@ -26,6 +31,7 @@ use Illuminate\Validation\Rules\Password;
  */
 class Register extends SimplePage
 {
+    use CanUseDatabaseTransactions;
     use InteractsWithFormActions;
     use WithRateLimiting;
 
@@ -47,7 +53,11 @@ class Register extends SimplePage
             redirect()->intended(Filament::getUrl());
         }
 
+        $this->callHook('beforeFill');
+
         $this->form->fill();
+
+        $this->callHook('afterFill');
     }
 
     public function register(): ?RegistrationResponse
@@ -55,36 +65,84 @@ class Register extends SimplePage
         try {
             $this->rateLimit(2);
         } catch (TooManyRequestsException $exception) {
-            Notification::make()
-                ->title(__('filament-panels::pages/auth/register.notifications.throttled.title', [
-                    'seconds' => $exception->secondsUntilAvailable,
-                    'minutes' => ceil($exception->secondsUntilAvailable / 60),
-                ]))
-                ->body(array_key_exists('body', __('filament-panels::pages/auth/register.notifications.throttled') ?: []) ? __('filament-panels::pages/auth/register.notifications.throttled.body', [
-                    'seconds' => $exception->secondsUntilAvailable,
-                    'minutes' => ceil($exception->secondsUntilAvailable / 60),
-                ]) : null)
-                ->danger()
-                ->send();
+            $this->getRateLimitedNotification($exception)?->send();
 
             return null;
         }
 
-        $data = $this->form->getState();
+        $user = $this->wrapInDatabaseTransaction(function () {
+            $this->callHook('beforeValidate');
 
-        $user = $this->getUserModel()::create($data);
+            $data = $this->form->getState();
 
-        app()->bind(
-            \Illuminate\Auth\Listeners\SendEmailVerificationNotification::class,
-            \Filament\Listeners\Auth\SendEmailVerificationNotification::class,
-        );
+            $this->callHook('afterValidate');
+
+            $data = $this->mutateFormDataBeforeRegister($data);
+
+            $this->callHook('beforeRegister');
+
+            $user = $this->handleRegistration($data);
+
+            $this->form->model($user)->saveRelationships();
+
+            $this->callHook('afterRegister');
+
+            return $user;
+        });
+
         event(new Registered($user));
+
+        $this->sendEmailVerificationNotification($user);
 
         Filament::auth()->login($user);
 
         session()->regenerate();
 
         return app(RegistrationResponse::class);
+    }
+
+    protected function getRateLimitedNotification(TooManyRequestsException $exception): ?Notification
+    {
+        return Notification::make()
+            ->title(__('filament-panels::pages/auth/register.notifications.throttled.title', [
+                'seconds' => $exception->secondsUntilAvailable,
+                'minutes' => $exception->minutesUntilAvailable,
+            ]))
+            ->body(array_key_exists('body', __('filament-panels::pages/auth/register.notifications.throttled') ?: []) ? __('filament-panels::pages/auth/register.notifications.throttled.body', [
+                'seconds' => $exception->secondsUntilAvailable,
+                'minutes' => $exception->minutesUntilAvailable,
+            ]) : null)
+            ->danger();
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     */
+    protected function handleRegistration(array $data): Model
+    {
+        return $this->getUserModel()::create($data);
+    }
+
+    protected function sendEmailVerificationNotification(Model $user): void
+    {
+        if (! $user instanceof MustVerifyEmail) {
+            return;
+        }
+
+        if ($user->hasVerifiedEmail()) {
+            return;
+        }
+
+        if (! method_exists($user, 'notify')) {
+            $userClass = $user::class;
+
+            throw new Exception("Model [{$userClass}] does not have a [notify()] method.");
+        }
+
+        $notification = app(VerifyEmail::class);
+        $notification->url = Filament::getVerifyEmailUrl($user);
+
+        $user->notify($notification);
     }
 
     public function form(Form $form): Form
@@ -135,6 +193,7 @@ class Register extends SimplePage
         return TextInput::make('password')
             ->label(__('filament-panels::pages/auth/register.form.password.label'))
             ->password()
+            ->revealable(filament()->arePasswordsRevealable())
             ->required()
             ->rule(Password::default())
             ->dehydrateStateUsing(fn ($state) => Hash::make($state))
@@ -147,6 +206,7 @@ class Register extends SimplePage
         return TextInput::make('passwordConfirmation')
             ->label(__('filament-panels::pages/auth/register.form.password_confirmation.label'))
             ->password()
+            ->revealable(filament()->arePasswordsRevealable())
             ->required()
             ->dehydrated(false);
     }
@@ -204,5 +264,14 @@ class Register extends SimplePage
     protected function hasFullWidthFormActions(): bool
     {
         return true;
+    }
+
+    /**
+     * @param  array<string, mixed>  $data
+     * @return array<string, mixed>
+     */
+    protected function mutateFormDataBeforeRegister(array $data): array
+    {
+        return $data;
     }
 }

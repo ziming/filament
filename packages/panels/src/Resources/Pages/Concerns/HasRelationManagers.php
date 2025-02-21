@@ -2,6 +2,7 @@
 
 namespace Filament\Resources\Pages\Concerns;
 
+use Filament\Resources\Pages\ContentTabPosition;
 use Filament\Resources\RelationManagers\RelationGroup;
 use Filament\Resources\RelationManagers\RelationManager;
 use Filament\Resources\RelationManagers\RelationManagerConfiguration;
@@ -44,15 +45,19 @@ trait HasRelationManagers
         return $manager;
     }
 
-    public function mountHasRelationManagers(): void
+    public function renderingHasRelationManagers(): void
     {
         $managers = $this->getRelationManagers();
 
-        if (array_key_exists($this->activeRelationManager, $managers) || $this->hasCombinedRelationManagerTabsWithContent()) {
+        if (array_key_exists($this->activeRelationManager, $managers)) {
             return;
         }
 
-        $this->activeRelationManager = array_key_first($this->getRelationManagers()) ?? null;
+        if ($this->hasCombinedRelationManagerTabsWithContent()) {
+            return;
+        }
+
+        $this->activeRelationManager = array_key_first($managers);
     }
 
     public function hasCombinedRelationManagerTabsWithContent(): bool
@@ -61,6 +66,16 @@ trait HasRelationManagers
     }
 
     public function getContentTabLabel(): ?string
+    {
+        return null;
+    }
+
+    public function getContentTabIcon(): ?string
+    {
+        return null;
+    }
+
+    public function getContentTabPosition(): ?ContentTabPosition
     {
         return null;
     }

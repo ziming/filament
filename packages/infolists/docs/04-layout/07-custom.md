@@ -7,6 +7,7 @@ import LaracastsBanner from "@components/LaracastsBanner.astro"
     title="Build a Custom Infolist Layout"
     description="Watch the Build Advanced Components for Filament series on Laracasts - it will teach you how to build components, and you'll get to know all the internal tools to help you."
     url="https://laracasts.com/series/build-advanced-components-for-filament/episodes/9"
+    series="building-advanced-components"
 />
 
 ## View components
@@ -27,7 +28,7 @@ You may create your own custom component classes and views, which you can reuse 
 
 > If you're just creating a simple custom component to use once, you could instead use a [view component](#view) to render any custom Blade file.
 
-To create a custom column class and view, you may use the following command:
+To create a custom component class and view, you may use the following command:
 
 ```bash
 php artisan make:infolist-layout Box

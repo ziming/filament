@@ -32,27 +32,7 @@ class Notification {
     }
 
     status(status) {
-        switch (status) {
-            case 'danger':
-                this.danger()
-
-                break
-
-            case 'info':
-                this.info()
-
-                break
-
-            case 'success':
-                this.success()
-
-                break
-
-            case 'warning':
-                this.warning()
-
-                break
-        }
+        this.status = status
 
         return this
     }
@@ -94,29 +74,25 @@ class Notification {
     }
 
     danger() {
-        this.icon('heroicon-o-x-circle')
-        this.iconColor('danger')
+        this.status('danger')
 
         return this
     }
 
     info() {
-        this.icon('heroicon-o-information-circle')
-        this.iconColor('info')
+        this.status('info')
 
         return this
     }
 
     success() {
-        this.icon('heroicon-o-check-circle')
-        this.iconColor('success')
+        this.status('success')
 
         return this
     }
 
     warning() {
-        this.icon('heroicon-o-exclamation-circle')
-        this.iconColor('warning')
+        this.status('warning')
 
         return this
     }
@@ -305,19 +281,19 @@ class Action {
     }
 
     button() {
-        this.view('filament-notifications::actions.button-action')
+        this.view('filament-actions::button-action')
 
         return this
     }
 
     grouped() {
-        this.view('filament-notifications::actions.grouped-action')
+        this.view('filament-actions::grouped-action')
 
         return this
     }
 
     link() {
-        this.view('filament-notifications::actions.link-action')
+        this.view('filament-actions::link-action')
 
         return this
     }

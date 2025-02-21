@@ -2,6 +2,7 @@
 
 namespace Filament\Support\Assets;
 
+use Filament\Support\Facades\FilamentView;
 use Illuminate\Contracts\Support\Htmlable;
 use Illuminate\Support\HtmlString;
 
@@ -13,7 +14,14 @@ class Js extends Asset
 
     protected bool $isCore = false;
 
+    protected bool $isNavigateOnce = true;
+
     protected bool $isModule = false;
+
+    /**
+     * @var array<string, string>
+     */
+    protected array $extraAttributes = [];
 
     protected string | Htmlable | null $html = null;
 
@@ -34,6 +42,13 @@ class Js extends Asset
     public function core(bool $condition = true): static
     {
         $this->isCore = $condition;
+
+        return $this;
+    }
+
+    public function navigateOnce(bool $condition = true): static
+    {
+        $this->isNavigateOnce = $condition;
 
         return $this;
     }
@@ -67,9 +82,24 @@ class Js extends Asset
         return $this->isCore;
     }
 
+    public function isNavigateOnce(): bool
+    {
+        return $this->isNavigateOnce;
+    }
+
     public function isModule(): bool
     {
         return $this->isModule;
+    }
+
+    /**
+     * @param  array<string, string>  $attributes
+     */
+    public function extraAttributes(array $attributes): static
+    {
+        $this->extraAttributes = $attributes;
+
+        return $this;
     }
 
     public function getHtml(): Htmlable
@@ -85,16 +115,45 @@ class Js extends Asset
         $async = $this->isAsync() ? 'async' : '';
         $defer = $this->isDeferred() ? 'defer' : '';
         $module = $this->isModule() ? 'type="module"' : '';
+        $extraAttributesHtml = $this->getExtraAttributesHtml();
 
-        return new HtmlString("
+        $hasSpaMode = FilamentView::hasSpaMode();
+
+        $navigateOnce = ($hasSpaMode && $this->isNavigateOnce()) ? 'data-navigate-once' : '';
+        $navigateTrack = $hasSpaMode ? 'data-navigate-track' : '';
+
+        return new HtmlString(
+            "
             <script
                 src=\"{$html}\"
                 {$async}
                 {$defer}
                 {$module}
-                data-navigate-track
+                {$extraAttributesHtml}
+                {$navigateOnce}
+                {$navigateTrack}
             ></script>
-        ");
+        ",
+        );
+    }
+
+    /**
+     * @return array<string, string>
+     */
+    public function getExtraAttributes(): array
+    {
+        return $this->extraAttributes;
+    }
+
+    public function getExtraAttributesHtml(): string
+    {
+        $attributes = '';
+
+        foreach ($this->getExtraAttributes() as $key => $value) {
+            $attributes .= " {$key}=\"{$value}\"";
+        }
+
+        return $attributes;
     }
 
     public function getSrc(): string

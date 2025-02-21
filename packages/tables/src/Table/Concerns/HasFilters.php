@@ -3,8 +3,11 @@
 namespace Filament\Tables\Table\Concerns;
 
 use Closure;
+use Filament\Forms\Components\Group;
 use Filament\Forms\Form;
 use Filament\Support\Enums\ActionSize;
+use Filament\Support\Enums\MaxWidth;
+use Filament\Support\Facades\FilamentIcon;
 use Filament\Tables\Actions\Action;
 use Filament\Tables\Enums\FiltersLayout;
 use Filament\Tables\Filters\BaseFilter;
@@ -16,6 +19,8 @@ trait HasFilters
      */
     protected array $filters = [];
 
+    protected ?Closure $filtersFormSchema = null;
+
     /**
      * @var int | array<string, int | null> | Closure
      */
@@ -23,7 +28,7 @@ trait HasFilters
 
     protected string | Closure | null $filtersFormMaxHeight = null;
 
-    protected string | Closure | null $filtersFormWidth = null;
+    protected MaxWidth | string | Closure | null $filtersFormWidth = null;
 
     protected FiltersLayout | Closure | null $filtersLayout = null;
 
@@ -32,6 +37,29 @@ trait HasFilters
     protected bool | Closure | null $persistsFiltersInSession = false;
 
     protected bool | Closure $shouldDeselectAllRecordsWhenFiltered = true;
+
+    protected bool | Closure $hasDeferredFilters = false;
+
+    protected ?Closure $modifyFiltersApplyActionUsing = null;
+
+    public function deferFilters(bool | Closure $condition = true): static
+    {
+        $this->hasDeferredFilters = $condition;
+
+        return $this;
+    }
+
+    public function hasDeferredFilters(): bool
+    {
+        return (bool) $this->evaluate($this->hasDeferredFilters);
+    }
+
+    public function filtersApplyAction(?Closure $callback): static
+    {
+        $this->modifyFiltersApplyActionUsing = $callback;
+
+        return $this;
+    }
 
     public function deselectAllRecordsWhenFiltered(bool | Closure $condition = true): static
     {
@@ -86,7 +114,7 @@ trait HasFilters
         return $this;
     }
 
-    public function filtersFormWidth(string | Closure | null $width): static
+    public function filtersFormWidth(MaxWidth | string | Closure | null $width): static
     {
         $this->filtersFormWidth = $width;
 
@@ -117,17 +145,21 @@ trait HasFilters
     /**
      * @return array<string, BaseFilter>
      */
-    public function getFilters(): array
+    public function getFilters(bool $withHidden = false): array
     {
+        if ($withHidden) {
+            return $this->filters;
+        }
+
         return array_filter(
             $this->filters,
             fn (BaseFilter $filter): bool => $filter->isVisible(),
         );
     }
 
-    public function getFilter(string $name): ?BaseFilter
+    public function getFilter(string $name, bool $withHidden = false): ?BaseFilter
     {
-        return $this->getFilters()[$name] ?? null;
+        return $this->getFilters($withHidden)[$name] ?? null;
     }
 
     public function getFiltersForm(): Form
@@ -135,20 +167,50 @@ trait HasFilters
         return $this->getLivewire()->getTableFiltersForm();
     }
 
+    public function filtersFormSchema(?Closure $schema): static
+    {
+        $this->filtersFormSchema = $schema;
+
+        return $this;
+    }
+
+    /**
+     * @return array<string, Group>
+     */
+    public function getFiltersFormSchema(): array
+    {
+        $filters = [];
+
+        foreach ($this->getFilters() as $filterName => $filter) {
+            $filters[$filterName] = Group::make()
+                ->schema($filter->getFormSchema())
+                ->statePath($filterName)
+                ->key($filterName)
+                ->columnSpan($filter->getColumnSpan())
+                ->columnStart($filter->getColumnStart())
+                ->columns($filter->getColumns());
+        }
+
+        return $this->evaluate($this->filtersFormSchema, ['filters' => $filters]) ?? array_values($filters);
+    }
+
     public function getFiltersTriggerAction(): Action
     {
         $action = Action::make('openFilters')
             ->label(__('filament-tables::table.actions.filter.label'))
             ->iconButton()
-            ->icon('heroicon-m-funnel')
+            ->icon(FilamentIcon::resolve('tables::actions.filter') ?? 'heroicon-m-funnel')
             ->color('gray')
             ->livewireClickHandlerEnabled(false)
             ->modalSubmitAction(false)
             ->extraModalFooterActions([
+                $this->getFiltersApplyAction()
+                    ->close(),
                 Action::make('resetFilters')
                     ->label(__('filament-tables::table.filters.actions.reset.label'))
                     ->color('danger')
-                    ->action('resetTableFiltersForm'),
+                    ->action('resetTableFiltersForm')
+                    ->button(),
             ])
             ->modalCancelActionLabel(__('filament::components/modal.actions.close.label'))
             ->table($this);
@@ -161,6 +223,24 @@ trait HasFilters
 
         if ($action->getView() === Action::BUTTON_VIEW) {
             $action->defaultSize(ActionSize::Small);
+        }
+
+        return $action;
+    }
+
+    public function getFiltersApplyAction(): Action
+    {
+        $action = Action::make('applyFilters')
+            ->label(__('filament-tables::table.filters.actions.apply.label'))
+            ->action('applyTableFilters')
+            ->table($this)
+            ->visible($this->hasDeferredFilters())
+            ->button();
+
+        if ($this->modifyFiltersApplyActionUsing) {
+            $action = $this->evaluate($this->modifyFiltersApplyActionUsing, [
+                'action' => $action,
+            ]) ?? $action;
         }
 
         return $action;
@@ -187,12 +267,12 @@ trait HasFilters
         return $this->evaluate($this->filtersFormMaxHeight);
     }
 
-    public function getFiltersFormWidth(): ?string
+    public function getFiltersFormWidth(): MaxWidth | string | null
     {
         return $this->evaluate($this->filtersFormWidth) ?? match ($this->getFiltersFormColumns()) {
-            2 => '2xl',
-            3 => '4xl',
-            4 => '6xl',
+            2 => MaxWidth::TwoExtraLarge,
+            3 => MaxWidth::FourExtraLarge,
+            4 => MaxWidth::SixExtraLarge,
             default => null,
         };
     }
@@ -215,5 +295,19 @@ trait HasFilters
     public function shouldDeselectAllRecordsWhenFiltered(): bool
     {
         return (bool) $this->evaluate($this->shouldDeselectAllRecordsWhenFiltered);
+    }
+
+    public function getActiveFiltersCount(): int
+    {
+        return array_reduce(
+            $this->getFilters(),
+            fn (int $carry, BaseFilter $filter): int => $carry + $filter->getActiveCount(),
+            0,
+        );
+    }
+
+    public function isFiltered(): bool
+    {
+        return $this->getActiveFiltersCount() > 0;
     }
 }

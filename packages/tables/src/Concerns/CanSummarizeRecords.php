@@ -4,9 +4,9 @@ namespace Filament\Tables\Concerns;
 
 use Closure;
 use Filament\Support\Services\RelationshipJoiner;
+use Illuminate\Database\Connection;
 use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Query\Expression;
-use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Str;
 use stdClass;
 
@@ -43,7 +43,10 @@ trait CanSummarizeRecords
                 continue;
             }
 
-            $qualifiedAttribute = $query->getModel()->qualifyColumn($column->getName());
+            /** @var Connection $queryConnection */
+            $queryConnection = $query->getConnection();
+
+            $qualifiedAttribute = $queryConnection->getTablePrefix() . $query->getModel()->qualifyColumn($column->getName());
 
             foreach ($summarizers as $summarizer) {
                 if ($summarizer->hasQueryModification()) {
@@ -67,7 +70,8 @@ trait CanSummarizeRecords
         $queryToJoin = $query->clone();
         $joins = [];
 
-        $query = DB::table($query->toBase(), $query->getModel()->getTable());
+        $query = $query->getModel()->resolveConnection($query->getModel()->getConnectionName())
+            ->table($query->toBase(), $query->getModel()->getTable());
 
         if ($modifyQueryUsing) {
             $query = $modifyQueryUsing($query) ?? $query;
@@ -86,7 +90,7 @@ trait CanSummarizeRecords
             $selects[] = "{$group} as \"{$groupSelectAlias}\"";
 
             if (filled($groupingRelationshipName = $this->getTableGrouping()?->getRelationshipName())) {
-                $joins = (new RelationshipJoiner())->getLeftJoinsForRelationship(
+                $joins = app(RelationshipJoiner::class)->getLeftJoinsForRelationship(
                     query: $queryToJoin,
                     relationship: $groupingRelationshipName,
                 );

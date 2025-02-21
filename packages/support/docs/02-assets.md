@@ -7,6 +7,7 @@ import LaracastsBanner from "@components/LaracastsBanner.astro"
     title="Registering Plugin Assets"
     description="Watch the Build Advanced Components for Filament series on Laracasts - it will teach you how to get started with registering assets into a plugin. Alternatively, continue reading this text-based guide."
     url="https://laracasts.com/series/build-advanced-components-for-filament/episodes/14"
+    series="building-advanced-components"
 />
 
 ## Overview
@@ -90,7 +91,7 @@ export default {
 
 This means that when they build their Tailwind CSS file, it will include all the utility classes that are used in your plugin's views, as well as the utility classes that are used in their application and the Filament core.
 
-However, with this technique, there might be extra complications for users who use your plugin with the [Panel Builder](../panels). If they have a [custom theme](../panels/theming), they will be fine, since they are building their own CSS file anyway using Tailwind CSS. However, if they are using the default stylesheet which is shipped with the Panel Builder, you might have to be careful about the utility classes that you use in your plugin's views. For instance, if you use a utility class that is not included in the default stylesheet, the user is not compiling it themselves, and it will not be included in the final CSS file. This means that your plugin's views might not look as expected. This is one of the few situations where I would recommend compiling and [registering](#registering-css-files) a Tailwind CSS-compiled stylesheet in your plugin.
+However, with this technique, there might be extra complications for users who use your plugin with the [Panel Builder](../panels). If they have a [custom theme](../panels/themes), they will be fine, since they are building their own CSS file anyway using Tailwind CSS. However, if they are using the default stylesheet which is shipped with the Panel Builder, you might have to be careful about the utility classes that you use in your plugin's views. For instance, if you use a utility class that is not included in the default stylesheet, the user is not compiling it themselves, and it will not be included in the final CSS file. This means that your plugin's views might not look as expected. This is one of the few situations where I would recommend compiling and [registering](#registering-css-files) a Tailwind CSS-compiled stylesheet in your plugin.
 
 ### Lazy loading CSS
 
@@ -139,6 +140,24 @@ FilamentAsset::register([
     Css::make('example-external-stylesheet', 'https://example.com/external.css'),
     Css::make('example-local-stylesheet', asset('css/local.css')),
 ]);
+```
+
+### Registering CSS variables
+
+Sometimes, you may wish to use dynamic data from the backend in CSS files. To do this, you can use the `FilamentAsset::registerCssVariables()` method in the `boot()` method of a service provider:
+
+```php
+use Filament\Support\Facades\FilamentAsset;
+
+FilamentAsset::registerCssVariables([
+    'background-image' => asset('images/background.jpg'),
+]);
+```
+
+Now, you can access these variables from any CSS file:
+
+```css
+background-image: var(--background-image);
 ```
 
 ## Registering JavaScript files
@@ -200,6 +219,7 @@ If your JavaScript file was [registered to a plugin](#registering-assets-for-a-p
     title="Using Async Alpine components"
     description="Watch the Build Advanced Components for Filament series on Laracasts - it will teach you how to get started with Async Alpine components into a plugin."
     url="https://laracasts.com/series/build-advanced-components-for-filament/episodes/15"
+    series="building-advanced-components"
 />
 
 Sometimes, you may want to load external JavaScript libraries for your Alpine.js-based components. The best way to do this is by storing the compiled JavaScript and Alpine component in a separate file, and letting us load it whenever the component is rendered.
@@ -314,13 +334,12 @@ FilamentAsset::register([
 
 When you run `php artisan filament:assets`, the compiled file will be copied into the `/public` directory.
 
-Finally, you can load this asynchronous Alpine component in your view using `ax-load` attributes and the `FilamentAsset::getAlpineComponentSrc()` method:
+Finally, you can load this asynchronous Alpine component in your view using `x-load` attributes and the `FilamentAsset::getAlpineComponentSrc()` method:
 
 ```blade
 <div
-    x-ignore
-    ax-load
-    ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('test-component') }}"
+    x-load
+    x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('test-component') }}"
     x-data="testComponent({
         state: $wire.{{ $applyStateBindingModifiers("\$entangle('{$statePath}')") }},
     })"
@@ -331,7 +350,7 @@ Finally, you can load this asynchronous Alpine component in your view using `ax-
 
 This example is for a [custom form field](../forms/fields/custom). It passes the `state` in as a parameter to the `testComponent()` function, which is entangled with a Livewire component property. You can pass in any parameters you want, and access them in the `testComponent()` function. If you're not using a custom form field, you can ignore the `state` parameter in this example.
 
-The `ax-load` attributes come from the [Async Alpine](https://async-alpine.dev/docs/strategies) package, and any features of that package can be used here.
+The `x-load` attributes come from the [Async Alpine](https://async-alpine.dev/docs/strategies) package, and any features of that package can be used here.
 
 ### Registering script data
 

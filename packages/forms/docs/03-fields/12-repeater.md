@@ -79,6 +79,21 @@ Repeater::make('members')
     ->addActionLabel('Add member')
 ```
 
+### Aligning the add action button
+
+By default, the add action is aligned in the center. You may adjust this using the `addActionAlignment()` method, passing an `Alignment` option of `Alignment::Start` or `Alignment::End`:
+
+```php
+use Filament\Forms\Components\Repeater;
+use Filament\Support\Enums\Alignment;
+
+Repeater::make('members')
+    ->schema([
+        // ...
+    ])
+    ->addActionAlignment(Alignment::Start)
+```
+
 ### Preventing the user from adding items
 
 You may prevent the user from adding items to the repeater using the `addable(false)` method:
@@ -219,9 +234,22 @@ Repeater::make('qualifications')
     ])
 ```
 
+When using `disabled()` with `relationship()`, ensure that `disabled()` is called before `relationship()`. This ensures that the `dehydrated()` call from within `relationship()` is not overridden by the call from `disabled()`:
+
+```php
+use Filament\Forms\Components\Repeater;
+
+Repeater::make('qualifications')
+    ->disabled()
+    ->relationship()
+    ->schema([
+        // ...
+    ])
+```
+
 ### Reordering items in a relationship
 
-By default, [reordering](#reordering-items) relationship repeater items is disabled. This is because your related model needs an `sort` column to store the order of related records. To enable reordering, you may use the `orderColumn()` method, passing in a name of the column on your related model to store the order in:
+By default, [reordering](#reordering-items) relationship repeater items is disabled. This is because your related model needs a `sort` column to store the order of related records. To enable reordering, you may use the `orderColumn()` method, passing in a name of the column on your related model to store the order in:
 
 ```php
 use Filament\Forms\Components\Repeater;
@@ -274,7 +302,7 @@ class OrderProduct extends Pivot
     {
         return $this->belongsTo(Order::class);
     }
-    
+
     public function product(): BelongsTo
     {
         return $this->belongsTo(Product::class);
@@ -436,7 +464,7 @@ Instead of using a nested array to store data, simple repeaters use a flat array
 
 ## Using `$get()` to access parent field values
 
-All form components are able to [use `$get()` and `$set()`](../advanced) to access another field's value. However, you might experience unexpected behaviour when using this inside the repeater's schema.
+All form components are able to [use `$get()` and `$set()`](../advanced) to access another field's value. However, you might experience unexpected behavior when using this inside the repeater's schema.
 
 This is because `$get()` and `$set()`, by default, are scoped to the current repeater item. This means that you are able to interact with another field inside that repeater item easily without knowing which repeater item the current form component belongs to.
 
@@ -462,6 +490,7 @@ You are trying to retrieve the value of `client_id` from inside the repeater ite
 
 You can use `../` to go up a level in the data structure, so `$get('../client_id')` is `$get('repeater.client_id')` and `$get('../../client_id')` is `$get('client_id')`.
 
+The special case of `$get()` with no arguments, or `$get('')` or `$get('./')`, will always return the full data array for the current repeater item.
 
 ## Repeater validation
 
@@ -482,7 +511,93 @@ Repeater::make('members')
     ->maxItems(5)
 ```
 
-## Customizing the repeater action objects
+### Distinct state validation
+
+In many cases, you will want to ensure some sort of uniqueness between repeater items. A couple of common examples could be:
+
+- Ensuring that only one [checkbox](checkbox) or [toggle](toggle) is activated at once across items in the repeater.
+- Ensuring that an option may only be selected once across [select](select), [radio](radio), [checkbox list](checkbox-list), or [toggle buttons](toggle-buttons) fields in a repeater.
+
+You can use the `distinct()` method to validate that the state of a field is unique across all items in the repeater:
+
+```php
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Repeater;
+
+Repeater::make('answers')
+    ->schema([
+        // ...
+        Checkbox::make('is_correct')
+            ->distinct(),
+    ])
+```
+
+The behavior of the `distinct()` validation depends on the data type that the field handles
+
+- If the field returns a boolean, like a [checkbox](checkbox) or [toggle](toggle), the validation will ensure that only one item has a value of `true`. There may be many fields in the repeater that have a value of `false`.
+- Otherwise, for fields like a [select](select), [radio](radio), [checkbox list](checkbox-list), or [toggle buttons](toggle-buttons), the validation will ensure that each option may only be selected once across all items in the repeater.
+
+#### Automatically fixing indistinct state
+
+If you'd like to automatically fix indistinct state, you can use the `fixIndistinctState()` method:
+
+```php
+use Filament\Forms\Components\Checkbox;
+use Filament\Forms\Components\Repeater;
+
+Repeater::make('answers')
+    ->schema([
+        // ...
+        Checkbox::make('is_correct')
+            ->fixIndistinctState(),
+    ])
+```
+
+This method will automatically enable the `distinct()` and `live()` methods on the field.
+
+Depending on the data type that the field handles, the behavior of the `fixIndistinctState()` adapts:
+
+- If the field returns a boolean, like a [checkbox](checkbox) or [toggle](toggle), and one of the fields is enabled, Filament will automatically disable all other enabled fields on behalf of the user.
+- Otherwise, for fields like a [select](select), [radio](radio), [checkbox list](checkbox-list), or [toggle buttons](toggle-buttons), when a user selects an option, Filament will automatically deselect all other usages of that option on behalf of the user.
+
+#### Disabling options when they are already selected in another item
+
+If you'd like to disable options in a [select](select), [radio](radio), [checkbox list](checkbox-list), or [toggle buttons](toggle-buttons) when they are already selected in another item, you can use the `disableOptionsWhenSelectedInSiblingRepeaterItems()` method:
+
+```php
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+
+Repeater::make('members')
+    ->schema([
+        Select::make('role')
+            ->options([
+                // ...
+            ])
+            ->disableOptionsWhenSelectedInSiblingRepeaterItems(),
+    ])
+```
+
+This method will automatically enable the `distinct()` and `live()` methods on the field.
+
+In case you want to add another condition to [disable options](../select#disabling-specific-options) with, you can chain `disableOptionWhen()` with the `merge: true` argument:
+
+```php
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\Select;
+
+Repeater::make('members')
+    ->schema([
+        Select::make('role')
+            ->options([
+                // ...
+            ])
+            ->disableOptionsWhenSelectedInSiblingRepeaterItems()
+            ->disableOptionWhen(fn (string $value): bool => $value === 'super_admin', merge: true),
+    ])
+```
+
+## Customizing the repeater item actions
 
 This field uses action objects for easy customization of buttons within it. You can customize these buttons by passing a function to an action registration method. The function has access to the `$action` object, which you can use to [customize it](../../actions/trigger-button). The following methods are available to customize the actions:
 
@@ -514,7 +629,7 @@ Repeater::make('members')
 
 ### Confirming repeater actions with a modal
 
-You can confirm actions with a modal by using the `requiresConfirmation()` method on the action object. You may use any [modal customization method](../../actions/modals) to change its content and behaviour:
+You can confirm actions with a modal by using the `requiresConfirmation()` method on the action object. You may use any [modal customization method](../../actions/modals) to change its content and behavior:
 
 ```php
 use Filament\Forms\Components\Actions\Action;
@@ -530,3 +645,120 @@ Repeater::make('members')
 ```
 
 > The `collapseAction()`, `collapseAllAction()`, `expandAction()`, `expandAllAction()` and `reorderAction()` methods do not support confirmation modals, as clicking their buttons does not make the network request that is required to show the modal.
+
+### Adding extra item actions to a repeater
+
+You may add new [action buttons](../actions) to the header of each repeater item by passing `Action` objects into `extraItemActions()`:
+
+```php
+use Filament\Forms\Components\Actions\Action;
+use Filament\Forms\Components\Repeater;
+use Filament\Forms\Components\TextInput;
+use Illuminate\Support\Facades\Mail;
+
+Repeater::make('members')
+    ->schema([
+        TextInput::make('email')
+            ->label('Email address')
+            ->email(),
+        // ...
+    ])
+    ->extraItemActions([
+        Action::make('sendEmail')
+            ->icon('heroicon-m-envelope')
+            ->action(function (array $arguments, Repeater $component): void {
+                $itemData = $component->getItemState($arguments['item']);
+
+                Mail::to($itemData['email'])
+                    ->send(
+                        // ...
+                    );
+            }),
+    ])
+```
+
+In this example, `$arguments['item']` gives you the ID of the current repeater item. You can validate the data in that repeater item using the `getItemState()` method on the repeater component. This method returns the validated data for the item. If the item is not valid, it will cancel the action and show an error message for that item in the form.
+
+If you want to get the raw data from the current item without validating it, you can use `$component->getRawItemState($arguments['item'])` instead.
+
+If you want to manipulate the raw data for the entire repeater, for example, to add, remove or modify items, you can use `$component->getState()` to get the data, and `$component->state($state)` to set it again:
+
+```php
+use Illuminate\Support\Str;
+
+// Get the raw data for the entire repeater
+$state = $component->getState();
+
+// Add an item, with a random UUID as the key
+$state[Str::uuid()] = [
+    'email' => auth()->user()->email,
+];
+
+// Set the new data for the repeater
+$component->state($state);
+```
+
+## Testing repeaters
+
+Internally, repeaters generate UUIDs for items to keep track of them in the Livewire HTML easier. This means that when you are testing a form with a repeater, you need to ensure that the UUIDs are consistent between the form and the test. This can be tricky, and if you don't do it correctly, your tests can fail as the tests are expecting a UUID, not a numeric key.
+
+However, since Livewire doesn't need to keep track of the UUIDs in a test, you can disable the UUID generation and replace them with numeric keys, using the `Repeater::fake()` method at the start of your test:
+
+```php
+use Filament\Forms\Components\Repeater;
+use function Pest\Livewire\livewire;
+
+$undoRepeaterFake = Repeater::fake();
+
+livewire(EditPost::class, ['record' => $post])
+    ->assertFormSet([
+        'quotes' => [
+            [
+                'content' => 'First quote',
+            ],
+            [
+                'content' => 'Second quote',
+            ],
+        ],
+        // ...
+    ]);
+
+$undoRepeaterFake();
+```
+
+You may also find it useful to test the number of items in a repeater by passing a function to the `assertFormSet()` method:
+
+```php
+use Filament\Forms\Components\Repeater;
+use function Pest\Livewire\livewire;
+
+$undoRepeaterFake = Repeater::fake();
+
+livewire(EditPost::class, ['record' => $post])
+    ->assertFormSet(function (array $state) {
+        expect($state['quotes'])
+            ->toHaveCount(2);
+    });
+
+$undoRepeaterFake();
+```
+
+### Testing repeater actions
+
+In order to test that repeater actions are working as expected, you can utilize the `callFormComponentAction()` method to call your repeater actions and then [perform additional assertions](../testing#actions).
+
+To interact with an action on a particular repeater item, you need to pass in the `item` argument with the key of that repeater item. If your repeater is reading from a relationship, you should prefix the ID (key) of the related record with `record-` to form the key of the repeater item:  
+
+```php
+use App\Models\Quote;
+use Filament\Forms\Components\Repeater;
+use function Pest\Livewire\livewire;
+
+$quote = Quote::first();
+
+livewire(EditPost::class, ['record' => $post])
+    ->callFormComponentAction('quotes', 'sendQuote', arguments: [
+        'item' => "record-{$quote->getKey()}",
+    ])
+    ->assertNotified('Quote sent!');
+```

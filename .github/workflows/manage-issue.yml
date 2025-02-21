@@ -11,7 +11,7 @@ jobs:
       - uses: actions/github-script@v3
         with:
           script: |
-            const URL_REGEXP = /### Reproduction repository[\r\n]+([^#]+)###/m
+            const URL_REGEXP = /### Reproduction repository \(issue will be closed if this is not valid\)[\r\n]+([^#]+)###/m
             const REPRO_STEPS_REGEXP = /### Steps to reproduce[\r\n]+([^#]+)###/m
             const LABEL_NEEDS_MORE_INFORMATION = 'needs more info'
             const LABEL_UNCONFIRMED = 'unconfirmed'
@@ -29,6 +29,13 @@ jobs:
             const user = context.payload.sender.login
             const issue = context.payload.issue
             const body = issue.body
+
+            if (body.includes('filament/minimal-theme')) {
+                debug('Ignoring Minimal Theme issue.')
+
+                return
+            }
+
             const urlMatch = body.match(URL_REGEXP)
             const reproStepsMatch = body.match(REPRO_STEPS_REGEXP)
             const url = urlMatch !== null ? urlMatch[1].trim() : null
@@ -158,7 +165,7 @@ jobs:
                 Hey @${user}! We're sorry to hear that you've hit this issue. 💛
             `.trim()
 
-            const NO_REPRO_URL = ((! url.includes('https://github.com/')) || url.includes('https://github.com/filamentphp/') || url === 'https://github.com/filamentphp') && (! url.includes('https://github.com/filamentphp/demo'))
+            const NO_REPRO_URL = ((! url) || (! url.includes('https://github.com/')) || (url.includes('https://github.com/filamentphp') && (! url.includes('https://github.com/filamentphp/demo'))))
             const NO_REPRO_STEPS = reproSteps.length < 25
 
             if (NO_REPRO_URL || NO_REPRO_STEPS) {

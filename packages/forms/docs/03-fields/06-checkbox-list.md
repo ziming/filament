@@ -2,8 +2,17 @@
 title: Checkbox list
 ---
 import AutoScreenshot from "@components/AutoScreenshot.astro"
+import LaracastsBanner from "@components/LaracastsBanner.astro"
 
 ## Overview
+
+<LaracastsBanner
+    title="Checkbox List"
+    description="Watch the Rapid Laravel Development with Filament series on Laracasts - it will teach you the basics of adding checkbox list fields to Filament forms."
+    url="https://laracasts.com/series/rapid-laravel-development-with-filament/episodes/5"
+    series="rapid-laravel-development"
+/>
+
 
 The checkbox list component allows you to select multiple values from a list of predefined options:
 
@@ -35,6 +44,26 @@ class App extends Model
     // ...
 }
 ```
+
+## Allowing HTML in the option labels
+
+By default, Filament will escape any HTML in the option labels. If you'd like to allow HTML, you can use the `allowHtml()` method:
+
+```php
+use Filament\Forms\Components\CheckboxList;
+
+CheckboxList::make('technology')
+    ->options([
+        'tailwind' => '<span class="text-blue-500">Tailwind</span>',
+        'alpine' => '<span class="text-green-500">Alpine</span>',
+        'laravel' => '<span class="text-red-500">Laravel</span>',
+        'livewire' => '<span class="text-pink-500">Livewire</span>',
+    ])
+    ->searchable()
+    ->allowHtml()
+```
+
+Be aware that you will need to ensure that the HTML is safe to render, otherwise your application will be vulnerable to XSS attacks.
 
 ## Setting option descriptions
 
@@ -177,6 +206,16 @@ CheckboxList::make('technologies')
     ->relationship(titleAttribute: 'name')
 ```
 
+When using `disabled()` with `relationship()`, ensure that `disabled()` is called before `relationship()`. This ensures that the `dehydrated()` call from within `relationship()` is not overridden by the call from `disabled()`:
+
+```php
+use Filament\Forms\Components\CheckboxList;
+
+CheckboxList::make('technologies')
+    ->disabled()
+    ->relationship(titleAttribute: 'name')
+```
+
 ### Customizing the relationship query
 
 You may customize the database query that retrieves options using the `modifyOptionsQueryUsing` parameter of the `relationship()` method:
@@ -219,6 +258,20 @@ CheckboxList::make('authors')
         modifyQueryUsing: fn (Builder $query) => $query->orderBy('first_name')->orderBy('last_name'),
     )
     ->getOptionLabelFromRecordUsing(fn (Model $record) => "{$record->first_name} {$record->last_name}")
+```
+
+### Saving pivot data to the relationship
+
+If your pivot table has additional columns, you can use the `pivotData()` method to specify the data that should be saved in them:
+
+```php
+use Filament\Forms\Components\CheckboxList;
+
+CheckboxList::make('primaryTechnologies')
+    ->relationship(name: 'technologies', titleAttribute: 'name')
+    ->pivotData([
+        'is_primary' => true,
+    ])
 ```
 
 ## Setting a custom no search results message

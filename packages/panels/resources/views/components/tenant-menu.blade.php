@@ -26,10 +26,11 @@
     $items = \Illuminate\Support\Arr::except($items, ['billing', 'profile', 'register']);
 @endphp
 
-{{ \Filament\Support\Facades\FilamentView::renderHook('panels::tenant-menu.before') }}
+{{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TENANT_MENU_BEFORE) }}
 
 <x-filament::dropdown
     placement="bottom-start"
+    size
     teleport
     :attributes="
         \Filament\Support\prepare_inherited_attributes($attributes)
@@ -91,9 +92,9 @@
                 <x-filament::dropdown.list.item
                     :color="$profileItem?->getColor()"
                     :href="$profileItemUrl ?? filament()->getTenantProfileUrl()"
-                    :target="($profileItem?->shouldOpenUrlInNewTab() ?? false) ? '_blank' : null"
-                    :icon="$profileItem?->getIcon() ?? 'heroicon-m-cog-6-tooth'"
+                    :icon="$profileItem?->getIcon() ?? \Filament\Support\Facades\FilamentIcon::resolve('panels::tenant-menu.profile-button') ?? 'heroicon-m-cog-6-tooth'"
                     tag="a"
+                    :target="($profileItem?->shouldOpenUrlInNewTab() ?? false) ? '_blank' : null"
                 >
                     {{ $profileItem?->getLabel() ?? filament()->getTenantProfilePage()::getLabel() }}
                 </x-filament::dropdown.list.item>
@@ -103,9 +104,9 @@
                 <x-filament::dropdown.list.item
                     :color="$billingItem?->getColor() ?? 'gray'"
                     :href="$billingItemUrl ?? filament()->getTenantBillingUrl()"
-                    :target="($billingItem?->shouldOpenUrlInNewTab() ?? false) ? '_blank' : null"
-                    :icon="$billingItem?->getIcon() ?? 'heroicon-m-credit-card'"
+                    :icon="$billingItem?->getIcon() ?? \Filament\Support\Facades\FilamentIcon::resolve('panels::tenant-menu.billing-button') ?? 'heroicon-m-credit-card'"
                     tag="a"
+                    :target="($billingItem?->shouldOpenUrlInNewTab() ?? false) ? '_blank' : null"
                 >
                     {{ $billingItem?->getLabel() ?? __('filament-panels::layout.actions.billing.label') }}
                 </x-filament::dropdown.list.item>
@@ -116,12 +117,18 @@
     @if (count($items))
         <x-filament::dropdown.list>
             @foreach ($items as $item)
+                @php
+                    $itemPostAction = $item->getPostAction();
+                @endphp
+
                 <x-filament::dropdown.list.item
+                    :action="$itemPostAction"
                     :color="$item->getColor()"
                     :href="$item->getUrl()"
-                    :target="$item->shouldOpenUrlInNewTab() ? '_blank' : null"
                     :icon="$item->getIcon()"
-                    tag="a"
+                    :method="filled($itemPostAction) ? 'post' : null"
+                    :tag="filled($itemPostAction) ? 'form' : 'a'"
+                    :target="$item->shouldOpenUrlInNewTab() ? '_blank' : null"
                 >
                     {{ $item->getLabel() }}
                 </x-filament::dropdown.list.item>
@@ -148,9 +155,9 @@
             <x-filament::dropdown.list.item
                 :color="$registrationItem?->getColor()"
                 :href="$registrationItemUrl ?? filament()->getTenantRegistrationUrl()"
-                :target="($registrationItem?->shouldOpenUrlInNewTab() ?? false) ? '_blank' : null"
-                :icon="$registrationItem?->getIcon() ?? 'heroicon-m-plus'"
+                :icon="$registrationItem?->getIcon() ?? \Filament\Support\Facades\FilamentIcon::resolve('panels::tenant-menu.registration-button') ?? 'heroicon-m-plus'"
                 tag="a"
+                :target="($registrationItem?->shouldOpenUrlInNewTab() ?? false) ? '_blank' : null"
             >
                 {{ $registrationItem?->getLabel() ?? filament()->getTenantRegistrationPage()::getLabel() }}
             </x-filament::dropdown.list.item>
@@ -158,4 +165,4 @@
     @endif
 </x-filament::dropdown>
 
-{{ \Filament\Support\Facades\FilamentView::renderHook('panels::tenant-menu.after') }}
+{{ \Filament\Support\Facades\FilamentView::renderHook(\Filament\View\PanelsRenderHook::TENANT_MENU_AFTER) }}

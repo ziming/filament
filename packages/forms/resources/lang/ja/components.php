@@ -11,15 +11,67 @@ return [
             ],
 
             'add' => [
+
                 'label' => ':labelを追加',
+
+                'modal' => [
+
+                    'heading' => ':labelを追加',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => '追加',
+                        ],
+
+                    ],
+
+                ],
             ],
 
             'add_between' => [
+
                 'label' => 'ブロックの間に追加',
+
+                'modal' => [
+
+                    'heading' => ':labelを追加',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => '追加',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'delete' => [
+
                 'label' => '削除',
+            ],
+
+            'edit' => [
+
+                'label' => '編集',
+
+                'modal' => [
+
+                    'heading' => 'ブロックを編集',
+
+                    'actions' => [
+
+                        'save' => [
+                            'label' => '変更を保存',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'reorder' => [
@@ -185,6 +237,15 @@ return [
 
             ],
 
+            'svg' => [
+
+                'messages' => [
+                    'confirmation' => 'SVGファイルの編集は拡大縮小する際に品質の低下を引き起こす可能性があるため、お勧めしません。\n 続行しますか？',
+                    'disabled' => '拡大縮小する際に品質が低下する可能性があるためSVGファイルの編集は無効になっています',
+                ],
+
+            ],
+
         ],
 
     ],
@@ -202,7 +263,7 @@ return [
             ],
 
             'reorder' => [
-                'label' => 'Reorder row',
+                'label' => '行の並べ替え',
             ],
 
         ],
@@ -241,12 +302,25 @@ return [
 
     ],
 
+    'radio' => [
+
+        'boolean' => [
+            'true' => 'はい',
+            'false' => 'いいえ',
+        ],
+
+    ],
+
     'repeater' => [
 
         'actions' => [
 
             'add' => [
                 'label' => ':labelへ追加',
+            ],
+
+            'add_between' => [
+                'label' => '間に挿入',
             ],
 
             'delete' => [
@@ -395,6 +469,31 @@ return [
 
     'tags_input' => [
         'placeholder' => '新規タグ',
+    ],
+
+    'text_input' => [
+
+        'actions' => [
+
+            'hide_password' => [
+                'label' => 'パスワードを非表示',
+            ],
+
+            'show_password' => [
+                'label' => 'パスワードを表示',
+            ],
+
+        ],
+
+    ],
+
+    'toggle_buttons' => [
+
+        'boolean' => [
+            'true' => 'はい',
+            'false' => 'いいえ',
+        ],
+
     ],
 
     'wizard' => [

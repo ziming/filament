@@ -12,7 +12,7 @@ Start by creating a widget with the command:
 php artisan make:filament-widget BlogPostsChart --chart
 ```
 
-There is a single `ChartWidget` class that is extended for all charts. The type of chart is set by the `getType()` method. In this example, that method returns the string `'line'`.
+There is a single `ChartWidget` class that is used for all charts. The type of chart is set by the `getType()` method. In this example, that method returns the string `'line'`.
 
 The `protected static ?string $heading` variable is used to set the heading that describes the chart. If you need to set the heading dynamically, you can override the `getHeading()` method.
 
@@ -55,14 +55,14 @@ Now, check out your widget in the dashboard.
 
 Below is a list of available chart widget classes which you may extend, and their corresponding [Chart.js](https://www.chartjs.org/docs) documentation page, for inspiration on what to return from `getData()`:
 
-- `Filament\Widgets\BarChartWidget` - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/bar)
-- `Filament\Widgets\BubbleChartWidget` - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/bubble)
-- `Filament\Widgets\DoughnutChartWidget` - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/doughnut)
-- `Filament\Widgets\LineChartWidget` - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/line)
-- `Filament\Widgets\PieChartWidget` - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/doughnut)
-- `Filament\Widgets\PolarAreaChartWidget` - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/polar)
-- `Filament\Widgets\RadarChartWidget` - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/radar)
-- `Filament\Widgets\ScatterChartWidget` - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/scatter)
+- Bar chart - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/bar)
+- Bubble chart - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/bubble)
+- Doughnut chart - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/doughnut)
+- Line chart - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/line)
+- Pie chart - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/doughnut.html#pie)
+- Polar area chart - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/polar)
+- Radar chart - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/radar)
+- Scatter chart - [Chart.js documentation](https://www.chartjs.org/docs/latest/charts/scatter)
 
 ## Customizing the chart color
 
@@ -184,7 +184,7 @@ protected static ?string $maxHeight = '300px';
 
 ## Setting chart configuration options
 
-You may specify an `$options` variable on the chart class to control the many configuration options that the Chart.js library provides. For instance, you could turn off the [legend](https://www.chartjs.org/docs/latest/configuration/legend.html) for `LineChartWidget` class:
+You may specify an `$options` variable on the chart class to control the many configuration options that the Chart.js library provides. For instance, you could turn off the [legend](https://www.chartjs.org/docs/latest/configuration/legend.html) for a line chart:
 
 ```php
 protected static ?array $options = [
@@ -252,3 +252,70 @@ To disable this behavior, you may override the `$isLazy` property on the widget 
 ```php
 protected static bool $isLazy = true;
 ```
+
+## Using custom Chart.js plugins
+
+Chart.js offers a powerful plugin system that allows you to extend its functionality and create custom chart behaviors. This guide details how to use them in a chart widget.
+
+### Step 1: Install the plugin with NPM
+
+To start with, install the plugin using NPM into your project. In this guide, we will install [`chartjs-plugin-datalabels`](https://chartjs-plugin-datalabels.netlify.app/guide/getting-started.html#installation):
+
+```bash
+npm install chartjs-plugin-datalabels --save-dev
+```
+
+### Step 2: Create a JavaScript file importing the plugin
+
+Create a new JavaScript file where you will define your custom plugin. In this guide, we'll call it `filament-chart-js-plugins.js`. Import the plugin, and add it to the `window.filamentChartJsPlugins` array:
+
+```javascript
+import ChartDataLabels from 'chartjs-plugin-datalabels'
+
+window.filamentChartJsPlugins ??= []
+window.filamentChartJsPlugins.push(ChartDataLabels)
+```
+
+It's important to initialise the array if it has not been already, before pushing onto it. This ensures that mutliple JavaScript files (especially those from Filament plugins) that register Chart.js plugins do not overwrite each other, regardless of the order they are booted in.
+
+You can push as many plugins to the `filamentChartJsPlugins` array as you would like to install, you do not need a separate file to import each plugin.
+
+### Step 3: Compile the JavaScript file with Vite
+
+Now, you need to build the JavaScript file with Vite, or your bundler of choice. Include the file in your Vite configuration (usually `vite.config.js`). For example:
+
+```javascript
+import { defineConfig } from 'vite';
+import laravel from 'laravel-vite-plugin';
+
+export default defineConfig({
+    plugins: [
+        laravel({
+            input: [
+                'resources/css/app.css',
+                'resources/js/app.js',
+                'resources/css/filament/admin/theme.css',
+                'resources/js/filament-chart-js-plugins.js', // Include the new file in the `input` array so it is built
+            ],
+        }),
+    ],
+});
+```
+
+Build the file with `npm run build`.
+
+### Step 4: Register the JavaScript file in Filament
+
+Filament needs to know to include this JavaScript file when rendering chart widgets. You can do this in the `boot()` method of a service provider like `AppServiceProvider`:
+
+```php
+use Filament\Support\Assets\Js;
+use Filament\Support\Facades\FilamentAsset;
+use Illuminate\Support\Facades\Vite;
+
+FilamentAsset::register([
+    Js::make('chart-js-plugins', Vite::asset('resources/js/filament-chart-js-plugins.js'))->module(),
+]);
+```
+
+You can find out more about [asset registration](../support/assets), and even [register assets for a specific panel](../panels/configuration#registering-assets-for-a-panel).

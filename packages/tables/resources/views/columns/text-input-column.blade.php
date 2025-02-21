@@ -3,12 +3,18 @@
 
     $isDisabled = $isDisabled();
     $state = $getState();
-    $type = $getType();
+    $mask = $getMask();
 
     $alignment = $getAlignment() ?? Alignment::Start;
 
     if (! $alignment instanceof Alignment) {
-        $alignment = Alignment::tryFrom($alignment) ?? $alignment;
+        $alignment = filled($alignment) ? (Alignment::tryFrom($alignment) ?? $alignment) : null;
+    }
+
+    if (filled($mask)) {
+        $type = 'text';
+    } else {
+        $type = $getType();
     }
 @endphp
 
@@ -43,7 +49,7 @@
                             return
                         }
 
-                        let newState = $refs.newState.value
+                        let newState = $refs.newState.value.replaceAll('\\'+String.fromCharCode(34), String.fromCharCode(34))
 
                         if (state === newState) {
                             return
@@ -59,7 +65,7 @@
         $attributes
             ->merge($getExtraAttributes(), escape: false)
             ->class([
-                'fi-ta-text-input',
+                'fi-ta-text-input w-full min-w-48',
                 'px-3 py-4' => ! $isInline(),
             ])
     }}
@@ -81,6 +87,7 @@
                     theme: $store.theme,
                 }
         "
+        x-on:click.stop.prevent=""
     >
         {{-- format-ignore-start --}}
         <x-filament::input
@@ -114,6 +121,7 @@
 
                                 isLoading = false
                             ',
+                            'x-mask' . ($mask instanceof \Filament\Support\RawJs ? ':dynamic' : '') => filled($mask) ? $mask : null,
                         ])
                         ->class([
                             match ($alignment) {
@@ -122,6 +130,7 @@
                                 Alignment::End => 'text-end',
                                 Alignment::Left => 'text-left',
                                 Alignment::Right => 'text-right',
+                                Alignment::Justify, Alignment::Between => 'text-justify',
                                 default => $alignment,
                             },
                         ])

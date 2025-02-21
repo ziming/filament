@@ -11,15 +11,67 @@ return [
             ],
 
             'add' => [
+
                 'label' => 'Toevoegen aan :label',
+
+                'modal' => [
+
+                    'heading' => 'Toevoegen aan :label',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => 'Toevoegen',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'add_between' => [
+
                 'label' => 'Invoegen',
+
+                'modal' => [
+
+                    'heading' => 'Toevoegen aan :label',
+
+                    'actions' => [
+
+                        'add' => [
+                            'label' => 'Toevoegen',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'delete' => [
                 'label' => 'Verwijderen',
+            ],
+
+            'edit' => [
+
+                'label' => 'Bewerken',
+
+                'modal' => [
+
+                    'heading' => 'Blok bewerken',
+
+                    'actions' => [
+
+                        'save' => [
+                            'label' => 'Wijzigingen opslaan',
+                        ],
+
+                    ],
+
+                ],
+
             ],
 
             'reorder' => [
@@ -250,6 +302,15 @@ return [
 
     ],
 
+    'radio' => [
+
+        'boolean' => [
+            'true' => 'Ja',
+            'false' => 'Nee',
+        ],
+
+    ],
+
     'repeater' => [
 
         'actions' => [
@@ -347,6 +408,8 @@ return [
 
             'create_option' => [
 
+                'label' => 'Aanmaken',
+
                 'modal' => [
 
                     'heading' => 'Aanmaken',
@@ -368,6 +431,8 @@ return [
             ],
 
             'edit_option' => [
+
+                'label' => 'Bewerken',
 
                 'modal' => [
 
@@ -408,6 +473,31 @@ return [
 
     'tags_input' => [
         'placeholder' => 'Nieuwe tag',
+    ],
+
+    'text_input' => [
+
+        'actions' => [
+
+            'hide_password' => [
+                'label' => 'Wachtwoord verbergen',
+            ],
+
+            'show_password' => [
+                'label' => 'Wachtwoord tonen',
+            ],
+
+        ],
+
+    ],
+
+    'toggle_buttons' => [
+
+        'boolean' => [
+            'true' => 'Ja',
+            'false' => 'Nee',
+        ],
+
     ],
 
     'wizard' => [

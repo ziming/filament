@@ -16,8 +16,11 @@ use League\Flysystem\UnableToCheckFileExistence;
 use Livewire\Features\SupportFileUploads\TemporaryUploadedFile;
 use Throwable;
 
-class BaseFileUpload extends Field
+class BaseFileUpload extends Field implements Contracts\HasNestedRecursiveValidationRules
 {
+    use Concerns\HasNestedRecursiveValidationRules;
+    use Concerns\HasUploadingMessage;
+
     /**
      * @var array<string> | Arrayable | Closure | null
      */
@@ -43,6 +46,8 @@ class BaseFileUpload extends Field
 
     protected int | Closure | null $minSize = null;
 
+    protected int | Closure | null $maxParallelUploads = null;
+
     protected int | Closure | null $maxFiles = null;
 
     protected int | Closure | null $minFiles = null;
@@ -52,6 +57,8 @@ class BaseFileUpload extends Field
     protected bool | Closure $shouldMoveFiles = false;
 
     protected bool | Closure $shouldStoreFiles = true;
+
+    protected bool | Closure $shouldFetchFileInformation = true;
 
     protected string | Closure | null $fileNamesStatePath = null;
 
@@ -78,10 +85,20 @@ class BaseFileUpload extends Field
                 return;
             }
 
+            $shouldFetchFileInformation = $component->shouldFetchFileInformation();
+
             $files = collect(Arr::wrap($state))
-                ->filter(static function (string $file) use ($component): bool {
+                ->filter(static function (string $file) use ($component, $shouldFetchFileInformation): bool {
+                    if (blank($file)) {
+                        return false;
+                    }
+
+                    if (! $shouldFetchFileInformation) {
+                        return true;
+                    }
+
                     try {
-                        return blank($file) || $component->getDisk()->exists($file);
+                        return $component->getDisk()->exists($file);
                     } catch (UnableToCheckFileExistence $exception) {
                         return false;
                     }
@@ -126,12 +143,16 @@ class BaseFileUpload extends Field
             /** @var FilesystemAdapter $storage */
             $storage = $component->getDisk();
 
-            try {
-                if (! $storage->exists($file)) {
+            $shouldFetchFileInformation = $component->shouldFetchFileInformation();
+
+            if ($shouldFetchFileInformation) {
+                try {
+                    if (! $storage->exists($file)) {
+                        return null;
+                    }
+                } catch (UnableToCheckFileExistence $exception) {
                     return null;
                 }
-            } catch (UnableToCheckFileExistence $exception) {
-                return null;
             }
 
             $url = null;
@@ -151,8 +172,8 @@ class BaseFileUpload extends Field
 
             return [
                 'name' => ($component->isMultiple() ? ($storedFileNames[$file] ?? null) : $storedFileNames) ?? basename($file),
-                'size' => $storage->size($file),
-                'type' => $storage->mimeType($file),
+                'size' => $shouldFetchFileInformation ? $storage->size($file) : 0,
+                'type' => $shouldFetchFileInformation ? $storage->mimeType($file) : null,
                 'url' => $url,
             ];
         });
@@ -170,10 +191,13 @@ class BaseFileUpload extends Field
                 return null;
             }
 
-            if ($component->shouldMoveFiles() && ($component->getDiskName() == invade($file)->disk)) {
+            if (
+                $component->shouldMoveFiles() &&
+                ($component->getDiskName() == (fn (): string => $this->disk)->call($file))
+            ) {
                 $newPath = trim($component->getDirectory() . '/' . $component->getUploadedFileNameForStorage($file), '/');
 
-                $component->getDisk()->move($file->path(), $newPath);
+                $component->getDisk()->move((fn (): string => $this->path)->call($file), $newPath);
 
                 return $newPath;
             }
@@ -188,17 +212,18 @@ class BaseFileUpload extends Field
         });
     }
 
-    public function callAfterStateUpdated(): static
+    protected function callAfterStateUpdatedHook(Closure $hook): void
     {
-        if ($callback = $this->afterStateUpdated) {
-            $state = $this->getState();
+        /** @var array<string | TemporaryUploadedFile> $state */
+        $state = $this->getState() ?? [];
 
-            $this->evaluate($callback, [
-                'state' => $this->isMultiple() ? $state : Arr::first($state ?? []),
-            ]);
-        }
+        /** @var array<string | TemporaryUploadedFile> $oldState */
+        $oldState = $this->getOldState() ?? [];
 
-        return $this;
+        $this->evaluate($hook, [
+            'state' => $this->isMultiple() ? $state : Arr::first($state),
+            'old' => $this->isMultiple() ? $oldState : Arr::first($oldState),
+        ]);
     }
 
     /**
@@ -337,6 +362,13 @@ class BaseFileUpload extends Field
         return $this;
     }
 
+    public function fetchFileInformation(bool | Closure $condition = true): static
+    {
+        $this->shouldFetchFileInformation = $condition;
+
+        return $this;
+    }
+
     public function maxSize(int | Closure | null $size): static
     {
         $this->maxSize = $size;
@@ -359,6 +391,13 @@ class BaseFileUpload extends Field
 
             return "min:{$size}";
         });
+
+        return $this;
+    }
+
+    public function maxParallelUploads(int | Closure | null $count): static
+    {
+        $this->maxParallelUploads = $count;
 
         return $this;
     }
@@ -510,6 +549,11 @@ class BaseFileUpload extends Field
         return $this->evaluate($this->minSize);
     }
 
+    public function getMaxParallelUploads(): ?int
+    {
+        return $this->evaluate($this->maxParallelUploads);
+    }
+
     public function getVisibility(): string
     {
         return $this->evaluate($this->visibility);
@@ -522,12 +566,17 @@ class BaseFileUpload extends Field
 
     public function shouldMoveFiles(): bool
     {
-        return $this->evaluate($this->shouldMoveFiles);
+        return (bool) $this->evaluate($this->shouldMoveFiles);
+    }
+
+    public function shouldFetchFileInformation(): bool
+    {
+        return (bool) $this->evaluate($this->shouldFetchFileInformation);
     }
 
     public function shouldStoreFiles(): bool
     {
-        return $this->evaluate($this->shouldStoreFiles);
+        return (bool) $this->evaluate($this->shouldStoreFiles);
     }
 
     public function getFileNamesStatePath(): ?string
@@ -562,10 +611,12 @@ class BaseFileUpload extends Field
 
             $name = $this->getName();
 
+            $validationMessages = $this->getValidationMessages();
+
             $validator = Validator::make(
                 [$name => $files],
                 ["{$name}.*" => ['file', ...parent::getValidationRules()]],
-                [],
+                $validationMessages ? ["{$name}.*" => $validationMessages] : [],
                 ["{$name}.*" => $this->getValidationAttribute()],
             );
 
@@ -789,7 +840,7 @@ class BaseFileUpload extends Field
         return (bool) $this->evaluate($this->isMultiple);
     }
 
-    public function getUploadedFileNameForStorageUsing(Closure $callback): static
+    public function getUploadedFileNameForStorageUsing(?Closure $callback): static
     {
         $this->getUploadedFileNameForStorageUsing = $callback;
 

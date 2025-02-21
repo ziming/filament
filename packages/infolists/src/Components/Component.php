@@ -4,14 +4,15 @@ namespace Filament\Infolists\Components;
 
 use Filament\Infolists\Concerns\HasColumns;
 use Filament\Support\Components\ViewComponent;
+use Filament\Support\Concerns\CanGrow;
 use Filament\Support\Concerns\HasExtraAttributes;
 use Illuminate\Database\Eloquent\Model;
 
 class Component extends ViewComponent
 {
+    use CanGrow;
     use Concerns\BelongsToContainer;
     use Concerns\CanBeHidden;
-    use Concerns\CanGrow;
     use Concerns\CanSpanColumns;
     use Concerns\Cloneable;
     use Concerns\HasActions;
@@ -35,6 +36,7 @@ class Component extends ViewComponent
     protected function resolveDefaultClosureDependencyForEvaluationByName(string $parameterName): array
     {
         return match ($parameterName) {
+            'livewire' => [$this->getLivewire()],
             'record' => [$this->getRecord()],
             'state' => [$this->getState()],
             default => parent::resolveDefaultClosureDependencyForEvaluationByName($parameterName),

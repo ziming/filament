@@ -395,6 +395,15 @@ export default {
             deviceScaleFactor: 3,
         },
     },
+    'forms/fields/text-input/revealable-password': {
+        url: 'forms/fields',
+        selector: '#textInputRevealablePassword',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
     'forms/fields/select/simple': {
         url: 'forms/fields',
         selector: '#select',
@@ -691,6 +700,15 @@ export default {
     'forms/fields/radio/inline': {
         url: 'forms/fields',
         selector: '#inlineRadio',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/radio/inline-under-label': {
+        url: 'forms/fields',
+        selector: '#inlineRadioUnderLabel',
         viewport: {
             width: 1920,
             height: 640,
@@ -995,6 +1013,96 @@ export default {
             deviceScaleFactor: 3,
         },
     },
+    'forms/fields/toggle-buttons/simple': {
+        url: 'forms/fields',
+        selector: '#toggleButtons',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/toggle-buttons/colors': {
+        url: 'forms/fields',
+        selector: '#toggleButtonsColors',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/toggle-buttons/icons': {
+        url: 'forms/fields',
+        selector: '#toggleButtonsIcons',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/toggle-buttons/boolean': {
+        url: 'forms/fields',
+        selector: '#toggleButtonsBoolean',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/toggle-buttons/inline': {
+        url: 'forms/fields',
+        selector: '#toggleButtonsInline',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/toggle-buttons/grouped': {
+        url: 'forms/fields',
+        selector: '#toggleButtonsGrouped',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/toggle-buttons/multiple': {
+        url: 'forms/fields',
+        selector: '#toggleButtonsMultiple',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/toggle-buttons/columns': {
+        url: 'forms/fields',
+        selector: '#toggleButtonsColumns',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/toggle-buttons/rows': {
+        url: 'forms/fields',
+        selector: '#toggleButtonsRows',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/fields/toggle-buttons/disabled-option': {
+        url: 'forms/fields',
+        selector: '#disabledOptionToggleButtons',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
     'forms/fields/actions/suffix': {
         url: 'forms/fields',
         selector: '#suffixAction',
@@ -1076,6 +1184,15 @@ export default {
             deviceScaleFactor: 3,
         },
     },
+    'forms/layout/wizard/completed-icons': {
+        url: 'forms/layout',
+        selector: '#wizardCompletedIcons',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
     'forms/layout/wizard/descriptions': {
         url: 'forms/layout',
         selector: '#wizardDescriptions',
@@ -1088,6 +1205,24 @@ export default {
     'forms/layout/section/simple': {
         url: 'forms/layout',
         selector: '#section',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/layout/section/header/actions': {
+        url: 'forms/layout',
+        selector: '#sectionHeaderActions',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/layout/section/footer/actions': {
+        url: 'forms/layout',
+        selector: '#sectionFooterActions',
         viewport: {
             width: 1920,
             height: 640,
@@ -1136,6 +1271,15 @@ export default {
         viewport: {
             width: 1920,
             height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'forms/layout/split/simple': {
+        url: 'forms/layout',
+        selector: '#split',
+        viewport: {
+            width: 1920,
+            height: 320,
             deviceScaleFactor: 3,
         },
     },
@@ -1309,6 +1453,15 @@ export default {
     'infolists/entries/text/icon-after': {
         url: 'infolists/entries',
         selector: '#textIconAfter',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'infolists/entries/text/icon-color': {
+        url: 'infolists/entries',
+        selector: '#textIconColor',
         viewport: {
             width: 1920,
             height: 640,
@@ -1496,6 +1649,15 @@ export default {
             await new Promise((resolve) => setTimeout(resolve, 500))
         },
     },
+    'infolists/entries/key-value/simple': {
+        url: 'infolists/entries',
+        selector: '#keyValue',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
     'infolists/entries/repeatable/simple': {
         url: 'infolists/entries',
         selector: '#repeatable',
@@ -1580,6 +1742,24 @@ export default {
     'infolists/layout/section/simple': {
         url: 'infolists/layout',
         selector: '#section',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'infolists/layout/section/header/actions': {
+        url: 'infolists/layout',
+        selector: '#sectionHeaderActions',
+        viewport: {
+            width: 1920,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'infolists/layout/section/footer/actions': {
+        url: 'infolists/layout',
+        selector: '#sectionFooterActions',
         viewport: {
             width: 1920,
             height: 640,
@@ -1739,6 +1919,211 @@ export default {
             deviceScaleFactor: 3,
         },
     },
+    'panels/navigation/user-menu': {
+        url: 'panels/navigation/user-menu-customization',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 1080, height: 540, left: 1080, top: 0 })
+        },
+        before: async (page) => {
+            await page.click('.fi-user-menu button')
+
+            await new Promise((resolve) => setTimeout(resolve, 500))
+        },
+    },
+    'panels/navigation/disabled-navigation': {
+        url: 'panels/navigation/disabled-navigation',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 1080, height: 540, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/active-icon': {
+        url: 'panels/navigation/active-icon',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 1080, height: 540, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/change-icon': {
+        url: 'panels/navigation/change-icon',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 600, height: 440, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/custom-items': {
+        url: 'panels/navigation/custom-items',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 540, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/sidebar-collapsible-on-desktop': {
+        url: 'panels/navigation/sidebar-collapsible-on-desktop',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 540, left: 0, top: 0 })
+        },
+        before: async (page) => {
+            await page.click('.fi-sidebar-header button[title="Collapse sidebar"]')
+
+            await new Promise((resolve) => setTimeout(resolve, 500))
+        },
+    },
+    'panels/navigation/sidebar-fully-collapsible-on-desktop': {
+        url: 'panels/navigation/sidebar-fully-collapsible-on-desktop',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 300, left: 0, top: 0 })
+        },
+        before: async (page) => {
+            await page.click('.fi-sidebar-header button[title="Collapse sidebar"]')
+
+            await new Promise((resolve) => setTimeout(resolve, 500))
+        },
+    },
+    'panels/navigation/sort-items': {
+        url: 'panels/navigation/sort-items',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 500, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/top-navigation': {
+        url: 'panels/navigation/top-navigation',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 1000, height: 300, left: 0, top: 0 })
+        },
+        before: async (page) => {
+            await page.click('.fi-dropdown-trigger')
+
+            await new Promise((resolve) => setTimeout(resolve, 500))
+        },
+    },
+    'panels/navigation/badge': {
+        url: 'panels/navigation/badge',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 500, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/badge-color': {
+        url: 'panels/navigation/badge-color',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 500, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/badge-tooltip': {
+        url: 'panels/navigation/badge-tooltip',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 750, height: 500, left: 0, top: 0 })
+        },
+        before: async (page) => {
+            await page.hover('.fi-badge')
+
+            await new Promise((resolve) => setTimeout(resolve, 500))
+        },
+    },
+    'panels/navigation/group': {
+        url: 'panels/navigation/group',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 550, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/group-collapsible': {
+        url: 'panels/navigation/group-collapsible',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 550, left: 0, top: 0 })
+        },
+    },
+    'panels/navigation/group-not-collapsible': {
+        url: 'panels/navigation/group-not-collapsible',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 0,
+        },
+        crop: (image) => {
+            return image.extract({ width: 650, height: 550, left: 0, top: 0 })
+        },
+    },
     'tables/example': {
         url: 'tables?table=example',
         selector: 'body',
@@ -1896,6 +2281,24 @@ export default {
             deviceScaleFactor: 3,
         },
     },
+    'tables/columns/vertical-alignment': {
+        url: 'tables?table=columnVerticalAlignment',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'tables/columns/grouping': {
+        url: 'tables?table=columnGrouping',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
     'tables/columns/text/simple': {
         url: 'tables?table=textColumn',
         selector: 'body',
@@ -1952,6 +2355,15 @@ export default {
     },
     'tables/columns/text/icon-after': {
         url: 'tables?table=textColumnIconAfter',
+        selector: 'body',
+        viewport: {
+            width: 1080,
+            height: 640,
+            deviceScaleFactor: 3,
+        },
+    },
+    'tables/columns/text/icon-color': {
+        url: 'tables?table=textColumnIconColor',
         selector: 'body',
         viewport: {
             width: 1080,

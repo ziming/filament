@@ -1,12 +1,12 @@
-<x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
-    @php
-        $gridDirection = $getGridDirection() ?? 'column';
-        $isBulkToggleable = $isBulkToggleable();
-        $isDisabled = $isDisabled();
-        $isSearchable = $isSearchable();
-        $statePath = $getStatePath();
-    @endphp
+@php
+    $gridDirection = $getGridDirection() ?? 'column';
+    $isBulkToggleable = $isBulkToggleable();
+    $isDisabled = $isDisabled();
+    $isSearchable = $isSearchable();
+    $statePath = $getStatePath();
+@endphp
 
+<x-dynamic-component :component="$getFieldWrapperView()" :field="$field">
     <div
         x-data="{
             areAllCheckboxesChecked: false,
@@ -18,42 +18,6 @@
             search: '',
 
             visibleCheckboxListOptions: [],
-
-            init: function () {
-                this.updateVisibleCheckboxListOptions()
-
-                $nextTick(() => {
-                    this.checkIfAllCheckboxesAreChecked()
-                })
-
-                Livewire.hook(
-                    'commit',
-                    ({ component, commit, succeed, fail, respond }) => {
-                        succeed(({ snapshot, effect }) => {
-                            $nextTick(() => {
-                                if (component.id !== @js($this->getId())) {
-                                    return
-                                }
-
-                                this.checkboxListOptions = Array.from(
-                                    $root.querySelectorAll(
-                                        '.fi-fo-checkbox-list-option-label',
-                                    ),
-                                )
-
-                                this.updateVisibleCheckboxListOptions()
-
-                                this.checkIfAllCheckboxesAreChecked()
-                            })
-                        })
-                    },
-                )
-
-                $watch('search', () => {
-                    this.updateVisibleCheckboxListOptions()
-                    this.checkIfAllCheckboxesAreChecked()
-                })
-            },
 
             checkIfAllCheckboxesAreChecked: function () {
                 this.areAllCheckboxesChecked =
@@ -68,6 +32,10 @@
 
                 this.visibleCheckboxListOptions.forEach((checkboxLabel) => {
                     checkbox = checkboxLabel.querySelector('input[type=checkbox]')
+
+                    if (checkbox.disabled) {
+                        return
+                    }
 
                     checkbox.checked = state
                     checkbox.dispatchEvent(new Event('change'))
@@ -96,6 +64,36 @@
                 )
             },
         }"
+        x-init="
+            updateVisibleCheckboxListOptions()
+
+            $nextTick(() => {
+                checkIfAllCheckboxesAreChecked()
+            })
+
+            Livewire.hook('commit', ({ component, commit, succeed, fail, respond }) => {
+                succeed(({ snapshot, effect }) => {
+                    $nextTick(() => {
+                        if (component.id !== @js($this->getId())) {
+                            return
+                        }
+
+                        checkboxListOptions = Array.from(
+                            $root.querySelectorAll('.fi-fo-checkbox-list-option-label'),
+                        )
+
+                        updateVisibleCheckboxListOptions()
+
+                        checkIfAllCheckboxesAreChecked()
+                    })
+                })
+            })
+
+            $watch('search', () => {
+                updateVisibleCheckboxListOptions()
+                checkIfAllCheckboxesAreChecked()
+            })
+        "
     >
         @if (! $isDisabled)
             @if ($isSearchable)
@@ -129,7 +127,7 @@
                     <span
                         x-show="! areAllCheckboxesChecked"
                         x-on:click="toggleAllCheckboxes()"
-                        wire:key="{{ $this->getId() }}.{{ $statePath }}.{{ $field::class }}.actions.select_all"
+                        wire:key="{{ $this->getId() }}.{{ $statePath }}.{{ $field::class }}.actions.select-all"
                     >
                         {{ $getAction('selectAll') }}
                     </span>
@@ -137,7 +135,7 @@
                     <span
                         x-show="areAllCheckboxesChecked"
                         x-on:click="toggleAllCheckboxes()"
-                        wire:key="{{ $this->getId() }}.{{ $statePath }}.{{ $field::class }}.actions.deselect_all"
+                        wire:key="{{ $this->getId() }}.{{ $statePath }}.{{ $field::class }}.actions.deselect-all"
                     >
                         {{ $getAction('deselectAll') }}
                     </span>
@@ -186,7 +184,7 @@
                         class="fi-fo-checkbox-list-option-label flex gap-x-3"
                     >
                         <x-filament::input.checkbox
-                            :error="$errors->has($statePath)"
+                            :valid="! $errors->has($statePath)"
                             :attributes="
                                 \Filament\Support\prepare_inherited_attributes($getExtraInputAttributeBag())
                                     ->merge([
@@ -202,9 +200,13 @@
 
                         <div class="grid text-sm leading-6">
                             <span
-                                class="fi-fo-checkbox-list-option-label font-medium text-gray-950 dark:text-white"
+                                class="fi-fo-checkbox-list-option-label overflow-hidden break-words font-medium text-gray-950 dark:text-white"
                             >
-                                {{ $label }}
+                                @if ($isHtmlAllowed())
+                                    {!! $label !!}
+                                @else
+                                    {{ $label }}
+                                @endif
                             </span>
 
                             @if ($hasDescription($value))

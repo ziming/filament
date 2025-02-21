@@ -35,6 +35,17 @@ it('can validate an action\'s data', function () {
         ->assertNotDispatched('data-called');
 });
 
+it('can access form data in before hook', function () {
+    livewire(Actions::class)
+        ->callAction('before-hook-data', data: [
+            'payload' => $payload = Str::random(),
+        ])
+        ->assertHasNoActionErrors()
+        ->assertDispatched('before-hook-called', data: [
+            'payload' => $payload,
+        ]);
+});
+
 it('can set default action data when mounted', function () {
     livewire(Actions::class)
         ->mountAction('data')
@@ -105,20 +116,20 @@ it('can disable an action', function () {
 
 it('can have an icon', function () {
     livewire(Actions::class)
-        ->assertActionHasIcon('has-icon', 'heroicon-m-pencil-square')
-        ->assertActionDoesNotHaveIcon('has-icon', 'heroicon-m-trash');
+        ->assertActionHasIcon('hasIcon', 'heroicon-m-pencil-square')
+        ->assertActionDoesNotHaveIcon('hasIcon', 'heroicon-m-trash');
 });
 
 it('can have a label', function () {
     livewire(Actions::class)
-        ->assertActionHasLabel('has-label', 'My Action')
-        ->assertActionDoesNotHaveLabel('has-label', 'My Other Action');
+        ->assertActionHasLabel('hasLabel', 'My Action')
+        ->assertActionDoesNotHaveLabel('hasLabel', 'My Other Action');
 });
 
 it('can have a color', function () {
     livewire(Actions::class)
-        ->assertActionHasColor('has-color', 'primary')
-        ->assertActionDoesNotHaveColor('has-color', 'gray');
+        ->assertActionHasColor('hasColor', 'primary')
+        ->assertActionDoesNotHaveColor('hasColor', 'gray');
 });
 
 it('can have a URL', function () {
@@ -129,14 +140,14 @@ it('can have a URL', function () {
 
 it('can open a URL in a new tab', function () {
     livewire(Actions::class)
-        ->assertActionShouldOpenUrlInNewTab('url-in-new-tab')
-        ->assertActionShouldNotOpenUrlInNewTab('url-not-in-new-tab');
+        ->assertActionShouldOpenUrlInNewTab('urlInNewTab')
+        ->assertActionShouldNotOpenUrlInNewTab('urlNotInNewTab');
 });
 
 it('can state whether a page action exists', function () {
     livewire(Actions::class)
         ->assertActionExists('exists')
-        ->assertActionDoesNotExist('does-not-exist');
+        ->assertActionDoesNotExist('doesNotExist');
 });
 
 it('can show a notification', function () {

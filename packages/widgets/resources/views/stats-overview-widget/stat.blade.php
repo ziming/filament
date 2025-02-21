@@ -1,5 +1,6 @@
 @php
     use Filament\Support\Enums\IconPosition;
+    use Filament\Support\Facades\FilamentView;
 
     $chartColor = $getChartColor() ?? 'gray';
     $descriptionColor = $getDescriptionColor() ?? 'gray';
@@ -21,6 +22,7 @@
         \Filament\Support\get_color_css_variables(
             $descriptionColor,
             shades: [500],
+            alias: 'widgets::stats-overview-widget.stat.description.icon',
         ) => $descriptionColor !== 'gray',
     ]);
 @endphp
@@ -45,13 +47,15 @@
                 />
             @endif
 
-            <span class="text-sm font-medium text-gray-500 dark:text-gray-400">
+            <span
+                class="fi-wi-stats-overview-stat-label text-sm font-medium text-gray-500 dark:text-gray-400"
+            >
                 {{ $getLabel() }}
             </span>
         </div>
 
         <div
-            class="text-3xl font-semibold tracking-tight text-gray-950 dark:text-white"
+            class="fi-wi-stats-overview-stat-value text-3xl font-semibold tracking-tight text-gray-950 dark:text-white"
         >
             {{ $getValue() }}
         </div>
@@ -70,14 +74,16 @@
                     @class([
                         'fi-wi-stats-overview-stat-description text-sm',
                         match ($descriptionColor) {
-                            'gray' => 'fi-color-gray text-gray-500 dark:text-gray-400',
+                            'gray' => 'text-gray-500 dark:text-gray-400',
                             default => 'fi-color-custom text-custom-600 dark:text-custom-400',
                         },
+                        is_string($descriptionColor) ? "fi-color-{$descriptionColor}" : null,
                     ])
                     @style([
                         \Filament\Support\get_color_css_variables(
                             $descriptionColor,
                             shades: [400, 600],
+                            alias: 'widgets::stats-overview-widget.stat.description',
                         ) => $descriptionColor !== 'gray',
                     ])
                 >
@@ -96,11 +102,15 @@
     </div>
 
     @if ($chart = $getChart())
-        {{-- An empty function to initialize the Alpine component with until it's loaded with `ax-load`. This removes the need for `x-ignore`, allowing the chart to be updated via Livewire polling. --}}
+        {{-- An empty function to initialize the Alpine component with until it's loaded with `x-load`. This removes the need for `x-ignore`, allowing the chart to be updated via Livewire polling. --}}
         <div x-data="{ statsOverviewStatChart: function () {} }">
             <div
-                ax-load
-                ax-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('stats-overview/stat/chart', 'filament/widgets') }}"
+                @if (FilamentView::hasSpaMode())
+                    x-load="visible"
+                @else
+                    x-load
+                @endif
+                x-load-src="{{ \Filament\Support\Facades\FilamentAsset::getAlpineComponentSrc('stats-overview/stat/chart', 'filament/widgets') }}"
                 x-data="statsOverviewStatChart({
                             dataChecksum: @js($dataChecksum),
                             labels: @js(array_keys($chart)),
@@ -109,14 +119,16 @@
                 @class([
                     'fi-wi-stats-overview-stat-chart absolute inset-x-0 bottom-0 overflow-hidden rounded-b-xl',
                     match ($chartColor) {
-                        'gray' => 'fi-color-gray',
+                        'gray' => null,
                         default => 'fi-color-custom',
                     },
+                    is_string($chartColor) ? "fi-color-{$chartColor}" : null,
                 ])
                 @style([
                     \Filament\Support\get_color_css_variables(
                         $chartColor,
                         shades: [50, 400, 500],
+                        alias: 'widgets::stats-overview-widget.stat.chart',
                     ) => $chartColor !== 'gray',
                 ])
             >

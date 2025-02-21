@@ -12,9 +12,11 @@ use Filament\Forms\Components\Placeholder;
 use Filament\Forms\Components\Repeater;
 use Filament\Forms\Components\Section;
 use Filament\Forms\Components\Select;
+use Filament\Forms\Components\Split;
 use Filament\Forms\Components\Tabs;
 use Filament\Forms\Components\Textarea;
 use Filament\Forms\Components\TextInput;
+use Filament\Forms\Components\Toggle;
 use Filament\Forms\Components\Wizard;
 use Filament\Forms\Concerns\InteractsWithForms;
 use Filament\Forms\Contracts\HasForms;
@@ -240,6 +242,47 @@ class LayoutDemo extends Component implements HasForms
                             ->statePath('wizardIcons'),
                     ]),
                 Group::make()
+                    ->id('wizardCompletedIcons')
+                    ->extraAttributes([
+                        'class' => 'p-16 max-w-5xl',
+                    ])
+                    ->schema([
+                        Wizard::make([
+                            Wizard\Step::make('Order')
+                                ->icon('heroicon-m-shopping-bag')
+                                ->completedIcon('heroicon-m-hand-thumb-up'),
+                            Wizard\Step::make('Delivery')
+                                ->icon('heroicon-m-truck')
+                                ->completedIcon('heroicon-m-hand-thumb-up'),
+                            Wizard\Step::make('Billing')
+                                ->icon('heroicon-m-credit-card')
+                                ->completedIcon('heroicon-m-hand-thumb-up')
+                                ->schema([
+                                    Repeater::make('items')
+                                        ->hiddenLabel()
+                                        ->schema([
+                                            Select::make('product')
+                                                ->options([
+                                                    'tshirt' => 'Filament t-shirt',
+                                                ]),
+                                            TextInput::make('quantity'),
+                                        ])
+                                        ->columns(2)
+                                        ->reorderable(false)
+                                        ->addActionLabel('Add to order')
+                                        ->default([
+                                            [
+                                                'product' => 'tshirt',
+                                                'quantity' => 3,
+                                            ],
+                                        ]),
+                                    Textarea::make('specialOrderNotes'),
+                                ]),
+                        ])
+                            ->startOnStep(3)
+                            ->statePath('wizardCompletedIcons'),
+                    ]),
+                Group::make()
                     ->id('wizardDescriptions')
                     ->extraAttributes([
                         'class' => 'p-16 max-w-5xl',
@@ -284,6 +327,60 @@ class LayoutDemo extends Component implements HasForms
                     ->schema([
                         Section::make('Rate limiting')
                             ->description('Prevent abuse by limiting the number of requests per period')
+                            ->statePath('section')
+                            ->schema([
+                                TextInput::make('hits')
+                                    ->default(30),
+                                Select::make('period')
+                                    ->default('hour')
+                                    ->options([
+                                        'hour' => 'Hour',
+                                    ]),
+                                TextInput::make('maximum')
+                                    ->default(100),
+                                Textarea::make('notes')
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(3),
+                    ]),
+                Group::make()
+                    ->id('sectionHeaderActions')
+                    ->extraAttributes([
+                        'class' => 'p-16 max-w-2xl',
+                    ])
+                    ->schema([
+                        Section::make('Rate limiting')
+                            ->description('Prevent abuse by limiting the number of requests per period')
+                            ->headerActions([
+                                Action::make('test'),
+                            ])
+                            ->statePath('section')
+                            ->schema([
+                                TextInput::make('hits')
+                                    ->default(30),
+                                Select::make('period')
+                                    ->default('hour')
+                                    ->options([
+                                        'hour' => 'Hour',
+                                    ]),
+                                TextInput::make('maximum')
+                                    ->default(100),
+                                Textarea::make('notes')
+                                    ->columnSpanFull(),
+                            ])
+                            ->columns(3),
+                    ]),
+                Group::make()
+                    ->id('sectionFooterActions')
+                    ->extraAttributes([
+                        'class' => 'p-16 max-w-2xl',
+                    ])
+                    ->schema([
+                        Section::make('Rate limiting')
+                            ->description('Prevent abuse by limiting the number of requests per period')
+                            ->footerActions([
+                                Action::make('test'),
+                            ])
                             ->statePath('section')
                             ->schema([
                                 TextInput::make('hits')
@@ -421,6 +518,27 @@ class LayoutDemo extends Component implements HasForms
                         ])
                             ->statePath('sectionWithoutHeader')
                             ->columns(3),
+                    ]),
+                Group::make()
+                    ->id('split')
+                    ->extraAttributes([
+                        'class' => 'p-16 max-w-2xl',
+                    ])
+                    ->schema([
+                        Split::make([
+                            Section::make([
+                                TextInput::make('title')
+                                    ->default('Lorem ipsum dolor sit amet'),
+                                Textarea::make('content')
+                                    ->default('Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec euismod, nisl eget tempor aliquam, nunc nisl aliquet nunc, quis aliquam nisl nunc quis nisl. Donec euismod, nisl eget tempor aliquam, nunc nisl aliquet nunc, quis aliquam nisl nunc quis nisl.')
+                                    ->rows(5),
+                            ]),
+                            Section::make([
+                                Toggle::make('is_published')
+                                    ->default(true),
+                                Toggle::make('is_featured'),
+                            ])->grow(false),
+                        ])->statePath('split'),
                     ]),
                 Group::make()
                     ->id('anonymousActions')
